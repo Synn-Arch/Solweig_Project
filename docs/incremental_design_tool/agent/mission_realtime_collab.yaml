@@ -1,0 +1,64 @@
+schema_version: 1
+project: solweig_collaborative_realtime_editor
+mission: >-
+  Build a universal multi-session editor whose admitted operations are merged
+  into deterministic 100 ms epochs and reflected in the next one-second fast
+  analysis revision, with asynchronous exact SOLWEIG reconciliation.
+scientific_oracle: current_full_domain_solweig
+required_reading:
+  - ../realtime_collaboration/index.md
+  - ../realtime_collaboration/service_level_contract.md
+  - ../realtime_collaboration/collaborative_state.md
+  - ../realtime_collaboration/epoch_scheduler.md
+  - ../realtime_collaboration/compute_architecture.md
+  - ../realtime_collaboration/compensation_and_exactness.md
+  - ../realtime_collaboration/optimization_roadmap.md
+  - ../realtime_collaboration/validation_plan.md
+  - ../benchmarks/2026-09-04-perf-optimization-handoff.md
+multi_agent:
+  required: true
+  preferred_concurrency: 8-12_when_independent
+  isolated_write_worktrees: true
+  one_writer_per_file: true
+  scientific_change_requires_non_author_review_and_differential: true
+  performance_claim_requires_independent_reproduction: true
+runtime:
+  epoch_ms: 100
+  queues: [ingest, reduce, fast_deadline, exact_latest_state]
+  one_fifo_scientific_job_per_raw_edit: forbidden
+  accepted_operations_may_be_dropped: false
+  exact_lane_may_block_fast_lane: false
+result_classes: [fast_exact, fast_qualified, visual_pending, exact_reconciled]
+slo_targets:
+  ack_p99_ms: 150
+  remote_visibility_p99_ms: 300
+  canonical_revision_p99_ms: 250
+  fast_revision_p99_ms: 1000
+  operation_inclusion_percent: 100
+  qualified_only_inside_measured_admission_envelope: true
+optimization_waves:
+  - R0_reproduce_instrument
+  - R1_operation_plane
+  - R2_dual_queue_scheduler
+  - R3_cheap_exact_paths
+  - R4_delta_visibility_svf
+  - R5_temporal_sparse_replay
+  - R6_profiled_kernel_optimization
+  - R7_compensated_fast_models
+  - R8_load_chaos_commissioning
+hard_stops:
+  - material_scientific_semantics_ambiguous
+  - oracle_nondeterministic_after_controls
+  - scope_change_without_acceptance_criteria
+  - access_or_license_blocker
+  - unresolved_scientific_semantic_conflict
+completion_requires:
+  - zero_accepted_operation_loss
+  - deterministic_replay
+  - fast_slo_passes_inside_published_envelope
+  - exact_reconciliation_oracle_validation_passes
+  - compensation_holdout_and_ood_validation_passes
+  - full_repository_docs_ui_and_deployment_tests_pass
+  - target_cpu_latency_rss_and_capacity_report_published
+  - independent_red_team_passes
+  - clean_main_commits

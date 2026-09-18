@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Interactive campus shade-design studio powered by SOLWEIG."
+    />
+    <title>SOLWEIG Studio · Campus thermal design studio</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <!-- Four-band console: 56px topbar / left tools / canvas + 72px timeline / 336px
+         analysis / 32px Metronome rail. Flat children so styles.css owns the grid
+         (responsive floor 1180px). -->
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand" aria-label="SOLWEIG Studio">
+          <div class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <div>
+            <strong>SOLWEIG Studio</strong>
+            <small>Thermal design workspace</small>
+          </div>
+        </div>
+
+        <div class="project-switcher">
+          <span class="eyebrow">SCENARIO</span>
+          <button type="button" class="project-button">
+            Campus shade study <span aria-hidden="true">⌄</span>
+          </button>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="live-pill" id="connectionPill" data-state="local">
+            <span class="pulse-dot"></span>
+            <span id="connectionPillText">Local preview mode</span>
+          </div>
+          <div class="live-pill" id="workerPill" data-state="ready">
+            <span class="pulse-dot"></span>
+            <span id="workerPillText">Ready</span>
+          </div>
+          <div
+            class="live-pill transport-pill"
+            id="transportPill"
+            data-state="offline"
+            title="Transport — whether this session is hearing the server. Trust in the picture is separate: read it on the result-class badge on the scene."
+            hidden
+          >
+            <span class="pulse-dot"></span>
+            <span id="transportPillText">Live</span>
+          </div>
+          <div
+            class="presence-bar"
+            id="presenceBar"
+            aria-label="Collaborators"
+            title="Shown: people whose edits this session has observed. Not a guaranteed roster."
+            hidden
+          ></div>
+          <div
+            class="held-count"
+            id="heldCount"
+            role="status"
+            aria-live="polite"
+            title="Edits waiting to resubmit — held when the workspace edits faster than the analysis budget or the connection drops. Each keeps its operation id and resubmits in order; nothing is lost."
+            hidden
+          >
+            0 held
+          </div>
+          <button class="ghost-button" type="button" id="resetButton">Reset</button>
+          <button class="primary-button" type="button" id="exportButton">Export snapshot</button>
+        </div>
+      </header>
+
+      <aside class="left-panel panel-surface" aria-label="Design tools">
+        <div class="panel-tabs" role="tablist" aria-label="Design sidebar">
+          <button
+            class="panel-tab is-active"
+            type="button"
+            role="tab"
+            id="designTabButton"
+            aria-controls="designTab"
+            aria-selected="true"
+          >
+            Design
+          </button>
+          <button
+            class="panel-tab"
+            type="button"
+            role="tab"
+            id="layersTabButton"
+            aria-controls="viewsTab"
+            aria-selected="false"
+          >
+            Layers
+          </button>
+        </div>
+
+        <div id="designTab" role="tabpanel" aria-labelledby="designTabButton">
+          <section class="sidebar-section">
+            <div class="section-heading">
+              <div>
+                <span class="eyebrow">COMPONENTS</span>
+                <h2>Trees</h2>
+              </div>
+              <button class="icon-button" type="button" aria-label="Add component">+</button>
+            </div>
+            <p class="section-copy">
+              Drag onto the map. A quick preview appears first; the precise map
+              follows automatically.
+            </p>
+
+            <div class="component-list" id="componentList">
+              <article
+                class="component-card"
+                draggable="true"
+                data-preset="shade"
+                tabindex="0"
+                aria-label="Shade tree, 12 meters. Press Enter to add at the scene center, or drag onto the map."
+              >
+                <div class="tree-thumbnail tree-thumbnail--shade" aria-hidden="true">
+                  <i></i><i></i><i></i><b></b>
+                </div>
+                <div class="component-copy">
+                  <strong>Shade tree</strong>
+                  <span>12 m · 7 m crown</span>
+                </div>
+                <button class="add-button" type="button" data-add-preset="shade">Add</button>
+                <div class="drag-handle" aria-hidden="true">⠿</div>
+              </article>
+
+              <article
+                class="component-card"
+                draggable="true"
+                data-preset="broad"
+                tabindex="0"
+                aria-label="Broad canopy tree, 18 meters. Press Enter to add at the scene center, or drag onto the map."
+              >
+                <div class="tree-thumbnail tree-thumbnail--broad" aria-hidden="true">
+                  <i></i><i></i><i></i><b></b>
+                </div>
+                <div class="component-copy">
+                  <strong>Broad canopy</strong>
+                  <span>18 m · 11 m crown</span>
+                </div>
+                <button class="add-button" type="button" data-add-preset="broad">Add</button>
+                <div class="drag-handle" aria-hidden="true">⠿</div>
+              </article>
+
+              <article
+                class="component-card"
+                draggable="true"
+                data-preset="evergreen"
+                tabindex="0"
+                aria-label="Evergreen tree, 10 meters. Press Enter to add at the scene center, or drag onto the map."
+              >
+                <div class="tree-thumbnail tree-thumbnail--evergreen" aria-hidden="true">
+                  <i></i><i></i><i></i><b></b>
+                </div>
+                <div class="component-copy">
+                  <strong>Evergreen</strong>
+                  <span>10 m · 5 m crown</span>
+                </div>
+                <button class="add-button" type="button" data-add-preset="evergreen">Add</button>
+                <div class="drag-handle" aria-hidden="true">⠿</div>
+              </article>
+            </div>
+          </section>
+
+          <section class="sidebar-section">
+            <div class="section-heading">
+              <div>
+                <span class="eyebrow">COMPONENTS</span>
+                <h2>Buildings</h2>
+              </div>
+            </div>
+            <p class="section-copy">
+              Blocks that cast shade. Drag onto the map, or press Add.
+            </p>
+
+            <div class="component-list" id="buildingList">
+              <article
+                class="component-card"
+                draggable="true"
+                data-building="pavilion"
+                tabindex="0"
+                aria-label="Pavilion, 8 by 8 meters, 4 meters tall. Press Enter or Space to add at the scene center, or drag onto the map."
+              >
+                <div class="building-thumbnail building-thumbnail--pavilion" aria-hidden="true">
+                  <i></i>
+                </div>
+                <div class="component-copy">
+                  <strong>Pavilion</strong>
+                  <span>8 × 8 m · 4 m tall</span>
+                </div>
+                <button class="add-button" type="button" data-add-building="pavilion">Add</button>
+                <div class="drag-handle" aria-hidden="true">⠿</div>
+              </article>
+
+              <article
+                class="component-card"
+                draggable="true"
+                data-building="block"
+                tabindex="0"
+                aria-label="Residential block, 16 by 10 meters, 15 meters tall. Press Enter or Space to add at the scene center, or drag onto the map."
+              >
+                <div class="building-thumbnail building-thumbnail--block" aria-hidden="true">
+                  <i></i>
+                </div>
+                <div class="component-copy">
+                  <strong>Residential block</strong>
+                  <span>16 × 10 m · 15 m tall</span>
+                </div>
+                <button class="add-button" type="button" data-add-building="block">Add</button>
+                <div class="drag-handle" aria-hidden="true">⠿</div>
+              </article>
+
+              <article
+                class="component-card"
+                draggable="true"
+                data-building="tower"
+                tabindex="0"
+                aria-label="Tower, 12 by 12 meters, 40 meters tall. Press Enter or Space to add at the scene center, or drag onto the map."
+              >
+                <div class="building-thumbnail building-thumbnail--tower" aria-hidden="true">
+                  <i></i>
+                </div>
+                <div class="component-copy">
+                  <strong>Tower</strong>
+                  <span>12 × 12 m · 40 m tall</span>
+                </div>
+                <button class="add-button" type="button" data-add-building="tower">Add</button>
+                <div class="drag-handle" aria-hidden="true">⠿</div>
+              </article>
+            </div>
+          </section>
+
+          <section class="sidebar-section">
+            <div class="section-heading compact">
+              <div>
+                <span class="eyebrow">EDIT FAMILIES</span>
+                <h2>Universal editors</h2>
+              </div>
+              <span class="capability-badge" id="capabilityBadge">loading…</span>
+            </div>
+            <p class="section-copy">What you can edit:</p>
+            <div class="family-list" id="editFamiliesRoot"></div>
+          </section>
+
+          <section class="sidebar-section layer-section">
+            <div class="section-heading compact">
+              <div>
+                <span class="eyebrow">VISIBLE LAYERS</span>
+                <h2>Analysis stack</h2>
+              </div>
+            </div>
+            <label class="layer-row">
+              <span class="layer-swatch swatch-heat"></span>
+              <span><strong>UTCI surface</strong><small>Live proposal</small></span>
+              <input type="checkbox" id="heatLayerToggle" checked />
+            </label>
+            <label class="layer-row">
+              <span class="layer-swatch swatch-shadow"></span>
+              <span><strong>Tree shadows</strong><small>Direct solar preview</small></span>
+              <input type="checkbox" id="shadowLayerToggle" checked />
+            </label>
+            <label class="layer-row">
+              <span class="layer-swatch swatch-roi"></span>
+              <span><strong>Dirty region</strong><small>Refresh window — the area being recomputed</small></span>
+              <input type="checkbox" id="roiLayerToggle" checked />
+            </label>
+          </section>
+
+          <div class="sidebar-footnote">
+            <span class="status-icon">i</span>
+            <p>You see a quick preview first. Only the edited area is recalculated, so it stays fast.</p>
+          </div>
+        </div>
+
+        <div id="viewsTab" role="tabpanel" aria-labelledby="layersTabButton" hidden>
+          <section class="sidebar-section">
+            <div class="section-heading compact">
+              <div>
+                <span class="eyebrow">VIEW-ONLY ANALYSIS</span>
+                <h2>Published layers</h2>
+              </div>
+              <span class="zero-pill" id="viewZeroBadge" data-state="idle">0 jobs</span>
+            </div>
+            <p class="section-copy" id="viewBasisCopy">
+              Selecting among cached layers never queues a solver job.
+            </p>
+            <div class="view-controls">
+              <label class="view-field">
+                <span>Layer</span>
+                <select id="viewLayerSelect"></select>
+              </label>
+              <label class="view-field">
+                <span>Operation</span>
+                <select id="viewOperationSelect"></select>
+              </label>
+              <label class="view-field" id="viewCompareField" hidden>
+                <span>Compare with</span>
+                <select id="viewCompareSelect"></select>
+              </label>
+              <label class="view-field view-field--time">
+                <span>Time index</span>
+                <input type="number" id="viewTimeIndex" min="0" step="1" value="0" />
+              </label>
+              <button class="primary-button view-run" type="button" id="viewRunButton">Run view</button>
+            </div>
+            <div class="view-result" id="viewResult" aria-live="polite">
+              <p class="view-empty">Run a view to inspect a published layer.</p>
+            </div>
+          </section>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <div class="workspace-toolbar panel-surface" aria-label="Map tools">
+          <button type="button" class="tool-button is-active" title="Select">↖</button>
+          <button type="button" class="tool-button" title="Pan">✥</button>
+          <div class="tool-divider"></div>
+          <button type="button" class="tool-button labeled" id="compareButton" aria-pressed="false">
+            <span class="compare-icon"></span> Compare baseline
+          </button>
+        </div>
+
+        <div class="scene-card" id="sceneCard">
+          <canvas id="glCanvas" width="1400" height="900" aria-hidden="true"></canvas>
+          <canvas
+            id="overlayCanvas"
+            width="1400"
+            height="900"
+            tabindex="0"
+            aria-label="Interactive urban design scene. Drag trees or buildings from the component library onto this map, or focus it and use arrow keys to nudge the selected tree or building."
+          ></canvas>
+
+          <!-- Scene header — the one trust home (D1). The result-class badge is
+               attached to the pixels it describes; every other surface echoes it. -->
+          <div class="scene-header">
+            <div
+              class="result-class-badge"
+              id="resultClassBadge"
+              data-state="visual_pending"
+              role="status"
+              aria-live="polite"
+              title="Offline preview — the browser sketch is not a scientific result. Connect a server for verified physics."
+            >
+              <span class="class-glyph" aria-hidden="true">◌</span>
+              <span class="class-word">Preview</span>
+              <span class="class-owed" id="resultClassOwed" hidden>(updating)</span>
+              <span class="class-stale" id="resultClassStale" hidden>(stale)</span>
+              <span class="class-age" id="resultClassAge" hidden>updating</span>
+              <button
+                type="button"
+                class="qual-trigger"
+                id="qualTrigger"
+                aria-controls="qualifierPanel"
+                aria-expanded="false"
+                aria-label="Open the estimate details panel"
+                title="Physics with a stated margin of error, shown while the precise map is still computing. Open for the evidence."
+                hidden
+              >
+                ~
+              </button>
+            </div>
+          </div>
+
+          <!-- Qualification panel (§5 outline): opens from any ~ echo. -->
+          <section
+            class="qualifier-panel"
+            id="qualifierPanel"
+            aria-labelledby="qualifierTitle"
+            hidden
+          >
+            <header class="qualifier-head">
+              <h3 id="qualifierTitle">Close estimate</h3>
+              <p class="qualifier-anchors" id="qualifierAnchors">
+                revision R— · fast R— · built on precise R—
+              </p>
+              <button
+                type="button"
+                class="text-button"
+                id="qualifierClose"
+                aria-label="Close the estimate details panel"
+              >
+                Close
+              </button>
+            </header>
+            <p class="qualifier-meaning" id="qualifierMeaning">
+              Physics with a stated margin of error, shown while the precise map is still
+              computing. Open the badge for the error evidence.
+            </p>
+            <dl class="qualifier-facts">
+              <div id="qualifierEvidence">
+                <dt>Error evidence</dt>
+                <dd>
+                  Method — validated response operator. The stated uncertainty (±°C) and how
+                  the bound was produced appear here with the first qualified result.
+                </dd>
+              </div>
+              <div id="qualifierCoverage">
+                <dt>Coverage</dt>
+                <dd>
+                  Region and timesteps the estimate covers. A reduced-resolution result
+                  states half resolution and outlines the affected cells; uncovered cells
+                  are listed by window.
+                </dd>
+              </div>
+              <div id="qualifierLimitations">
+                <dt>Limitations</dt>
+                <dd>
+                  The server's limitation strings, quoted verbatim — never paraphrased.
+                  Example: "Tree-induced local wind-field changes are not recomputed."
+                </dd>
+              </div>
+              <div id="qualifierReconciliation">
+                <dt>Catching up</dt>
+                <dd>
+                  The precise map catches up from its base revision to the current one.
+                  Views arrive in under a second; trees and buildings follow automatically.
+                </dd>
+              </div>
+              <div id="qualifierBase">
+                <dt>Precise base</dt>
+                <dd>
+                  Built on the verified precise result for that base revision — the
+                  difference from the current revision is what is being estimated.
+                </dd>
+              </div>
+            </dl>
+            <a class="qualifier-link" href="#modelScopeCard">Open the model scope card</a>
+          </section>
+
+          <div class="failure-banner" id="failureBanner" data-state="hidden" role="alert">
+            <span class="failure-icon" aria-hidden="true">!</span>
+            <p id="failureMessage">The precise update failed.</p>
+            <button class="text-button" type="button" id="retryButton">Try again</button>
+          </div>
+
+          <div class="mismatch-banner" id="siteMismatchBanner" data-state="hidden" role="alert">
+            <div class="mismatch-head">
+              <span class="failure-icon" aria-hidden="true">!</span>
+              <strong>Site identity changed under this scenario</strong>
+            </div>
+            <p id="siteMismatchMessage"></p>
+            <div class="identity-diff" id="siteMismatchIdentities"></div>
+            <button class="primary-button" type="button" id="reconnectButton">
+              Start a fresh scenario
+            </button>
+          </div>
+
+          <div class="scene-context panel-surface">
+            <span class="eyebrow">LIVE MODEL</span>
+            <strong id="sceneTimeLabel">12:00 · Summer design day</strong>
+            <span>31.6°C · RH 47% · wind 2.4 m/s</span>
+          </div>
+
+          <div class="analysis-toast panel-surface" id="analysisToast" data-state="ready" aria-live="polite">
+            <span class="toast-spinner" aria-hidden="true"></span>
+            <div>
+              <strong id="analysisToastTitle">Analysis updated</strong>
+              <span id="analysisToastDetail">No pending edits</span>
+            </div>
+            <time id="analysisDuration">0.0 s</time>
+          </div>
+
+          <div class="north-arrow" aria-label="North is up and slightly left">
+            <span>N</span>
+            <i></i>
+          </div>
+
+          <div class="scale-bar" aria-label="100 meter scale">
+            <span></span>
+            <small>100 m</small>
+          </div>
+
+          <div class="drop-hint" id="dropHint">
+            <span>+</span>
+            <strong>Drop on the map</strong>
+          </div>
+
+          <!-- Collaborator reconciliation pulse hook (I-31): styles target .pulse-remote;
+               app code clones this template onto a reconciled entity. -->
+          <template id="pulseRemoteTemplate">
+            <span class="pulse-remote" aria-hidden="true"></span>
+          </template>
+        </div>
+
+        <div class="timeline panel-surface">
+          <div class="timeline-value">
+            <span class="eyebrow">SOLAR TIME</span>
+            <strong id="timeValue">12:00</strong>
+          </div>
+          <div class="timeline-control">
+            <input
+              id="timeSlider"
+              type="range"
+              min="8"
+              max="18"
+              step="1"
+              value="12"
+              aria-label="Solar time"
+              title="Solar time — your time lens, shared with no one."
+            />
+            <div class="timeline-ticks" aria-hidden="true">
+              <span>08</span><span>10</span><span>12</span><span>14</span><span>16</span><span>18</span>
+            </div>
+            <div
+              class="timeline-freshness"
+              id="timelineFreshness"
+              title="Freshness by hour — filled: exact for the current revision · half: cached exact from an older revision, stale but honest · hollow: not computed"
+            >
+              <span class="visually-hidden">
+                Freshness by hour: a filled dot means the exact plane for the current
+                revision, a half dot means a cached exact plane from an older revision
+                (stale but honest), a hollow dot means not computed.
+              </span>
+              <span class="fresh-dot is-hollow" data-hour="8" aria-hidden="true"></span>
+              <span class="fresh-dot is-hollow" data-hour="9" aria-hidden="true"></span>
+              <span class="fresh-dot is-hollow" data-hour="10" aria-hidden="true"></span>
+              <span class="fresh-dot is-hollow" data-hour="11" aria-hidden="true"></span>
+              <span class="fresh-dot is-hollow" data-hour="12" aria-hidden="true"></span>
+              <span class="fresh-dot is-hollow" data-hour="13" aria-hidden="true"></span>
+              <span class="fresh-dot is-hollow" data-hour="14" aria-hidden="true"></span>
+              <span class="fresh-dot is-hollow" data-hour="15" aria-hidden="true"></span>
+              <span class="fresh-dot is-hollow" data-hour="16" aria-hidden="true"></span>
+              <span class="fresh-dot is-hollow" data-hour="17" aria-hidden="true"></span>
+              <span class="fresh-dot is-hollow" data-hour="18" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="legend-wrap">
+            <div class="legend-labels"><span>Comfortable</span><span>Extreme heat</span></div>
+            <div class="heat-legend"></div>
+            <div class="legend-values"><span>30°C</span><span>44°C UTCI</span></div>
+          </div>
+        </div>
+
+        <!-- Activity drawer (W-5): one row per operation, yours and others';
+             collapsed to a single line by default. -->
+        <section class="activity-drawer" aria-label="Activity ledger">
+          <button
+            type="button"
+            class="activity-toggle"
+            id="activityToggle"
+            aria-expanded="false"
+            aria-controls="activityList"
+          >
+            <span class="activity-toggle-label">Activity</span>
+            <span class="activity-toggle-caret" aria-hidden="true">▾</span>
+            <span class="activity-summary" id="activitySummary">No edits yet</span>
+          </button>
+          <div class="activity-list" id="activityList" hidden>
+            <div class="activity-head">
+              <span class="eyebrow">ACTIVITY</span>
+              <span class="activity-meta" id="activityMeta">offline · local session</span>
+            </div>
+            <ol class="activity-rows" id="activityRows" aria-label="Edit receipts — one row per operation"></ol>
+            <p class="activity-footnote">
+              Every edit is a numbered receipt — quote the seq and anyone can find that
+              exact change. Held means your edit is safe locally and goes when capacity
+              returns; you can withdraw it until the server accepts it.
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <aside class="right-panel panel-surface" aria-label="Live analysis">
+        <section class="analysis-header">
+          <span class="eyebrow">LIVE ANALYSIS</span>
+          <div class="analysis-title-row">
+            <div>
+              <h2>Thermal impact</h2>
+              <p id="analysisSubtitle">Proposal compared with baseline</p>
+            </div>
+            <span class="version-badge" id="sceneVersion">v3</span>
+          </div>
+        </section>
+
+        <section class="metric-grid" aria-label="Analysis metrics">
+          <article class="metric-card metric-card--primary">
+            <span>Mean UTCI change</span>
+            <strong id="meanDeltaMetric">−0.8°C</strong>
+            <small id="meanDeltaCaption">within updated region</small>
+          </article>
+          <article class="metric-card">
+            <span>Peak cooling</span>
+            <strong id="peakDeltaMetric">−3.4°C</strong>
+            <small>pedestrian cells</small>
+          </article>
+          <article class="metric-card">
+            <span>Improved area</span>
+            <strong id="areaMetric">8,940 m²</strong>
+            <small>at least 1°C cooler</small>
+          </article>
+          <article class="metric-card">
+            <span>Refresh window</span>
+            <strong id="roiMetric">14.2%</strong>
+            <small id="roiCaption">35,480 / 250,000 cells</small>
+          </article>
+        </section>
+
+        <section class="selected-section">
+          <div class="section-heading compact">
+            <div>
+              <span class="eyebrow">SELECTION</span>
+              <h2 id="selectedTreeName">Broad canopy 02</h2>
+            </div>
+            <button class="icon-button danger" id="deleteTreeButton" type="button" aria-label="Delete selected tree">×</button>
+          </div>
+
+          <div id="selectionProperties" aria-label="Selected object properties"></div>
+          <p class="rejected-note" id="rejectedPropertiesNote" hidden></p>
+        </section>
+
+        <section class="job-section">
+          <div class="section-heading compact">
+            <div>
+              <span class="eyebrow">PIPELINE</span>
+              <h2>Edit pipeline</h2>
+            </div>
+            <button class="text-button" type="button" id="rerunButton">Run again</button>
+          </div>
+          <ol class="job-steps" id="jobSteps">
+            <li class="is-complete">
+              <span>1</span>
+              <div>
+                <strong>Sketch</strong>
+                <small>Instant browser-only repaint — never a scientific result</small>
+              </div>
+            </li>
+            <li class="is-complete">
+              <span>2</span>
+              <div>
+                <strong>Stamp</strong>
+                <small>Submit the edit · the server stamps the receipt (seq)</small>
+              </div>
+            </li>
+            <li class="is-complete">
+              <span>3</span>
+              <div>
+                <strong>Share</strong>
+                <small>The epoch closes · the scene takes one shared step (R)</small>
+              </div>
+            </li>
+            <li class="is-complete">
+              <span>4</span>
+              <div>
+                <strong>Paint</strong>
+                <small>The fast lane publishes the picture for this revision</small>
+              </div>
+            </li>
+            <li class="is-complete">
+              <span>5</span>
+              <div>
+                <strong>Verify</strong>
+                <ul class="verify-substeps">
+                  <li>Coalesce edits</li>
+                  <li>Build dirty window · <small id="dirtyWindowStep">188 × 188 cells + halo</small></li>
+                  <li>Recompute patch · <small id="computeStep">sketch · 0.84 s</small></li>
+                  <li>Patch scene texture</li>
+                </ul>
+              </div>
+            </li>
+          </ol>
+          <p class="job-status-detail" id="jobStatusDetail">No exact job yet</p>
+        </section>
+
+        <section class="impact-section" aria-label="Dependency impact">
+          <div class="section-heading compact">
+            <div>
+              <span class="eyebrow">DEPENDENCY IMPACT</span>
+              <h2>Last commit</h2>
+            </div>
+          </div>
+          <div class="impact-panel" id="impactPanel">
+            <p class="impact-empty">Commit an edit to see which stages changed, which are recomputed, and which are reused.</p>
+          </div>
+        </section>
+
+        <section class="assumption-card" id="modelScopeCard" aria-label="Model scope">
+          <div class="assumption-head">
+            <strong>Model scope</strong>
+            <span class="exact-badge" id="exactBadge" data-state="preview">Preview</span>
+          </div>
+          <dl class="scope-meta">
+            <div><dt>Model</dt><dd id="modelVersionValue">browser preview kernel</dd></div>
+            <div><dt>Site cache</dt><dd id="siteCacheVersionValue">local fixture</dd></div>
+          </dl>
+          <ul class="scope-list" id="modelScopeList">
+            <li>The browser preview kernel is not a scientific SOLWEIG result.</li>
+          </ul>
+          <p class="scope-footnote">
+            The overlay marked <em>preview</em> is a non-scientific browser
+            approximation; validated results come from the exact SOLWEIG run.
+          </p>
+          <a href="/docs/incremental_design_tool/index.md">Open implementation specification</a>
+        </section>
+      </aside>
+
+      <!-- Metronome — full-width 32px revision transport rail. #realtimePill
+           relocates here from the topbar (id + data-state vocabulary preserved
+           so app.mjs wiring survives); the class lamp IS its body. -->
+      <footer
+        class="metronome-rail"
+        id="metronomeRail"
+        aria-label="Scene transport — epochs, revisions, result class, collaborators"
+      >
+        <span
+          class="rail-led"
+          id="epochLed"
+          aria-hidden="true"
+          title="Epoch — the server merges everyone's edits into shared steps about ten times a second"
+        ></span>
+        <div class="rail-class">
+          <div class="live-pill" id="realtimePill" data-state="offline" hidden>
+            <span class="pulse-dot"></span>
+            <span id="realtimePillText">Collab offline</span>
+          </div>
+          <p class="rail-offline-note" id="railOfflineNote">
+            OFFLINE PREVIEW · local kernel — no collaboration
+          </p>
+        </div>
+        <dl
+          class="rail-triple"
+          id="railTriple"
+          title="Revision triple — exact is never ahead of fast, and fast is never ahead of the workspace"
+        >
+          <div title="W workspace — everyone's edits, merged"><dt>W</dt><dd id="railWorkspace">—</dd></div>
+          <div title="F fast — the ~1 s analysis"><dt>F</dt><dd id="railFast">—</dd></div>
+          <div title="E exact — the full SOLWEIG run"><dt>E</dt><dd id="railExact">—</dd></div>
+        </dl>
+        <span class="rail-owed" id="railOwed" hidden>updating +0</span>
+        <span class="rail-spacer" aria-hidden="true"></span>
+        <span class="rail-pendulum" id="railPendulum" aria-hidden="true" hidden></span>
+        <div
+          class="rail-actors"
+          id="railActors"
+          aria-label="Collaborators this session has observed"
+          title="Shown: people whose edits this session has observed. Not a guaranteed roster."
+          hidden
+        ></div>
+        <span class="rail-rtt" id="railRtt">RTT — ms</span>
+        <span
+          class="rail-mode"
+          id="railMode"
+          title="LOCAL — offline preview; the browser sketch kernel runs the analysis"
+        >
+          LOCAL
+        </span>
+      </footer>
+    </div>
+
+    <p class="visually-hidden" id="liveStatus" role="status" aria-live="polite"></p>
+
+    <script type="module" src="./app.mjs"></script>
+  </body>
+</html>

@@ -1,0 +1,122 @@
+schema_version: 2
+project: solweig_gpu_incremental_design_tool
+mission: >-
+  Implement and validate an exact CPU-oriented incremental SOLWEIG workflow for
+  interactive tree placement on a fixed 500x500, 2 m raster site, with local
+  recomputation when safe and full-tile fallback otherwise.
+scientific_oracle: existing_full_domain_solweig
+multi_agent:
+  required: true
+  policy: maximize_useful_parallelism
+  preferred_concurrent_subagents: "4-8 when independent and platform permits"
+  isolated_writers: true
+  one_writer_per_owned_file: true
+  scientific_core_requires_independent_reviewer: true
+  performance_claim_requires_independent_reproduction: true
+  subagents_may_push_main: false
+  orchestration_doc: agent/multi_agent_orchestration.md
+scope:
+  editable_objects:
+    - tree_add
+    - tree_move
+    - tree_resize_or_parameter_update
+    - tree_delete
+  required_outputs:
+    - tmrt
+    - utci
+  optional_outputs:
+    - shadow
+    - svf_diagnostics
+  excluded_initially:
+    - dynamic_wind_field_response_to_edited_trees
+    - cfd_recomputation
+    - evapotranspiration_feedback_not_already_represented_by_current_model
+constraints:
+  grid_shape: [500, 500]
+  nominal_resolution_m: 2.0
+  server_target: single_cpu_node
+  worker_concurrency_initial: 1
+  raster_window_semantics: half_open
+  baseline_cache: immutable
+  frontend_preview_is_scientific: false
+invariants:
+  - never_publish_stale_scene_revision
+  - never_mutate_shared_baseline
+  - full_domain_solver_remains_oracle
+  - unsafe_local_update_falls_back_to_full_tile
+  - preserve_visibility_polarity_and_patch_order
+  - preserve_temporal_state_semantics
+  - exact_and_preview_results_are_visually_distinct
+required_docs:
+  - architecture.md
+  - data_model.md
+  - incremental_algorithm.md
+  - cpu_optimization.md
+  - api_contract.md
+  - frontend_spec.md
+  - testing_validation.md
+  - deployment_operations.md
+  - agent_execution_plan.md
+  - agent/master_prompt.md
+  - agent/runbook.md
+  - agent/validation_pipeline.md
+  - agent/recovery_and_continuity.md
+  - agent/multi_agent_orchestration.md
+  - agent/subagent_prompt_template.md
+phases:
+  - id: P0
+    name: reproducible_baseline
+    mandatory_gates: [BASE-001, BASE-002, BASE-003]
+  - id: P1
+    name: window_interfaces
+    mandatory_gates: [WIN-001, WIN-002, WIN-003]
+  - id: P2
+    name: baseline_cache
+    mandatory_gates: [CACHE-001, CACHE-002, CACHE-003]
+  - id: P3
+    name: visibility_bitpacking
+    mandatory_gates: [PACK-001, PACK-002, PACK-003]
+  - id: P4
+    name: tree_rasterization
+    mandatory_gates: [TREE-001, TREE-002, TREE-003]
+  - id: P5
+    name: exact_local_worker
+    mandatory_gates: [SCI-001, SCI-002, SCI-003, SCI-004]
+  - id: P6
+    name: api_and_persistence
+    mandatory_gates: [API-001, API-002, API-003]
+  - id: P7
+    name: frontend_integration
+    mandatory_gates: [UI-001, UI-002, UI-003]
+  - id: P8
+    name: performance_tuning
+    mandatory_gates: [PERF-001, PERF-002, PERF-003]
+  - id: P9
+    name: production_validation
+    mandatory_gates: [REL-001, REL-002, REL-003]
+validation_tiers:
+  T0: static_and_structure
+  T1: unit
+  T2: integration
+  T3: scientific_differential
+  T4: performance
+  T5: full_repository
+  T6: deployment_smoke
+hard_stop_codes:
+  - ORACLE_NONDETERMINISM
+  - SEMANTICS_AMBIGUOUS_AND_SCIENTIFICALLY_MATERIAL
+  - MODEL_SCOPE_CHANGE_REQUIRED
+  - ACCESS_OR_LICENSE_BLOCKER
+  - SCIENTIFIC_MERGE_CONFLICT
+  - UNISOLATABLE_BASELINE_FAILURE
+  - MULTIPLE_PLAUSIBLE_NUMERICAL_FIXES
+completion_requires:
+  - all_mandatory_gates_pass
+  - full_repository_tests_pass
+  - documentation_build_passes
+  - scientific_differential_suite_passes
+  - frontend_interaction_suite_passes
+  - deployment_smoke_passes
+  - target_cpu_benchmark_recorded
+  - clean_working_tree
+  - commit_shas_reported

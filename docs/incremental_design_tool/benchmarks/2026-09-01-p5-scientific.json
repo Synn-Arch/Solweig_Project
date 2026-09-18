@@ -1,0 +1,3235 @@
+{
+  "record_type": "p5_scientific_gate_evidence",
+  "date": "2026-09-01",
+  "title": "T3 real-site scientific differential evidence for the P5 exact worker (gates SCI-001..004) on the 500x500@2m Austin subset tile",
+  "overall_verdict": "PASS",
+  "gates": {
+    "SANITY_oracle_equivalence": {
+      "verdict": "PASS",
+      "statement": "unedited-scene run_full_tile reproduces the corrected baseline GeoTIFFs bitwise for utci/tmrt/shadow",
+      "all_bitwise": true,
+      "per_variable": {
+        "utci": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        },
+        "tmrt": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        },
+        "shadow": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        }
+      },
+      "wall_seconds": 139.1219608783722
+    },
+    "SCI-001_inside_window_exact": {
+      "verdict": "PASS",
+      "scenarios": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S06",
+        "S07",
+        "S08",
+        "S05"
+      ],
+      "inside_within_tolerance_per_scenario": {
+        "S01": true,
+        "S02": true,
+        "S03": true,
+        "S04": true,
+        "S06": true,
+        "S07": true,
+        "S08": true,
+        "S05": true
+      },
+      "bitwise_inside_per_scenario": {
+        "S01": {
+          "utci": false,
+          "tmrt": false,
+          "shadow": true
+        },
+        "S02": {
+          "utci": false,
+          "tmrt": false,
+          "shadow": true
+        },
+        "S03": {
+          "utci": false,
+          "tmrt": false,
+          "shadow": true
+        },
+        "S04": {
+          "utci": false,
+          "tmrt": false,
+          "shadow": true
+        },
+        "S06": {
+          "utci": false,
+          "tmrt": false,
+          "shadow": true
+        },
+        "S07": {
+          "utci": false,
+          "tmrt": false,
+          "shadow": true
+        },
+        "S08": {
+          "utci": false,
+          "tmrt": false,
+          "shadow": true
+        },
+        "S05": {
+          "utci": true,
+          "tmrt": true,
+          "shadow": true
+        }
+      },
+      "tolerances": {
+        "utci_max_abs": 0.25,
+        "utci_mae": 0.02,
+        "utci_p99": 0.1,
+        "tmrt_max_abs": 1.0,
+        "tmrt_mae": 0.05,
+        "tmrt_p99": 0.2,
+        "shadow_mismatch_fraction": 0.001
+      }
+    },
+    "SCI-002_outside_window_invariance": {
+      "verdict": "PASS",
+      "criterion": "PRIMARY (gate assertion): outside the write window the candidate store is bit-identical to the prior published store (agent_execution_plan.md 'SCI-002: Outside-window stored results remain unchanged'; tests/scientific/tolerances.py:9-10 'bit-identical to stored baseline results'). DIAGNOSTIC: outside-window equality vs the independent edited-scene oracle, bitwise except where a deviating cell lies inside an earlier job's write window (validation_pipeline.md:123 'untouched output regions'); a deviation outside every written window is a hard FAIL.",
+      "citations": [
+        "docs/incremental_design_tool/agent_execution_plan.md P5 exit criteria",
+        "tests/scientific/tolerances.py:9-10",
+        "docs/incremental_design_tool/agent/validation_pipeline.md:123"
+      ],
+      "checks": {
+        "S01/job1_add_t1": {
+          "vs_prior_published_store": "bitwise",
+          "vs_edited_oracle": "bitwise"
+        },
+        "S02/job2_move_t1": {
+          "vs_prior_published_store": "bitwise",
+          "vs_edited_oracle": "bitwise"
+        },
+        "S03/job2_resize_t1": {
+          "vs_prior_published_store": "bitwise",
+          "vs_edited_oracle": "bitwise"
+        },
+        "S04/job2_delete_t1": {
+          "vs_prior_published_store": "bitwise",
+          "vs_edited_oracle": "bitwise"
+        },
+        "S06/job1_add_t6_edge": {
+          "vs_prior_published_store": "bitwise",
+          "vs_edited_oracle": "bitwise"
+        },
+        "S07/job1_batch_add_t1_t2": {
+          "vs_prior_published_store": "bitwise",
+          "vs_edited_oracle": "bitwise"
+        },
+        "S08/job2_add_t2": {
+          "vs_prior_published_store": "bitwise",
+          "vs_edited_oracle": "bitwise"
+        }
+      },
+      "s08_diagnostic_decomposition": {
+        "summary": "S08 (only scenario with disjoint successive write windows): worker write discipline (vs_prior_published_store) bitwise-intact and oracle scene invariance (addA vs sceneAB) bitwise-intact outside window2; the diagnostic vs_edited_oracle deviations are 100% inside job1's own write window (utci 2300/2300 unique cells max 6.1e-5 degC; tmrt 3326/3326 max 3.1e-5; shadow 0), bit-for-bit identical to job1's measured inside-window local-vs-full drift vs the addA oracle, and the prior_vs_edited_oracle check differs identically (deviation predates job2). Containment independently reverified from the cached arrays during verdict re-derivation.",
+        "resolution": "diagnostic-only under the documented criterion; primary assertion holds bitwise in all 8 scenarios"
+      }
+    },
+    "SCI-003_seam_diagnostics": {
+      "verdict": "PASS",
+      "criterion": "boundary-ring and distance-band max abs errors within the tests/scientific inside tolerances (no seam-localized error amplification); all-zero recorded when achieved",
+      "max_abs_error_boundary_ring_across_scenarios": 7.2479248046875e-05,
+      "max_abs_error_distance_bands_across_scenarios": 7.2479248046875e-05,
+      "max_shadow_ring_mismatch_fraction": 0.0,
+      "all_zero": false,
+      "within_tolerance": true,
+      "bands": [
+        [
+          0,
+          2
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          9,
+          16
+        ],
+        "interior"
+      ],
+      "ring": [
+        0,
+        2
+      ]
+    },
+    "SCI-004_safe_fallback": {
+      "verdict": "PASS",
+      "scenario": "S05",
+      "mode": "full",
+      "fallback_reason": "scene amaxvalue (236.35031127929688) exceeds the cached baseline (228.33999633789062); building-only SVF terms would be stale everywhere \u2014 full-tile recompute required",
+      "full_tile_bitwise_vs_edited_oracle": {
+        "utci": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        },
+        "tmrt": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        },
+        "shadow": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        }
+      }
+    }
+  },
+  "environment": {
+    "python": "3.14.7",
+    "platform": "macOS-26.5.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "git_head": "7328485dbdd7f9810456c7a559e5c66b8b6f4e6c",
+    "git_branch": "feat/incremental-design-worker",
+    "worker_commit_under_test": "c159f38 (merge of 86f0888 P5 exact CPU window worker)",
+    "site": {
+      "site_dir": "Input_subset/processed_inputs",
+      "tile_key": "0_0",
+      "grid": "500x500 @ 2.0 m",
+      "time_steps": 24,
+      "selected_date_str": "2009-08-11",
+      "met_file": "Input_subset/processed_inputs/metfiles/metfile_0_0.txt",
+      "baseline_sha256": {
+        "utci": "af54933d4efd3136f36ede945cbb0880aed1c379513e8582b764a7e1c1234331",
+        "tmrt": "adb6ca268f60c509c839a9c115fd490aee3d8f7efc78bab8ef331fea07fb83e4",
+        "shadow": "925ee0f70a6442eb34cd48ab8febe134db5d030d091d6d95fd44814a26194970"
+      }
+    },
+    "cache_anomaly": {
+      "finding": "repo cache manifest altitude_m=0.0 violates the solver's oracle-altitude rule (median DEM 193.05 m > 0 -> 3.0, utci_process.compute_utci lines 868-872); load_site_forcing raises SolverInputError on the repo cache as-is, so the merged worker refuses every job on it",
+      "resolution": "cache rebuilt under /tmp/p5sci/cache_alt3 with altitude_m=3.0 (same lat 30.312645 / lon -97.728679 / utc -5.0); all 26 cached arrays bitwise identical to the repo cache including the persisted solar series (3 m altitude is below float32 visibility in the sun-position terms), so the differential physics is unaffected and the repo cache needs only a manifest-field rebuild",
+      "repo_cache_untouched": true
+    },
+    "oracle_definition": "run_full_tile (solweig_gpu/incremental/solver.py) staging a fresh scratch prepared-site and calling compute_utci with save_svf off; this is the same standard full-domain path that produced the corrected baseline, validated bitwise by the sanity scenario"
+  },
+  "scenarios": [
+    {
+      "scenario": "sanity",
+      "title": "Oracle equivalence: unedited scene full-tile run vs corrected baseline",
+      "gates_targeted": [
+        "SANITY"
+      ],
+      "command": "run_full_tile(cache, TreeLayer(cache.tree_base, grid), forcing=load_site_forcing(...), site_dir=Input_subset/processed_inputs, scratch=/tmp/p5sci/scratch/oracle_baseline, selected_date_str='2009-08-11') compared bitwise to Input_subset/output_folder/0_0/{{UTCI,TMRT,Shadow}}_0_0.tif",
+      "jobs": [],
+      "oracles_used": [
+        {
+          "name": "baseline",
+          "reused": false,
+          "wall_seconds": 139.1219608783722
+        }
+      ],
+      "metrics": {},
+      "outside_checks": {},
+      "extra_checks": {
+        "per_variable": {
+          "utci": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "tmrt": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          }
+        },
+        "all_bitwise": true
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "scenario_wall_seconds": 139.5266351699829
+    },
+    {
+      "scenario": "S01",
+      "title": "Add tree t1 (h=6.0 m, r=3.0 m) at open cell row=166,col=102",
+      "gates_targeted": [
+        "S01"
+      ],
+      "command": "layer.add_tree(TreeSpec('t1', cell(166,102), h=6.0, r=3.0)); ExactWorker(default InfluenceConfig).run(); store=baseline+patch; compare vs independent oracle run_full_tile(scene)",
+      "jobs": [
+        {
+          "job_id": "job-fb453cbf1302",
+          "status": "published",
+          "mode": "local",
+          "scene_revision": 1,
+          "wall_seconds": 115.50371289253235,
+          "solver_wall_seconds": 115.50350999832153,
+          "write_windows": [
+            [
+              105,
+              231,
+              41,
+              167
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              467,
+              0,
+              403
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 105,
+              "row_high": 236,
+              "col_low": 41,
+              "col_high": 236
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              128,
+              208,
+              64,
+              144
+            ]
+          ],
+          "dirty_fraction": 0.063504,
+          "batch_sequences": [
+            1,
+            1
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results/s01/rev-000001-job-fb453cbf1302"
+          ],
+          "write_window_fraction": 0.063504,
+          "step": "add_t1"
+        }
+      ],
+      "oracles_used": [
+        {
+          "name": "addA",
+          "reused": true,
+          "wall_seconds": 144.3245198726654
+        }
+      ],
+      "metrics": {
+        "utci": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 6.103515625e-05,
+            "mean_abs_error": 7.7328000979721e-09,
+            "rmse": 4.1938929471881914e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 20736,
+            "max_abs_error": 4.57763671875e-05,
+            "mean_abs_error": 1.358581177982283e-07,
+            "rmse": 1.7030098239460757e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 20736,
+              "max_abs_error": 4.57763671875e-05,
+              "mean_abs_error": 1.358581177982283e-07,
+              "rmse": 1.7030098239460757e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 39672,
+              "max_abs_error": 5.340576171875e-05,
+              "mean_abs_error": 1.1870447102273802e-07,
+              "rmse": 1.6755961423814379e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 49512,
+              "max_abs_error": 6.103515625e-05,
+              "mean_abs_error": 9.661557543815135e-08,
+              "rmse": 1.4719151593295253e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 184176,
+              "max_abs_error": 6.103515625e-05,
+              "mean_abs_error": 1.4418824936282923e-07,
+              "rmse": 1.812788580580314e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 6.103515625e-05,
+          "per_timestep_boundary_ring_max_abs": 4.57763671875e-05,
+          "tolerance_used": 0.25,
+          "mae_tolerance_used": 0.02,
+          "p99_tolerance_used": 0.1,
+          "inside_bitwise_equal": false
+        },
+        "tmrt": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 1.6448470699636976e-08,
+            "rmse": 7.084966405092862e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 20736,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 2.9581564444082754e-07,
+            "rmse": 3.0045926578856203e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 20736,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 2.9581564444082754e-07,
+              "rmse": 3.0045926578856203e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 39672,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 2.4462063530323653e-07,
+              "rmse": 2.7322571893680973e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 49512,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 2.2250859797877282e-07,
+              "rmse": 2.6058441093629175e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 184176,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 3.0306147592859546e-07,
+              "rmse": 3.0411679118931793e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 3.0517578125e-05,
+          "per_timestep_boundary_ring_max_abs": 3.0517578125e-05,
+          "tolerance_used": 1.0,
+          "mae_tolerance_used": 0.05,
+          "p99_tolerance_used": 0.2,
+          "inside_bitwise_equal": false
+        },
+        "shadow": {
+          "inside": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 20736,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "tolerance_used": 0.001,
+          "inside_bitwise_equal": true
+        }
+      },
+      "outside_checks": {
+        "job1_add_t1": {
+          "n_outside_cells": 234124,
+          "utci": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "tmrt": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "shadow": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          }
+        }
+      },
+      "extra_checks": {
+        "write_window_smaller_than_tile": true,
+        "spec_outside_rederivation": {
+          "vs_prior_published_store_bitwise": true,
+          "vs_edited_oracle_deviations_confined_to_prior_write_windows": true,
+          "note": null
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "scenario_wall_seconds": 116.29910492897034,
+      "metrics_regenerated_with_fullsite_masks": true,
+      "harness_strict_verdict": "PASS",
+      "harness_strict_reasons": [],
+      "verdict_basis": {
+        "rule": "spec re-derivation: (A) inside/ring vs edited oracle within tolerances.py envelope; (B) outside-window bitwise vs prior published store; (C) outside-window vs edited oracle bitwise except within prior job write windows (untouched-region semantics)",
+        "citations": [
+          "docs/incremental_design_tool/agent_execution_plan.md P5 exit criteria: 'SCI-002: Outside-window stored results remain unchanged.'",
+          "tests/scientific/tolerances.py:9-10: outside the write window the candidate must be bit-identical to stored baseline results; constants are the outer acceptance envelope for the ~1e-5 expected drift",
+          "docs/incremental_design_tool/agent/validation_pipeline.md:123: preserve stricter exact equality for ... untouched output regions"
+        ]
+      }
+    },
+    {
+      "scenario": "S02",
+      "title": "Add t1 at (166,102), publish, move to (166,215), publish",
+      "gates_targeted": [
+        "S02"
+      ],
+      "command": "job1: add_tree(t1@(166,102) h6 r3) -> run(); job2: move_tree('t1', cell(166,215)) -> run(); store2=baseline+patch1+patch2 vs oracle(move scene) inside window2",
+      "jobs": [
+        {
+          "job_id": "job-8e3aba33d03a",
+          "status": "published",
+          "mode": "local",
+          "scene_revision": 1,
+          "wall_seconds": 120.24855875968933,
+          "solver_wall_seconds": 120.24818801879883,
+          "write_windows": [
+            [
+              105,
+              231,
+              41,
+              167
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              467,
+              0,
+              403
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 105,
+              "row_high": 236,
+              "col_low": 41,
+              "col_high": 236
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              128,
+              208,
+              64,
+              144
+            ]
+          ],
+          "dirty_fraction": 0.063504,
+          "batch_sequences": [
+            1,
+            1
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results/s02/rev-000001-job-8e3aba33d03a"
+          ],
+          "write_window_fraction": 0.063504,
+          "step": "add_t1"
+        },
+        {
+          "job_id": "job-828d064a7c13",
+          "status": "published",
+          "mode": "local",
+          "scene_revision": 2,
+          "wall_seconds": 126.52406287193298,
+          "solver_wall_seconds": 126.52380299568176,
+          "write_windows": [
+            [
+              105,
+              231,
+              41,
+              279
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              467,
+              0,
+              500
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 105,
+              "row_high": 236,
+              "col_low": 41,
+              "col_high": 221
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              128,
+              208,
+              64,
+              256
+            ]
+          ],
+          "dirty_fraction": 0.119952,
+          "batch_sequences": [
+            2,
+            2
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results/s02/rev-000002-job-828d064a7c13"
+          ],
+          "write_window_fraction": 0.119952,
+          "step": "move_t1"
+        }
+      ],
+      "oracles_used": [
+        {
+          "name": "addA",
+          "reused": true,
+          "wall_seconds": 144.3245198726654
+        },
+        {
+          "name": "moveA",
+          "reused": false,
+          "wall_seconds": 142.96197485923767
+        }
+      ],
+      "metrics": {
+        "utci": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 6.103515625e-05,
+            "mean_abs_error": 2.0652044664658174e-08,
+            "rmse": 6.800980897289009e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 36648,
+            "max_abs_error": 4.57763671875e-05,
+            "mean_abs_error": 1.1403080262203088e-07,
+            "rmse": 1.576192801731016e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 36648,
+              "max_abs_error": 4.57763671875e-05,
+              "mean_abs_error": 1.1403080262203088e-07,
+              "rmse": 1.576192801731016e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 71568,
+              "max_abs_error": 6.103515625e-05,
+              "mean_abs_error": 1.408497865584348e-07,
+              "rmse": 1.752961535748115e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 92592,
+              "max_abs_error": 5.340576171875e-05,
+              "mean_abs_error": 1.5317786022111792e-07,
+              "rmse": 1.8336622377917486e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 430152,
+              "max_abs_error": 6.103515625e-05,
+              "mean_abs_error": 1.7518792690441765e-07,
+              "rmse": 1.989425367984256e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 3.814697265625e-06,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 6.103515625e-05,
+          "per_timestep_boundary_ring_max_abs": 4.57763671875e-05,
+          "tolerance_used": 0.25,
+          "mae_tolerance_used": 0.02,
+          "p99_tolerance_used": 0.1,
+          "inside_bitwise_equal": false
+        },
+        "tmrt": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 4.3650075991026296e-08,
+            "rmse": 1.154164028298548e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 36648,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 2.5231461940283234e-07,
+            "rmse": 2.774892990676501e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 36648,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 2.5231461940283234e-07,
+              "rmse": 2.774892990676501e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 71568,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 3.0403299244250224e-07,
+              "rmse": 3.046038509185594e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 92592,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 3.2267052212259156e-07,
+              "rmse": 3.1380125664998108e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 3.0517578125e-05,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 430152,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 3.684936970681294e-07,
+              "rmse": 3.3534363254498693e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 3.0517578125e-05,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 3.0517578125e-05,
+          "per_timestep_boundary_ring_max_abs": 3.0517578125e-05,
+          "tolerance_used": 1.0,
+          "mae_tolerance_used": 0.05,
+          "p99_tolerance_used": 0.2,
+          "inside_bitwise_equal": false
+        },
+        "shadow": {
+          "inside": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 36648,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "tolerance_used": 0.001,
+          "inside_bitwise_equal": true
+        }
+      },
+      "outside_checks": {
+        "job2_move_t1": {
+          "n_outside_cells": 220012,
+          "utci": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "tmrt": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "shadow": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          }
+        }
+      },
+      "extra_checks": {
+        "job1_vs_addA": {
+          "utci": {
+            "n_compared": 5026128,
+            "max_abs_error": 6.103515625e-05,
+            "mean_abs_error": 7.7328000979721e-09,
+            "rmse": 4.1938929471881914e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "tmrt": {
+            "n_compared": 5026128,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 1.6448470699636976e-08,
+            "rmse": 7.084966405092862e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "shadow": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          }
+        },
+        "window2_covers_old_and_new": {
+          "old_cell": true,
+          "new_cell": true
+        },
+        "spec_outside_rederivation": {
+          "vs_prior_published_store_bitwise": true,
+          "vs_edited_oracle_deviations_confined_to_prior_write_windows": true,
+          "note": null
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "scenario_wall_seconds": 390.4639630317688,
+      "metrics_regenerated_with_fullsite_masks": true,
+      "harness_strict_verdict": "PASS",
+      "harness_strict_reasons": [],
+      "verdict_basis": {
+        "rule": "spec re-derivation: (A) inside/ring vs edited oracle within tolerances.py envelope; (B) outside-window bitwise vs prior published store; (C) outside-window vs edited oracle bitwise except within prior job write windows (untouched-region semantics)",
+        "citations": [
+          "docs/incremental_design_tool/agent_execution_plan.md P5 exit criteria: 'SCI-002: Outside-window stored results remain unchanged.'",
+          "tests/scientific/tolerances.py:9-10: outside the write window the candidate must be bit-identical to stored baseline results; constants are the outer acceptance envelope for the ~1e-5 expected drift",
+          "docs/incremental_design_tool/agent/validation_pipeline.md:123: preserve stricter exact equality for ... untouched output regions"
+        ]
+      }
+    },
+    {
+      "scenario": "S03",
+      "title": "Add t1 at (166,102) h6 r3, publish, resize to h12 r5, publish",
+      "gates_targeted": [
+        "S03"
+      ],
+      "command": "job1: add_tree(t1@(166,102) h6 r3) -> run(); job2: update_tree('t1', height_m=12.0, canopy_radius_m=5.0) -> run(); store2 vs oracle(resize scene) inside window2",
+      "jobs": [
+        {
+          "job_id": "job-198719d10bca",
+          "status": "published",
+          "mode": "local",
+          "scene_revision": 1,
+          "wall_seconds": 128.8833191394806,
+          "solver_wall_seconds": 128.88276624679565,
+          "write_windows": [
+            [
+              105,
+              231,
+              41,
+              167
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              467,
+              0,
+              403
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 105,
+              "row_high": 236,
+              "col_low": 41,
+              "col_high": 236
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              128,
+              208,
+              64,
+              144
+            ]
+          ],
+          "dirty_fraction": 0.063504,
+          "batch_sequences": [
+            1,
+            1
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results/s03/rev-000001-job-198719d10bca"
+          ],
+          "write_window_fraction": 0.063504,
+          "step": "add_t1"
+        },
+        {
+          "job_id": "job-3ba69f28ccdf",
+          "status": "published",
+          "mode": "local",
+          "scene_revision": 2,
+          "wall_seconds": 917.4467239379883,
+          "solver_wall_seconds": 917.4461240768433,
+          "write_windows": [
+            [
+              73,
+              279,
+              9,
+              199
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              500,
+              0,
+              435
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 73,
+              "row_high": 221,
+              "col_low": 9,
+              "col_high": 236
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              96,
+              256,
+              32,
+              176
+            ]
+          ],
+          "dirty_fraction": 0.15656,
+          "batch_sequences": [
+            2,
+            2
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results/s03/rev-000002-job-3ba69f28ccdf"
+          ],
+          "write_window_fraction": 0.15656,
+          "step": "resize_t1"
+        }
+      ],
+      "oracles_used": [
+        {
+          "name": "addA",
+          "reused": true,
+          "wall_seconds": 144.3245198726654
+        },
+        {
+          "name": "resizeA",
+          "reused": false,
+          "wall_seconds": 1815.0495731830597
+        }
+      ],
+      "metrics": {
+        "utci": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 7.2479248046875e-05,
+            "mean_abs_error": 1.6292501673761405e-08,
+            "rmse": 6.036413394564293e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 46656,
+            "max_abs_error": 6.103515625e-05,
+            "mean_abs_error": 9.876873921628515e-08,
+            "rmse": 1.513156817640515e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 46656,
+              "max_abs_error": 6.103515625e-05,
+              "mean_abs_error": 9.876873921628515e-08,
+              "rmse": 1.513156817640515e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 90192,
+              "max_abs_error": 5.7220458984375e-05,
+              "mean_abs_error": 8.636699281983158e-08,
+              "rmse": 1.3896776531182347e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 104352,
+              "max_abs_error": 5.7220458984375e-05,
+              "mean_abs_error": 8.782591786131614e-08,
+              "rmse": 1.390583373386662e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 469632,
+              "max_abs_error": 7.2479248046875e-05,
+              "mean_abs_error": 1.2845296436059245e-07,
+              "rmse": 1.6946092157816292e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 7.2479248046875e-05,
+          "per_timestep_boundary_ring_max_abs": 6.103515625e-05,
+          "tolerance_used": 0.25,
+          "mae_tolerance_used": 0.02,
+          "p99_tolerance_used": 0.1,
+          "inside_bitwise_equal": false
+        },
+        "tmrt": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 3.536208687880611e-08,
+            "rmse": 1.03882878713819e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 46656,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 2.0669484498242455e-07,
+            "rmse": 2.511538588153864e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 46656,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 2.0669484498242455e-07,
+              "rmse": 2.511538588153864e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 90192,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 1.8643766128786368e-07,
+              "rmse": 2.385293670346414e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 104352,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 1.9243106415066313e-07,
+              "rmse": 2.4233303600406506e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 469632,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 2.793571740413238e-07,
+              "rmse": 2.9198123884224687e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 3.0517578125e-05,
+          "per_timestep_boundary_ring_max_abs": 3.0517578125e-05,
+          "tolerance_used": 1.0,
+          "mae_tolerance_used": 0.05,
+          "p99_tolerance_used": 0.2,
+          "inside_bitwise_equal": false
+        },
+        "shadow": {
+          "inside": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 46656,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "tolerance_used": 0.001,
+          "inside_bitwise_equal": true
+        }
+      },
+      "outside_checks": {
+        "job2_resize_t1": {
+          "n_outside_cells": 210860,
+          "utci": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "tmrt": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "shadow": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          }
+        }
+      },
+      "extra_checks": {
+        "job1_vs_addA": {
+          "utci": {
+            "n_compared": 5026128,
+            "max_abs_error": 6.103515625e-05,
+            "mean_abs_error": 7.7328000979721e-09,
+            "rmse": 4.1938929471881914e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "tmrt": {
+            "n_compared": 5026128,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 1.6448470699636976e-08,
+            "rmse": 7.084966405092862e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "shadow": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          }
+        },
+        "spec_outside_rederivation": {
+          "vs_prior_published_store_bitwise": true,
+          "vs_edited_oracle_deviations_confined_to_prior_write_windows": true,
+          "note": null
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "scenario_wall_seconds": 2863.100401878357,
+      "metrics_regenerated_with_fullsite_masks": true,
+      "harness_strict_verdict": "PASS",
+      "harness_strict_reasons": [],
+      "verdict_basis": {
+        "rule": "spec re-derivation: (A) inside/ring vs edited oracle within tolerances.py envelope; (B) outside-window bitwise vs prior published store; (C) outside-window vs edited oracle bitwise except within prior job write windows (untouched-region semantics)",
+        "citations": [
+          "docs/incremental_design_tool/agent_execution_plan.md P5 exit criteria: 'SCI-002: Outside-window stored results remain unchanged.'",
+          "tests/scientific/tolerances.py:9-10: outside the write window the candidate must be bit-identical to stored baseline results; constants are the outer acceptance envelope for the ~1e-5 expected drift",
+          "docs/incremental_design_tool/agent/validation_pipeline.md:123: preserve stricter exact equality for ... untouched output regions"
+        ]
+      }
+    },
+    {
+      "scenario": "S04",
+      "title": "Add t1 at (166,102), publish, delete t1, publish",
+      "gates_targeted": [
+        "S04"
+      ],
+      "command": "job1: add_tree(t1@(166,102) h6 r3) -> run(); job2: delete_tree('t1') -> run(); store2 must equal the corrected baseline bitwise on the ENTIRE tile (delete-scene oracle == baseline, validated by the sanity gate)",
+      "jobs": [
+        {
+          "job_id": "job-7b3db067aada",
+          "status": "published",
+          "mode": "local",
+          "scene_revision": 1,
+          "wall_seconds": 117.22451519966125,
+          "solver_wall_seconds": 117.22416996955872,
+          "write_windows": [
+            [
+              105,
+              231,
+              41,
+              167
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              467,
+              0,
+              403
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 105,
+              "row_high": 236,
+              "col_low": 41,
+              "col_high": 236
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              128,
+              208,
+              64,
+              144
+            ]
+          ],
+          "dirty_fraction": 0.063504,
+          "batch_sequences": [
+            1,
+            1
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results/s04/rev-000001-job-7b3db067aada"
+          ],
+          "write_window_fraction": 0.063504,
+          "step": "add_t1"
+        },
+        {
+          "job_id": "job-4ee2d0c649fd",
+          "status": "published",
+          "mode": "local",
+          "scene_revision": 2,
+          "wall_seconds": 117.85282278060913,
+          "solver_wall_seconds": 117.8524181842804,
+          "write_windows": [
+            [
+              105,
+              231,
+              41,
+              167
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              467,
+              0,
+              403
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 105,
+              "row_high": 236,
+              "col_low": 41,
+              "col_high": 236
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              128,
+              208,
+              64,
+              144
+            ]
+          ],
+          "dirty_fraction": 0.063504,
+          "batch_sequences": [
+            2,
+            2
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results/s04/rev-000002-job-4ee2d0c649fd"
+          ],
+          "write_window_fraction": 0.063504,
+          "step": "delete_t1"
+        }
+      ],
+      "oracles_used": [
+        {
+          "name": "addA",
+          "reused": true,
+          "wall_seconds": 144.3245198726654
+        },
+        {
+          "name": "baseline (delete-scene oracle; sanity-validated equivalence)",
+          "reused": true,
+          "wall_seconds": null
+        }
+      ],
+      "metrics": {
+        "utci": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 6.103515625e-05,
+            "mean_abs_error": 7.870933249842436e-09,
+            "rmse": 4.23304290093474e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 20736,
+            "max_abs_error": 4.57763671875e-05,
+            "mean_abs_error": 1.358581177982283e-07,
+            "rmse": 1.7030098239460757e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 20736,
+              "max_abs_error": 4.57763671875e-05,
+              "mean_abs_error": 1.358581177982283e-07,
+              "rmse": 1.7030098239460757e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 39672,
+              "max_abs_error": 5.340576171875e-05,
+              "mean_abs_error": 1.1870447102273802e-07,
+              "rmse": 1.6755961423814379e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 49512,
+              "max_abs_error": 6.103515625e-05,
+              "mean_abs_error": 9.661557543815135e-08,
+              "rmse": 1.4719151593295253e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 184176,
+              "max_abs_error": 6.103515625e-05,
+              "mean_abs_error": 1.4795787679715158e-07,
+              "rmse": 1.8374535045508e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 6.103515625e-05,
+          "per_timestep_boundary_ring_max_abs": 4.57763671875e-05,
+          "tolerance_used": 0.25,
+          "mae_tolerance_used": 0.02,
+          "p99_tolerance_used": 0.1,
+          "inside_bitwise_equal": false
+        },
+        "tmrt": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 1.6782418978883944e-08,
+            "rmse": 7.156526967143863e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 20736,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 2.9581564444082754e-07,
+            "rmse": 3.0045926578856203e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 20736,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 2.9581564444082754e-07,
+              "rmse": 3.0045926578856203e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 39672,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 2.4462063530323653e-07,
+              "rmse": 2.7322571893680973e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 49512,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 2.2250859797877282e-07,
+              "rmse": 2.6058441093629175e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 184176,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 3.121748609346495e-07,
+              "rmse": 3.086554828159412e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 3.0517578125e-05,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 3.0517578125e-05,
+          "per_timestep_boundary_ring_max_abs": 3.0517578125e-05,
+          "tolerance_used": 1.0,
+          "mae_tolerance_used": 0.05,
+          "p99_tolerance_used": 0.2,
+          "inside_bitwise_equal": false
+        },
+        "shadow": {
+          "inside": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 20736,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "tolerance_used": 0.001,
+          "inside_bitwise_equal": true
+        }
+      },
+      "outside_checks": {
+        "job2_delete_t1": {
+          "n_outside_cells": 234124,
+          "utci": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "tmrt": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "shadow": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          }
+        }
+      },
+      "extra_checks": {
+        "roundtrip_full_tile_bitwise_vs_baseline": {
+          "utci": {
+            "bitwise_equal": false,
+            "n_different_cells": 2500,
+            "max_abs_diff": 6.103515625e-05
+          },
+          "tmrt": {
+            "bitwise_equal": false,
+            "n_different_cells": 3613,
+            "max_abs_diff": 3.0517578125e-05
+          },
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          }
+        },
+        "window2_covers_removed_tree_cell": true,
+        "spec_outside_rederivation": {
+          "vs_prior_published_store_bitwise": true,
+          "vs_edited_oracle_deviations_confined_to_prior_write_windows": true,
+          "note": null
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [
+        "diagnostic (not a gate assertion): add+delete round trip is not bitwise tile-wide at ulp magnitude (<=6.1e-05) because the delete job ran LOCAL and its window keeps local-solve values; graded by the tolerance envelope inside the window per SCI-001"
+      ],
+      "scenario_wall_seconds": 235.92476797103882,
+      "metrics_regenerated_with_fullsite_masks": true,
+      "harness_strict_verdict": "PASS",
+      "harness_strict_reasons": [
+        "diagnostic (not a gate assertion): add+delete round trip is not bitwise tile-wide at ulp magnitude (<=6.1e-05) because the delete job ran LOCAL and its window keeps local-solve values; graded by the tolerance envelope inside the window per SCI-001"
+      ],
+      "verdict_basis": {
+        "rule": "spec re-derivation: (A) inside/ring vs edited oracle within tolerances.py envelope; (B) outside-window bitwise vs prior published store; (C) outside-window vs edited oracle bitwise except within prior job write windows (untouched-region semantics)",
+        "citations": [
+          "docs/incremental_design_tool/agent_execution_plan.md P5 exit criteria: 'SCI-002: Outside-window stored results remain unchanged.'",
+          "tests/scientific/tolerances.py:9-10: outside the write window the candidate must be bit-identical to stored baseline results; constants are the outer acceptance envelope for the ~1e-5 expected drift",
+          "docs/incremental_design_tool/agent/validation_pipeline.md:123: preserve stricter exact equality for ... untouched output regions"
+        ]
+      }
+    },
+    {
+      "scenario": "S05",
+      "title": "Add t5 (h=34.0 m, r=4.0 m) at row=21,col=112 (site DEM maximum, 202.35 m; 42 px from the 27.27 m tree driving baseline amaxvalue 228.34 and 45 px from the 217.36 m building) -> raises scene amaxvalue to 236.35 > baseline 228.34",
+      "gates_targeted": [
+        "S05"
+      ],
+      "command": "layer.add_tree(TreeSpec('t5', cell(21,112), h=34.0, r=4.0)); ExactWorker(default InfluenceConfig).run(); expect local attempt refused by the solve_window amaxvalue guard and fallback to run_full_tile; patch must equal the edited oracle bitwise across the full tile",
+      "jobs": [
+        {
+          "job_id": "job-ff7a01331dac",
+          "status": "published",
+          "mode": "full",
+          "scene_revision": 1,
+          "wall_seconds": 146.76627612113953,
+          "solver_wall_seconds": 146.76610898971558,
+          "write_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 0,
+              "row_high": 0,
+              "col_low": 0,
+              "col_high": 0
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              0,
+              192,
+              0,
+              272
+            ]
+          ],
+          "dirty_fraction": 0.2537,
+          "batch_sequences": [
+            1,
+            1
+          ],
+          "fallback_reason": "scene amaxvalue (236.35031127929688) exceeds the cached baseline (228.33999633789062); building-only SVF terms would be stale everywhere \u2014 full-tile recompute required",
+          "patch_paths": [
+            "/tmp/p5sci/results/s05/rev-000001-job-ff7a01331dac"
+          ],
+          "write_window_fraction": 1.0,
+          "step": "add_tall_t5"
+        }
+      ],
+      "oracles_used": [
+        {
+          "name": "tallNW",
+          "reused": true,
+          "wall_seconds": 152.7564733028412
+        }
+      ],
+      "metrics": {
+        "utci": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 122088,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 122088,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 240672,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 310656,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 4352712,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 0.0,
+          "per_timestep_boundary_ring_max_abs": 0.0,
+          "tolerance_used": 0.25,
+          "mae_tolerance_used": 0.02,
+          "p99_tolerance_used": 0.1,
+          "inside_bitwise_equal": true
+        },
+        "tmrt": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 122088,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 122088,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 240672,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 310656,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 4352712,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 0.0,
+          "per_timestep_boundary_ring_max_abs": 0.0,
+          "tolerance_used": 1.0,
+          "mae_tolerance_used": 0.05,
+          "p99_tolerance_used": 0.2,
+          "inside_bitwise_equal": true
+        },
+        "shadow": {
+          "inside": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 122088,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "tolerance_used": 0.001,
+          "inside_bitwise_equal": true
+        }
+      },
+      "outside_checks": {
+        "note": "write window is the full tile; no outside region exists"
+      },
+      "extra_checks": {
+        "mode_is_full": true,
+        "fallback_reason": "scene amaxvalue (236.35031127929688) exceeds the cached baseline (228.33999633789062); building-only SVF terms would be stale everywhere \u2014 full-tile recompute required",
+        "write_window_is_full_tile": [
+          false
+        ],
+        "baseline_amaxvalue": 228.33999633789062,
+        "full_tile_bitwise_vs_edited_oracle": {
+          "utci": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "tmrt": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          }
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "scenario_wall_seconds": 147.8484342098236,
+      "metrics_regenerated_with_fullsite_masks": true,
+      "harness_strict_verdict": "PASS",
+      "harness_strict_reasons": [],
+      "verdict_basis": {
+        "rule": "spec re-derivation: (A) inside/ring vs edited oracle within tolerances.py envelope; (B) outside-window bitwise vs prior published store; (C) outside-window vs edited oracle bitwise except within prior job write windows (untouched-region semantics)",
+        "citations": [
+          "docs/incremental_design_tool/agent_execution_plan.md P5 exit criteria: 'SCI-002: Outside-window stored results remain unchanged.'",
+          "tests/scientific/tolerances.py:9-10: outside the write window the candidate must be bit-identical to stored baseline results; constants are the outer acceptance envelope for the ~1e-5 expected drift",
+          "docs/incremental_design_tool/agent/validation_pipeline.md:123: preserve stricter exact equality for ... untouched output regions"
+        ]
+      }
+    },
+    {
+      "scenario": "S06",
+      "title": "Add t6 (h=6.0 m, r=3.0 m) at row=470,col=265 (30 px from south edge)",
+      "gates_targeted": [
+        "S06"
+      ],
+      "command": "layer.add_tree(TreeSpec('t6', cell(470,265), h=6.0, r=3.0)); ExactWorker(default InfluenceConfig).run(); write window clamps at the tile edge; compare vs oracle(edge scene) inside window and exact outside",
+      "jobs": [
+        {
+          "job_id": "job-b179cbc70317",
+          "status": "published",
+          "mode": "local",
+          "scene_revision": 1,
+          "wall_seconds": 112.35956835746765,
+          "solver_wall_seconds": 112.35935878753662,
+          "write_windows": [
+            [
+              409,
+              500,
+              201,
+              327
+            ]
+          ],
+          "read_windows": [
+            [
+              173,
+              500,
+              0,
+              500
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 236,
+              "row_high": 0,
+              "col_low": 201,
+              "col_high": 173
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              432,
+              500,
+              224,
+              304
+            ]
+          ],
+          "dirty_fraction": 0.045864,
+          "batch_sequences": [
+            1,
+            1
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results/s06/rev-000001-job-b179cbc70317"
+          ],
+          "write_window_fraction": 0.045864,
+          "step": "add_t6_edge"
+        }
+      ],
+      "oracles_used": [
+        {
+          "name": "edgeS",
+          "reused": true,
+          "wall_seconds": 146.45014309883118
+        }
+      ],
+      "metrics": {
+        "utci": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 5.340576171875e-05,
+            "mean_abs_error": 1.2735573013100244e-09,
+            "rmse": 1.6385705458617623e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 24912,
+            "max_abs_error": 5.340576171875e-05,
+            "mean_abs_error": 2.9094110487666588e-08,
+            "rmse": 8.086634781116277e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 24912,
+              "max_abs_error": 5.340576171875e-05,
+              "mean_abs_error": 2.9094110487666588e-08,
+              "rmse": 8.086634781116277e-07,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 45432,
+              "max_abs_error": 3.814697265625e-05,
+              "mean_abs_error": 2.1704949004315515e-08,
+              "rmse": 6.41363052257303e-07,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 52176,
+              "max_abs_error": 4.00543212890625e-05,
+              "mean_abs_error": 2.584512962661832e-08,
+              "rmse": 7.183562815922787e-07,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 102936,
+              "max_abs_error": 5.340576171875e-05,
+              "mean_abs_error": 3.246361627309688e-08,
+              "rmse": 8.423773158895045e-07,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 5.340576171875e-05,
+          "per_timestep_boundary_ring_max_abs": 5.340576171875e-05,
+          "tolerance_used": 0.25,
+          "mae_tolerance_used": 0.02,
+          "p99_tolerance_used": 0.1,
+          "inside_bitwise_equal": false
+        },
+        "tmrt": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 2.926601283582511e-09,
+            "rmse": 2.988524440463129e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 24912,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 6.125075892140335e-08,
+            "rmse": 1.367195970078711e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 24912,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 6.125075892140335e-08,
+              "rmse": 1.367195970078711e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 45432,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 5.3065871453490934e-08,
+              "rmse": 1.2725729361624492e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 52176,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 5.96594788552208e-08,
+              "rmse": 1.349319386528255e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 102936,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 7.441431675385677e-08,
+              "rmse": 1.506965402772844e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 3.0517578125e-05,
+          "per_timestep_boundary_ring_max_abs": 3.0517578125e-05,
+          "tolerance_used": 1.0,
+          "mae_tolerance_used": 0.05,
+          "p99_tolerance_used": 0.2,
+          "inside_bitwise_equal": false
+        },
+        "shadow": {
+          "inside": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 24912,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "tolerance_used": 0.001,
+          "inside_bitwise_equal": true
+        }
+      },
+      "outside_checks": {
+        "job1_add_t6_edge": {
+          "n_outside_cells": 238534,
+          "utci": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "tmrt": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "shadow": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          }
+        }
+      },
+      "extra_checks": {
+        "write_window_clamped_at_south_edge": true,
+        "write_window_smaller_than_tile": true,
+        "spec_outside_rederivation": {
+          "vs_prior_published_store_bitwise": true,
+          "vs_edited_oracle_deviations_confined_to_prior_write_windows": true,
+          "note": null
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "scenario_wall_seconds": 113.47639489173889,
+      "harness_strict_verdict": "PASS",
+      "harness_strict_reasons": [],
+      "verdict_basis": {
+        "rule": "spec re-derivation: (A) inside/ring vs edited oracle within tolerances.py envelope; (B) outside-window bitwise vs prior published store; (C) outside-window vs edited oracle bitwise except within prior job write windows (untouched-region semantics)",
+        "citations": [
+          "docs/incremental_design_tool/agent_execution_plan.md P5 exit criteria: 'SCI-002: Outside-window stored results remain unchanged.'",
+          "tests/scientific/tolerances.py:9-10: outside the write window the candidate must be bit-identical to stored baseline results; constants are the outer acceptance envelope for the ~1e-5 expected drift",
+          "docs/incremental_design_tool/agent/validation_pipeline.md:123: preserve stricter exact equality for ... untouched output regions"
+        ]
+      }
+    },
+    {
+      "scenario": "S07",
+      "title": "One batch: add t1 (h=6.0, r=3.0) at (166,102) and t2 (h=9.0, r=3.0) at (166,104) (4 m apart: canopies overlap, maximum-combined)",
+      "gates_targeted": [
+        "S07"
+      ],
+      "command": "layer.add_tree(t1@(166,102) h6 r3); layer.add_tree(t2@(166,104) h9 r3); ONE ExactWorker.run() (coalesced batch); store vs oracle(two-tree scene)",
+      "jobs": [
+        {
+          "job_id": "job-7c54da88ec18",
+          "status": "published",
+          "mode": "local",
+          "scene_revision": 1,
+          "wall_seconds": 115.448814868927,
+          "solver_wall_seconds": 115.44841718673706,
+          "write_windows": [
+            [
+              89,
+              247,
+              25,
+              183
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              483,
+              0,
+              419
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 89,
+              "row_high": 236,
+              "col_low": 25,
+              "col_high": 236
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              112,
+              224,
+              48,
+              160
+            ]
+          ],
+          "dirty_fraction": 0.099856,
+          "batch_sequences": [
+            1,
+            2
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results/s07/rev-000001-job-7c54da88ec18"
+          ],
+          "write_window_fraction": 0.099856,
+          "step": "batch_add_t1_t2"
+        }
+      ],
+      "oracles_used": [
+        {
+          "name": "twoNear",
+          "reused": false,
+          "wall_seconds": 136.57783603668213
+        }
+      ],
+      "metrics": {
+        "utci": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 7.2479248046875e-05,
+            "mean_abs_error": 1.0954642019343406e-08,
+            "rmse": 4.93419294054465e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 31920,
+            "max_abs_error": 7.2479248046875e-05,
+            "mean_abs_error": 1.0994741492402882e-07,
+            "rmse": 1.5749544564917773e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 31920,
+              "max_abs_error": 7.2479248046875e-05,
+              "mean_abs_error": 1.0994741492402882e-07,
+              "rmse": 1.5749544564917773e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 53304,
+              "max_abs_error": 6.103515625e-05,
+              "mean_abs_error": 1.3060600536105406e-07,
+              "rmse": 1.681419960826176e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 62040,
+              "max_abs_error": 5.7220458984375e-05,
+              "mean_abs_error": 1.2297541152885236e-07,
+              "rmse": 1.6142523976082859e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 287016,
+              "max_abs_error": 6.4849853515625e-05,
+              "mean_abs_error": 1.2876876013186655e-07,
+              "rmse": 1.7027204041400958e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 7.2479248046875e-05,
+          "per_timestep_boundary_ring_max_abs": 7.2479248046875e-05,
+          "tolerance_used": 0.25,
+          "mae_tolerance_used": 0.02,
+          "p99_tolerance_used": 0.1,
+          "inside_bitwise_equal": false
+        },
+        "tmrt": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 2.4177855417480414e-08,
+            "rmse": 8.589817178484726e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 31920,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 2.4475250626566416e-07,
+            "rmse": 2.732993547605255e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 31920,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 2.4475250626566416e-07,
+              "rmse": 2.732993547605255e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 53304,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 2.9255745200876106e-07,
+              "rmse": 2.9880001502222694e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 62040,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 2.8087583993189877e-07,
+              "rmse": 2.9277381010853267e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 287016,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 2.8112884495115253e-07,
+              "rmse": 2.9290564161497143e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 3.0517578125e-05,
+          "per_timestep_boundary_ring_max_abs": 3.0517578125e-05,
+          "tolerance_used": 1.0,
+          "mae_tolerance_used": 0.05,
+          "p99_tolerance_used": 0.2,
+          "inside_bitwise_equal": false
+        },
+        "shadow": {
+          "inside": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 31920,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "tolerance_used": 0.001,
+          "inside_bitwise_equal": true
+        }
+      },
+      "outside_checks": {
+        "job1_batch_add_t1_t2": {
+          "n_outside_cells": 225036,
+          "utci": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "tmrt": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "shadow": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          }
+        }
+      },
+      "extra_checks": {
+        "batch_sequences": [
+          1,
+          2
+        ],
+        "spec_outside_rederivation": {
+          "vs_prior_published_store_bitwise": true,
+          "vs_edited_oracle_deviations_confined_to_prior_write_windows": true,
+          "note": null
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "scenario_wall_seconds": 253.0801329612732,
+      "harness_strict_verdict": "PASS",
+      "harness_strict_reasons": [],
+      "verdict_basis": {
+        "rule": "spec re-derivation: (A) inside/ring vs edited oracle within tolerances.py envelope; (B) outside-window bitwise vs prior published store; (C) outside-window vs edited oracle bitwise except within prior job write windows (untouched-region semantics)",
+        "citations": [
+          "docs/incremental_design_tool/agent_execution_plan.md P5 exit criteria: 'SCI-002: Outside-window stored results remain unchanged.'",
+          "tests/scientific/tolerances.py:9-10: outside the write window the candidate must be bit-identical to stored baseline results; constants are the outer acceptance envelope for the ~1e-5 expected drift",
+          "docs/incremental_design_tool/agent/validation_pipeline.md:123: preserve stricter exact equality for ... untouched output regions"
+        ]
+      }
+    },
+    {
+      "scenario": "S08",
+      "title": "job1: add t1 (h6 r3) at (166,102), publish; job2: add t2 (h8 r3) at (214,393), publish; patch2 must equal the scene2 oracle inside window2; outside window2 the store must stay exactly at the post-job1 state",
+      "gates_targeted": [
+        "S08"
+      ],
+      "command": "job1: add_tree(t1@(166,102) h6 r3) -> run(); job2: add_tree(t2@(214,393) h8 r3) -> run(); store2=baseline+patch1+patch2 vs oracle(scene2 = t1+t2) inside window2",
+      "jobs": [
+        {
+          "job_id": "job-13261d832a15",
+          "status": "published",
+          "mode": "local",
+          "scene_revision": 1,
+          "wall_seconds": 110.27068614959717,
+          "solver_wall_seconds": 110.27005434036255,
+          "write_windows": [
+            [
+              105,
+              231,
+              41,
+              167
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              467,
+              0,
+              403
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 105,
+              "row_high": 236,
+              "col_low": 41,
+              "col_high": 236
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              128,
+              208,
+              64,
+              144
+            ]
+          ],
+          "dirty_fraction": 0.063504,
+          "batch_sequences": [
+            1,
+            1
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results/s08/rev-000001-job-13261d832a15"
+          ],
+          "write_window_fraction": 0.063504,
+          "step": "add_t1"
+        },
+        {
+          "job_id": "job-039fe0253d91",
+          "status": "published",
+          "mode": "local",
+          "scene_revision": 2,
+          "wall_seconds": 111.37647008895874,
+          "solver_wall_seconds": 111.37620496749878,
+          "write_windows": [
+            [
+              137,
+              295,
+              313,
+              471
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              500,
+              77,
+              500
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 137,
+              "row_high": 205,
+              "col_low": 236,
+              "col_high": 29
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              160,
+              272,
+              336,
+              448
+            ]
+          ],
+          "dirty_fraction": 0.099856,
+          "batch_sequences": [
+            2,
+            2
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results/s08/rev-000002-job-039fe0253d91"
+          ],
+          "write_window_fraction": 0.099856,
+          "step": "add_t2"
+        }
+      ],
+      "oracles_used": [
+        {
+          "name": "addA",
+          "reused": true,
+          "wall_seconds": 144.3245198726654
+        },
+        {
+          "name": "sceneAB",
+          "reused": false,
+          "wall_seconds": 138.5265018939972
+        }
+      ],
+      "metrics": {
+        "utci": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 6.4849853515625e-05,
+            "mean_abs_error": 1.519578516577989e-08,
+            "rmse": 5.789572282940125e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 40896,
+            "max_abs_error": 5.7220458984375e-05,
+            "mean_abs_error": 8.297078486339587e-08,
+            "rmse": 1.3536040677624343e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 40896,
+              "max_abs_error": 5.7220458984375e-05,
+              "mean_abs_error": 8.297078486339587e-08,
+              "rmse": 1.3536040677624343e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 75312,
+              "max_abs_error": 5.7220458984375e-05,
+              "mean_abs_error": 9.094551917927671e-08,
+              "rmse": 1.4122958805740697e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 91920,
+              "max_abs_error": 5.340576171875e-05,
+              "mean_abs_error": 7.497008932062187e-08,
+              "rmse": 1.2923687427905429e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 342048,
+              "max_abs_error": 6.4849853515625e-05,
+              "mean_abs_error": 5.957118721447264e-08,
+              "rmse": 1.1107528116729086e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 6.4849853515625e-05,
+          "per_timestep_boundary_ring_max_abs": 5.7220458984375e-05,
+          "tolerance_used": 0.25,
+          "mae_tolerance_used": 0.02,
+          "p99_tolerance_used": 0.1,
+          "inside_bitwise_equal": false
+        },
+        "tmrt": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 3.34676893674415e-08,
+            "rmse": 1.0106200200540893e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 40896,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 1.7760132026970852e-07,
+            "rmse": 2.328081219896328e-06,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 40896,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 1.7760132026970852e-07,
+              "rmse": 2.328081219896328e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 75312,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 2.0017638083904292e-07,
+              "rmse": 2.4716185670599025e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 91920,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 1.62680736306027e-07,
+              "rmse": 2.228143191011678e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 342048,
+              "max_abs_error": 3.0517578125e-05,
+              "mean_abs_error": 1.410570768302256e-07,
+              "rmse": 2.074782003548936e-06,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 3.0517578125e-05,
+          "per_timestep_boundary_ring_max_abs": 3.0517578125e-05,
+          "tolerance_used": 1.0,
+          "mae_tolerance_used": 0.05,
+          "p99_tolerance_used": 0.2,
+          "inside_bitwise_equal": false
+        },
+        "shadow": {
+          "inside": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 40896,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "tolerance_used": 0.001,
+          "inside_bitwise_equal": true
+        }
+      },
+      "outside_checks": {
+        "job2_add_t2": {
+          "n_outside_cells": 225036,
+          "utci": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": false,
+              "n_different_cells": 2456,
+              "max_abs_diff": 6.103515625e-05
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": false,
+              "n_different_cells": 2456,
+              "max_abs_diff": 6.103515625e-05
+            }
+          },
+          "tmrt": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": false,
+              "n_different_cells": 3558,
+              "max_abs_diff": 3.0517578125e-05
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": false,
+              "n_different_cells": 3558,
+              "max_abs_diff": 3.0517578125e-05
+            }
+          },
+          "shadow": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          }
+        }
+      },
+      "extra_checks": {
+        "job1_vs_addA": {
+          "utci": {
+            "n_compared": 5026128,
+            "max_abs_error": 6.103515625e-05,
+            "mean_abs_error": 7.7328000979721e-09,
+            "rmse": 4.1938929471881914e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "tmrt": {
+            "n_compared": 5026128,
+            "max_abs_error": 3.0517578125e-05,
+            "mean_abs_error": 1.6448470699636976e-08,
+            "rmse": 7.084966405092862e-07,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "shadow": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          }
+        },
+        "window1_disjoint_from_window2": true,
+        "outside_failure_decomposition": {
+          "mechanism": "The failing vs_edited_oracle sub-check is confined to job1's write window. S08 is the only scenario whose second write window is disjoint from the first, so job1's documented local-vs-full ulp drift (graded by SCI-001 tolerances INSIDE its own window) sits OUTSIDE window2 and is graded by the strict outside-window bitwise criterion against the scene2 oracle.",
+          "worker_outside_window_write_discipline": {
+            "utci": {
+              "n_different_timestep_cells": 0,
+              "bitwise_equal": true
+            },
+            "tmrt": {
+              "n_different_timestep_cells": 0,
+              "bitwise_equal": true
+            },
+            "shadow": {
+              "n_different_timestep_cells": 0,
+              "bitwise_equal": true
+            }
+          },
+          "oracle_scene_invariance_outside_window2_addA_vs_sceneAB": {
+            "utci": {
+              "n_different_timestep_cells": 0,
+              "bitwise_equal": true
+            },
+            "tmrt": {
+              "n_different_timestep_cells": 0,
+              "bitwise_equal": true
+            },
+            "shadow": {
+              "n_different_timestep_cells": 0,
+              "bitwise_equal": true
+            }
+          },
+          "failing_cells_store2_vs_sceneAB": {
+            "utci": {
+              "unique_cells": 2300,
+              "timestep_cell_diffs": 2456,
+              "inside_window1": 2300,
+              "all_inside_window1": true,
+              "max_abs_diff_vs_sceneAB": 6.103515625e-05,
+              "max_abs_diff_store1_vs_addA_same_region": 6.103515625e-05
+            },
+            "tmrt": {
+              "unique_cells": 3326,
+              "timestep_cell_diffs": 3558,
+              "inside_window1": 3326,
+              "all_inside_window1": true,
+              "max_abs_diff_vs_sceneAB": 3.0517578125e-05,
+              "max_abs_diff_store1_vs_addA_same_region": 3.0517578125e-05
+            },
+            "shadow": {
+              "unique_cells": 0,
+              "timestep_cell_diffs": 0,
+              "inside_window1": 0,
+              "all_inside_window1": true,
+              "max_abs_diff_vs_sceneAB": 0.0,
+              "max_abs_diff_store1_vs_addA_same_region": 0.0
+            }
+          },
+          "window1": [
+            105,
+            231,
+            41,
+            167
+          ],
+          "window2": [
+            137,
+            295,
+            313,
+            471
+          ]
+        },
+        "spec_outside_rederivation": {
+          "vs_prior_published_store_bitwise": true,
+          "vs_edited_oracle_deviations_confined_to_prior_write_windows": true,
+          "note": null
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "scenario_wall_seconds": 361.7433617115021,
+      "harness_strict_verdict": "FAIL",
+      "harness_strict_reasons": [
+        "job2_add_t2/utci/vs_edited_oracle: 2456 cells differ (max 6.10352e-05)",
+        "job2_add_t2/tmrt/vs_edited_oracle: 3558 cells differ (max 3.05176e-05)",
+        "decomposition: failing vs_edited_oracle cells are 100% inside job1's disjoint write window (utci 2300/2300, tmrt 3326/3326) at ulp magnitude (<=6.1e-5); worker write discipline (vs_prior_published_store) and oracle scene invariance (addA vs sceneAB) are both bitwise-intact outside window2; shadow bitwise 0 everywhere"
+      ],
+      "verdict_basis": {
+        "rule": "spec re-derivation: (A) inside/ring vs edited oracle within tolerances.py envelope; (B) outside-window bitwise vs prior published store; (C) outside-window vs edited oracle bitwise except within prior job write windows (untouched-region semantics)",
+        "citations": [
+          "docs/incremental_design_tool/agent_execution_plan.md P5 exit criteria: 'SCI-002: Outside-window stored results remain unchanged.'",
+          "tests/scientific/tolerances.py:9-10: outside the write window the candidate must be bit-identical to stored baseline results; constants are the outer acceptance envelope for the ~1e-5 expected drift",
+          "docs/incremental_design_tool/agent/validation_pipeline.md:123: preserve stricter exact equality for ... untouched output regions"
+        ]
+      }
+    }
+  ],
+  "notes": [
+    "RECORDED OBSERVATION: local window solve differs from full-tile oracle at <=7.25e-05 abs (ulp-scale float32, p95/p99=0, 0 above envelope) in ~0.05% of compared timestep-cells, across all scenarios incl. single-edit S01 \u2014 deterministic, within tolerances.py envelope, root cause un-investigated (candidate: arithmetic-ordering differences between windowed and full-tile paths on 500x500 real site; synthetic tiny-site tests were bitwise). Precision note: at UTCI magnitudes (~300 K range) 6.1e-05 is ~16 ulp float32, i.e. multi-operation accumulation reordering, not a single-rounding difference; binary shadow is bitwise-exact in every scenario.",
+    "VERDICT RE-DERIVATION: the original harness graded the outside-window vs-edited-oracle comparison bitwise everywhere, which is stricter than the documented gates; verdicts were re-derived per the spec (rule and citations in each part's verdict_basis; original verdicts preserved under harness_strict_verdict). Under the documented criteria: SCI-002's assertion is outside-window bitwise equality vs the PRIOR PUBLISHED STORE, which holds in all 8 scenarios and every job, including S08's disjoint-window chain; the vs-edited-oracle outside numbers are retained as diagnostics with a containment check (deviations outside every written window would be a hard FAIL; the only deviations, in S08, are 100% inside job1's write window).",
+    "Per-scenario blocks carry command, per-job mode/wall/windows/dirty-fraction, tolerance metrics from tests/scientific/metrics.py definitions, outside-window exact checks, and the scenario verdict.",
+    "Continuous-variable local-mode output is NOT bitwise equal to the full-tile oracle on this real site (max drift 7.2e-5 degC UTCI / 3.1e-5 K Tmrt; shadow bitwise-exact). The synthetic site achieved bitwise; this site does not, because read windows span the full tile (terrain amplitude puts the 6-degree march reach beyond the site diagonal). All drift is graded against tests/scientific tolerances and passes by ~4 orders of magnitude; ring/band metrics show no seam localization (ring max == interior magnitude).",
+    "S01-S05 metric blocks were regenerated from the cached published patches and cached oracles after a harness mask-shape fix (boundary ring / distance bands must be computed at full-site extent before cropping); no physics was re-run and no job or oracle output changed (metrics_regenerated_with_fullsite_masks flag on each part).",
+    "Wall times are informational only; performance gates belong to P8. Local jobs on this site derive a site-diagonal-capped halo (large terrain amplitude: amaxvalue 228.34 m minus min DSM 183.97 m -> 6-degree march reach exceeds the tile), so read windows span the full site; exactness is unaffected.",
+    "No runtime 'halo-raise' event exists in the P5 worker: the halo is derived analytically per job (derived_halo_px per job block) and the analogous safety events are the amaxvalue/halo-sufficiency SolverInputError fallbacks (S05).",
+    "The repo cache altitude anomaly is recorded under environment.cache_anomaly; no repo file other than this evidence JSON was created or modified."
+  ]
+}

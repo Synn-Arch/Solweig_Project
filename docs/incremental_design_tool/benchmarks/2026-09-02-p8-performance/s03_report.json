@@ -1,0 +1,45 @@
+{
+  "machine": "Apple M1 Pro 10-core/16GB, py3.14, torch 2.13 CPU",
+  "site": "site_500 500x500@2m",
+  "date": "2009-08-11",
+  "jobs": [
+    {
+      "job": "add_h6_r3",
+      "mode": "local",
+      "wall_seconds": 60.1,
+      "dirty_window": [
+        68,
+        268,
+        4,
+        204
+      ],
+      "diagnostics": {
+        "dirty_fraction": 0.16,
+        "elapsed_seconds": 60.071820974349976
+      },
+      "window_effective_amplitude_m": 27.44,
+      "scene_amaxvalue_m": 228.34
+    },
+    {
+      "job": "resize_h12_r5",
+      "mode": "local",
+      "wall_seconds": 63.9,
+      "dirty_window": [
+        36,
+        300,
+        0,
+        236
+      ],
+      "diagnostics": {
+        "dirty_fraction": 0.249216,
+        "elapsed_seconds": 63.92132091522217
+      },
+      "window_effective_amplitude_m": 28.31,
+      "scene_amaxvalue_m": 228.34
+    }
+  ],
+  "pre_merge_reference_seconds": [
+    128.9,
+    917.4
+  ]
+}

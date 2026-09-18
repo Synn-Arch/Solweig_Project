@@ -1,0 +1,130 @@
+schema_version: 1
+status_values:
+  - native_input
+  - adapter_required
+  - full_only_initially
+  - scientific_extension
+  - view_only
+adapters:
+  - id: vegetation_geometry
+    group: geometry
+    status: adapter_required
+    source_nodes: [vegetation_dsm]
+    operations: [add, move, update, delete]   # raster_patch not implemented; per-tree model only
+    nominal_spatial_scope: directional_windows
+    temporal_scope: replay_if_stateful
+    preview: vegetation_geometry_and_shadow
+    notes: >-
+      Per-tree transmissivity is validated but NOT consumed (global
+      transVeg=0.03, utci_process.py:649) — transmissivity is EXCLUDED from the
+      v1 property schema; inert until transVeg becomes per-tree/runtime (lead
+      ruling 2026-09-02). trunk_ratio IS consumed (trees.py:152 → vegdem2
+      trunk zone = trunk_ratio * height_m). Spatial-coordinate disclosure
+      (u-e2 L5): x_m/y_m outside the site extent PASS validation (the
+      schema bounds geometry, not geography) and rasterize to zero cells —
+      the edit commits with NO scene effect.
+    validation_fixtures: [isolated, overlap, low_sun, boundary, delete]
+  - id: building_geometry
+    group: geometry
+    status: full_only_initially
+    source_nodes: [building_dsm]
+    operations: [add, move, update, delete, raster_patch]
+    nominal_spatial_scope: conservative_windows_or_full
+    temporal_scope: replay
+    preview: massing_and_shadow
+    validation_fixtures: [height, footprint, wall_aspect, low_sun, boundary]
+  - id: terrain_dem
+    group: geometry
+    status: full_only_initially
+    source_nodes: [dem]
+    operations: [raster_patch, sculpt, reset]
+    nominal_spatial_scope: full
+    temporal_scope: replay
+    preview: terrain_mesh
+    validation_fixtures: [grading, relative_height, boundary]
+  - id: landcover_surface
+    group: surface
+    status: adapter_required
+    source_nodes: [landcover]
+    operations: [paint, polygon_assign, reset]
+    valid_classes: [1, 2, 5, 6]            # asphalt, roofs, grass, bare soil; 0/3/4 remapped
+                                           # at utci_process.py:613 + :1029-1041. Water (7)
+                                           # FENCED in v1: oracle tests lc_grid==3 never 7
+                                           # (solweig.py:130, :2215) — dead Twater branch
+                                           # upstream; adapter must not claim water semantics
+                                           # it does not deliver (lead ruling 2026-09-02).
+    nominal_spatial_scope: windows
+    temporal_scope: replay_if_stateful
+    preview: surface_material
+    validation_fixtures: [class_replace, mixed_mask, reset]
+  - id: meteorological_forcing
+    group: environment
+    status: adapter_required
+    source_nodes: [meteorology]
+    operations: [update_time_row, update_range, preset, reset]
+    nominal_spatial_scope: full_downstream_only
+    temporal_scope: changed_and_dependent_times
+    preview: environment_status
+    validation_fixtures: [air_temperature, humidity, radiation, wind_speed_direction]
+  - id: selected_date_time
+    group: environment
+    status: adapter_required              # encoded in met cols 0-3 + pinned solar cache
+                                           # (manifest.py:287-304, solver.py:192 reads
+                                           # manifest.solar_geometry)
+    source_nodes: [selected_date_time]
+    operations: [select]
+    nominal_spatial_scope: full_downstream_only
+    temporal_scope: selected_or_replay
+    preview: solar_time_and_shadow
+    validation_fixtures: [morning, noon, low_sun, date_change]
+  - id: model_receptor_parameters
+    group: advanced
+    status: adapter_required
+    source_nodes: [model_parameters]
+    operations: [update, reset]
+    # Safe set (already kernel args or loop-local, utci_process.py:649-716):
+    parameters_safe: [albedo_b, ewall, absK, absL, Fside, Fup, Fcyl, cyl, height,
+                      transVeg, firstdayleaf, lastdayleaf, elvis, anisotropic_sky]
+    # Blocked: patch_option (SVF-cache-coupled), scale/location/utc (cache-pinned),
+    # walllimit (preprocessing), onlyglobal (module constant utci_process.py:65;
+    # exposing it would activate dead met cols 21/22 — lead ruling 2026-09-02),
+    # no-LC ground constants (albedo_g utci_process.py:51 + Knight fallback :597-601,
+    # redundant with the LC table).
+    parameters_blocked: [patch_option, scale, location, utc, walllimit, onlyglobal,
+                         albedo_g]
+    nominal_spatial_scope: full_downstream_stage_specific
+    temporal_scope: affected_times
+    preview: parameter_scope_disclosure
+    validation_fixtures: [baseline_restore, lower_bound, upper_bound]
+  - id: dynamic_wind_from_geometry
+    group: environment
+    status: scientific_extension
+    source_nodes: [building_dsm, vegetation_dsm]
+    operations: [rebuild]
+    nominal_spatial_scope: full
+    temporal_scope: all
+    preview: unsupported_disclosure
+    validation_fixtures: []
+    notes: >-
+      Parity gap: oracle applies WindCoeff rasters, incremental path assumes
+      coeff=1 (solver.py:1238-1239, :1414-1415 pass windcoeff=None). Until a
+      wind-coefficient adapter exists, the incremental system MUST detect
+      wind-coefficient rasters and refuse/fall back — fenced, never silent
+      (lead ruling 2026-09-02).
+  - id: output_view
+    group: analysis
+    status: view_only
+    source_nodes: [output_selection]
+    operations: [select_layer, compare, legend, cached_time]
+    producible_incremental: [utci, tmrt, shadow, kup, kdown, lup, ldown, ta, wind]
+                                           # kup/kdown/lup/ldown/ta/wind valid in LOCAL mode
+                                           # only (requested_variables, utci_process.py:469-472);
+                                           # full-fallback currently yields utci/tmrt/shadow only
+                                           # (solver.py:1184-1193). wbgt disabled in incremental
+                                           # (save_wbgt=False solver.py:1243/:1417/:1590 +
+                                           # NEVER_PLANNED_OUTPUTS planner.py:295) — never
+                                           # promised (lead ruling 2026-09-02).
+    nominal_spatial_scope: none
+    temporal_scope: none
+    preview: immediate
+    validation_fixtures: [zero_solver_job]

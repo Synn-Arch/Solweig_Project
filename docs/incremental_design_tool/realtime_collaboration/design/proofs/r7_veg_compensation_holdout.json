@@ -1,0 +1,366 @@
+{
+  "calibration_diagnostics_only": {
+    "note": "NOT part of the qualifier error_evidence (holdout only)",
+    "per_case": [
+      {
+        "case": "add_west_offset",
+        "iou": 0.5138539042821159
+      },
+      {
+        "case": "add_north_offset",
+        "iou": 0.7568208778173191
+      },
+      {
+        "case": "add_pair",
+        "iou": 0.39679547596606973
+      },
+      {
+        "case": "resize_h18_r8",
+        "iou": 0.40425531914893614
+      }
+    ]
+  },
+  "calibration_run_id": "r7-veg-holdout-site500-20260905",
+  "cases_raw": [
+    {
+      "case": "add_fixture",
+      "edit_kinds": [
+        "add"
+      ],
+      "solve_cached": false,
+      "solve_seconds": 125.6,
+      "truth_cells": 820,
+      "variants": {
+        "cast_corridor_only": {
+          "iou_micro": 0.7577639751552795,
+          "precision_micro": 0.8337129840546698,
+          "pred_cells": 878,
+          "recall_micro": 0.8926829268292683,
+          "truth_cells": 820
+        },
+        "with_crown": {
+          "iou_micro": 0.6615523465703971,
+          "precision_micro": 0.7179236043095005,
+          "pred_cells": 1021,
+          "recall_micro": 0.8939024390243903,
+          "truth_cells": 820
+        }
+      }
+    },
+    {
+      "case": "add_tall",
+      "edit_kinds": [
+        "add"
+      ],
+      "solve_cached": false,
+      "solve_seconds": 124.9,
+      "truth_cells": 2102,
+      "variants": {
+        "cast_corridor_only": {
+          "iou_micro": 0.7870913663034367,
+          "precision_micro": 0.8686401480111008,
+          "pred_cells": 2162,
+          "recall_micro": 0.8934348239771646,
+          "truth_cells": 2102
+        },
+        "with_crown": {
+          "iou_micro": 0.7030665669409125,
+          "precision_micro": 0.766721044045677,
+          "pred_cells": 2452,
+          "recall_micro": 0.8943862987630827,
+          "truth_cells": 2102
+        }
+      }
+    },
+    {
+      "case": "add_small",
+      "edit_kinds": [
+        "add"
+      ],
+      "solve_cached": false,
+      "solve_seconds": 124.6,
+      "truth_cells": 306,
+      "variants": {
+        "cast_corridor_only": {
+          "iou_micro": 0.5783783783783784,
+          "precision_micro": 0.7697841726618705,
+          "pred_cells": 278,
+          "recall_micro": 0.6993464052287581,
+          "truth_cells": 306
+        },
+        "with_crown": {
+          "iou_micro": 0.5155875299760192,
+          "precision_micro": 0.6595092024539877,
+          "pred_cells": 326,
+          "recall_micro": 0.7026143790849673,
+          "truth_cells": 306
+        }
+      }
+    },
+    {
+      "case": "add_west_offset",
+      "edit_kinds": [
+        "add"
+      ],
+      "solve_cached": false,
+      "solve_seconds": 126.8,
+      "truth_cells": 678,
+      "variants": {
+        "cast_corridor_only": {
+          "iou_micro": 0.5138539042821159,
+          "precision_micro": 0.544,
+          "pred_cells": 1125,
+          "recall_micro": 0.9026548672566371,
+          "truth_cells": 678
+        },
+        "with_crown": {
+          "iou_micro": 0.46090225563909776,
+          "precision_micro": 0.48458498023715413,
+          "pred_cells": 1265,
+          "recall_micro": 0.9041297935103245,
+          "truth_cells": 678
+        }
+      }
+    },
+    {
+      "case": "add_north_offset",
+      "edit_kinds": [
+        "add"
+      ],
+      "solve_cached": false,
+      "solve_seconds": 137.4,
+      "truth_cells": 760,
+      "variants": {
+        "cast_corridor_only": {
+          "iou_micro": 0.7568208778173191,
+          "precision_micro": 0.8848821081830791,
+          "pred_cells": 721,
+          "recall_micro": 0.8394736842105263,
+          "truth_cells": 760
+        },
+        "with_crown": {
+          "iou_micro": 0.693058568329718,
+          "precision_micro": 0.797752808988764,
+          "pred_cells": 801,
+          "recall_micro": 0.8407894736842105,
+          "truth_cells": 760
+        }
+      }
+    },
+    {
+      "case": "add_pair",
+      "edit_kinds": [
+        "add",
+        "add"
+      ],
+      "solve_cached": false,
+      "solve_seconds": 129.8,
+      "truth_cells": 956,
+      "variants": {
+        "cast_corridor_only": {
+          "iou_micro": 0.39679547596606973,
+          "precision_micro": 0.41932270916334663,
+          "pred_cells": 2008,
+          "recall_micro": 0.8807531380753139,
+          "truth_cells": 956
+        },
+        "with_crown": {
+          "iou_micro": 0.34555827220863894,
+          "precision_micro": 0.3614663256606991,
+          "pred_cells": 2346,
+          "recall_micro": 0.8870292887029289,
+          "truth_cells": 956
+        }
+      }
+    },
+    {
+      "case": "move_200m_east",
+      "edit_kinds": [
+        "change"
+      ],
+      "solve_cached": false,
+      "solve_seconds": 130.0,
+      "truth_cells": 337,
+      "variants": {
+        "cast_corridor_only": {
+          "iou_micro": 0.1518987341772152,
+          "precision_micro": 0.1571753986332574,
+          "pred_cells": 1756,
+          "recall_micro": 0.8189910979228486,
+          "truth_cells": 337
+        },
+        "with_crown": {
+          "iou_micro": 0.131779257849667,
+          "precision_micro": 0.1356513222331048,
+          "pred_cells": 2042,
+          "recall_micro": 0.8219584569732937,
+          "truth_cells": 337
+        }
+      }
+    },
+    {
+      "case": "resize_h18_r8",
+      "edit_kinds": [
+        "change"
+      ],
+      "solve_cached": false,
+      "solve_seconds": 130.1,
+      "truth_cells": 2058,
+      "variants": {
+        "cast_corridor_only": {
+          "iou_micro": 0.40425531914893614,
+          "precision_micro": 0.6993055555555555,
+          "pred_cells": 1440,
+          "recall_micro": 0.48931000971817296,
+          "truth_cells": 2058
+        },
+        "with_crown": {
+          "iou_micro": 0.37640871525169045,
+          "precision_micro": 0.6239103362391034,
+          "pred_cells": 1606,
+          "recall_micro": 0.4868804664723032,
+          "truth_cells": 2058
+        }
+      }
+    }
+  ],
+  "curation_note": "curated copy of /tmp/r7_proof/holdout.json (harness output, uptime 1030.2 s on COD-MBP16-LOAN2): per-timestep confusion counts stripped from cases_raw for size; every aggregate is verbatim. Full file regenerates deterministically via r7_veg_compensation_holdout.py --profile full (truth caches make the re-run minutes).",
+  "holdout": {
+    "metrics": {
+      "shadow_iou": {
+        "max": 0.7870913663034367,
+        "min": 0.1518987341772152,
+        "n": 4,
+        "p50": 0.6680711767668289,
+        "p95": 0.7826922576312131,
+        "p99": 0.786211544568992
+      },
+      "shadow_precision": {
+        "max": 0.8686401480111008,
+        "min": 0.1571753986332574,
+        "n": 4,
+        "p50": 0.8017485783582701,
+        "p95": 0.8634010734176362,
+        "p99": 0.8675923330924078
+      },
+      "shadow_recall": {
+        "max": 0.8934348239771646,
+        "min": 0.6993464052287581,
+        "n": 4,
+        "p50": 0.8558370123760585,
+        "p95": 0.8933220394049801,
+        "p99": 0.8934122670627277
+      }
+    },
+    "micro_recall_weighted": 0.8695652173913043,
+    "n": 4,
+    "per_case": [
+      {
+        "case": "add_fixture",
+        "iou": 0.7577639751552795,
+        "precision": 0.8337129840546698,
+        "pred_cells": 878,
+        "recall": 0.8926829268292683,
+        "truth_cells": 820
+      },
+      {
+        "case": "add_tall",
+        "iou": 0.7870913663034367,
+        "precision": 0.8686401480111008,
+        "pred_cells": 2162,
+        "recall": 0.8934348239771646,
+        "truth_cells": 2102
+      },
+      {
+        "case": "add_small",
+        "iou": 0.5783783783783784,
+        "precision": 0.7697841726618705,
+        "pred_cells": 278,
+        "recall": 0.6993464052287581,
+        "truth_cells": 306
+      },
+      {
+        "case": "move_200m_east",
+        "iou": 0.1518987341772152,
+        "precision": 0.1571753986332574,
+        "pred_cells": 1756,
+        "recall": 0.8189910979228486,
+        "truth_cells": 337
+      }
+    ]
+  },
+  "host": "COD-MBP16-LOAN2",
+  "latency": {
+    "case": "add_pair",
+    "host": "COD-MBP16-LOAN2",
+    "measured_ms": {
+      "max": 2.3856250336393714,
+      "min": 1.7900000093504786,
+      "n": 40,
+      "p50": 1.7977709649130702,
+      "p95": 1.9573916506487874,
+      "p99": 2.246524867368862
+    },
+    "predicted_constants": {
+      "overhead_ms": 1.5,
+      "per_tree_ms": 6.0
+    },
+    "predicted_cost_ms": 13.5,
+    "prediction_covers_measured_p99": true,
+    "python": "3.14.7",
+    "reps": 40,
+    "schema": "r7-veg-compensation-latency/1",
+    "trees": 2
+  },
+  "model": {
+    "form": "geometric_overlay",
+    "model_version": "veg-shadow-comp-v1"
+  },
+  "not_for_evidence": false,
+  "python": "3.14.7",
+  "schema": "r7-veg-compensation-holdout/1",
+  "site": {
+    "cache": "site_500",
+    "grid": {
+      "cols": 500,
+      "pixel_size_m": 2.0,
+      "rows": 500
+    },
+    "model_version_cache": "solweig-gpu-2.0.0+incremental.cache.1",
+    "selected_date": "2009-08-11",
+    "time_steps": 24
+  },
+  "split": {
+    "calibration_cases": [
+      "add_west_offset",
+      "add_north_offset",
+      "add_pair",
+      "resize_h18_r8"
+    ],
+    "holdout_cases": [
+      "add_fixture",
+      "add_tall",
+      "add_small",
+      "move_200m_east"
+    ],
+    "seed": 20260905
+  },
+  "uptime": {
+    "finished_utc": "2026-09-05T15:52:13.756917+00:00",
+    "seconds": 1030.2,
+    "started_utc": "2026-09-05T15:35:03.541156+00:00"
+  },
+  "variant_selection": {
+    "chosen": "cast_corridor_only",
+    "options": {
+      "cast_corridor_only": {
+        "calibration_mean_iou": 0.5179313943036102,
+        "holdout_mean_iou": 0.5687831135035774
+      },
+      "with_crown": {
+        "calibration_mean_iou": 0.4689819528572863,
+        "holdout_mean_iou": 0.5029964253342489
+      }
+    }
+  }
+}

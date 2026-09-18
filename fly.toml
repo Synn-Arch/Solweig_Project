@@ -1,0 +1,42 @@
+# Sample Fly.io deployment of the API service (platform-agnostic shape: the
+# same image + env + volume layout works on any container host).
+#
+#   fly launch --no-deploy        # then adjust this file
+#   fly volumes create solweig_state --size 20
+#   fly deploy
+#
+# 2 GB RAM machine (performance-1x): the worker targets < 3 GB peak, so keep
+# scenarios small or step up to performance-2x for a full classroom.
+app = "solweig-design-api"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  SOLWEIG_STATE_ROOT = "/state"
+  SOLWEIG_CACHE_ROOT = "/site-cache"     # cache at /site-cache/<site_id>/
+  SOLWEIG_SITE_ID = "campus-1km-v1"      # comma-separated for multiple sites
+  SOLWEIG_HOST = "0.0.0.0"
+  SOLWEIG_PORT = "8000"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  min_machines_running = 1
+
+# Persistent state: SQLite store + per-scenario results (read-write).
+[mounts]
+  source = "solweig_state"
+  destination = "/state"
+
+# Site caches are NOT in the image (data policy: no site data ever ships in
+# an application image). Provision /site-cache/<site_id>/ out-of-band — e.g.
+# a second read-only volume where the host supports multiple mounts, or a
+# derived `FROM` this image `COPY site-cache/ /site-cache/` layer built from
+# versioned cache inputs, then set SOLWEIG_CACHE_ROOT accordingly.
+
+[vm]
+  size = "performance-1x"   # 1 dedicated vCPU / 2 GB RAM

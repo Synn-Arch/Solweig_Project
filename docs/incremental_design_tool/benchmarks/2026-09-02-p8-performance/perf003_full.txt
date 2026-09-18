@@ -1,0 +1,3 @@
+machine: Apple M1 Pro 10-core/16GB, py3.14, torch 2.13 CPU
+site_500 full-tile exact solve (write=read=full site, 24 timesteps): 92.9s
+gate PERF-003 < 300s: PASS

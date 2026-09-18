@@ -1,0 +1,94 @@
+schema_version: 1
+product: solweig_collaborative_realtime_editor
+scope:
+  domain: fixed_500x500_2m_site
+  edit_model: heterogeneous_universal_adapters
+  collaboration: multi_session_shared_workspace
+  exact_oracle: current_full_domain_solweig
+scheduler:
+  micro_epoch_ms: 100
+  queue_model:
+    ingest: durable_idempotent_operations
+    reduce: per_workspace_epoch
+    fast: earliest_deadline_with_fairness
+    exact: latest_state_revision_chasing
+  one_fifo_job_per_raw_edit: forbidden
+revisions:
+  - workspace_revision
+  - fast_revision
+  - exact_revision
+  - exact_base_revision
+invariants:
+  - all_accepted_operations_in_exactly_one_canonical_epoch
+  - zero_accepted_operation_omission
+  - shared_baseline_immutable
+  - stale_results_never_overwrite_newer_revision
+  - unsafe_locality_falls_back_to_full_tile
+  - preview_or_compensation_never_labeled_exact
+slo_targets:
+  operation_ack_p95_ms: 50
+  operation_ack_p99_ms: 150
+  # Tick-anchored re-spec (2026-09-06, user-approved after structural-miss
+  # evidence: tail flat in host load across 4 runs; [W,2W) epoch floor +
+  # tick-wake lateness compose the whole path, close pipeline sub-ms).
+  # W = scheduler.micro_epoch_ms (100 default). At W=100: p50 < 200,
+  # p99 <= 550. Lateness itself is an SLO -> a lateness breach is a host/
+  # scheduling commissioning failure, not an application defect.
+  remote_state_visibility_p50_ms_max: 200
+  remote_state_visibility_p99_ms_max: 550
+  tick_wake_lateness_p99_ms_max: 350
+  canonical_revision_p99_ms_max: 550
+  canonical_close_pipeline_p99_ms_max: 5
+  fast_revision_p99_ms: 1000
+  accepted_operation_inclusion_percent: 100
+  qualification: only_inside_measured_admission_envelope
+result_classes:
+  fast_exact:
+    numerical: exact
+    deadline_ms: 1000
+  fast_qualified:
+    numerical: validated_compensation
+    deadline_ms: 1000
+    requires:
+      - qualification_domain
+      - error_evidence
+      - exact_base_revision
+      - reconciliation_job
+  visual_pending:
+    numerical: no_current_numerical_claim
+    deadline_ms: 1000
+  exact_reconciled:
+    numerical: exact
+    deadline: per_edit_family_measured_slo
+admission_envelope_required_fields:
+  - max_connected_sessions_per_workspace
+  - max_accepted_operations_per_second
+  - max_operations_per_epoch
+  - max_changed_cells_per_epoch
+  - max_geometry_objects_touched_per_epoch
+  - max_payload_bytes_per_operation
+  - max_active_workspaces
+  - fast_compute_budget_ms_per_epoch
+performance_baseline_to_reproduce:
+  representative_geometry_edit_seconds_idle: [37.5, 39.0]
+  representative_geometry_edit_seconds_loaded: [47.0, 47.7]
+  svf_phase_seconds_idle: [19.8, 20.3]
+  selected_time_prefix_seconds_idle: [17.1, 17.6]
+  write_window_fraction: 0.29568
+  read_window_fraction: 0.98802
+scientific_fences:
+  - do_not_shrink_physical_read_reach_for_latency
+  - keep_lowest_sky_patch_altitude_6deg_without_scientific_change
+  - preserve_temporal_causality
+  - preserve_units_nodata_visibility_polarity_patch_order
+  - no_silent_precision_reduction
+required_optimization_waves:
+  - R0_reproduce_and_instrument
+  - R1_collaborative_operation_plane
+  - R2_split_fast_and_exact_scheduling
+  - R3_cheap_exact_fast_paths
+  - R4_persistent_geometry_delta_visibility_svf
+  - R5_temporal_checkpoint_sparse_replay
+  - R6_profiled_kernel_fusion
+  - R7_qualified_compensated_fast_models
+  - R8_load_chaos_commissioning

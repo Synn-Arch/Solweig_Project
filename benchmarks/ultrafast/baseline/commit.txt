@@ -1,0 +1,16 @@
+# T00 baseline provenance (recorded 2026-09-07)
+review_sha: e0d19fc98220a333ea312efe4604780803bbdd17
+baseline_source_sha: e0d19fc98220a333ea312efe4604780803bbdd17
+main_head_at_run: 4f7d44a78c169930b0e4812220094108f812dad4
+head_note: >
+  main moved e0d19fc -> 4f7d44a during T00 (docs-only commit installing the
+  ultrafast design package; git diff e0d19fc..4f7d44a touches no solweig
+  source). All solweig source executed in baseline runs is byte-identical to
+  the review SHA; per-run import origin + source sha256 recorded in each
+  run_record.json under the artifact root.
+working_tree_at_audit: >
+  M .DS_Store (user file, ignored); untracked: benchmarks/ultrafast/ (this
+  harness), solweig_realtime_bitwise_design/ (lead-owned design package).
+  No tracked solweig source modified.
+oracle_worktree: /Users/alansynn/Workspace/solweig_oracle_e0d19fc @ e0d19fc (detached)
+artifact_root: /Users/alansynn/Workspace/solweig_ultrafast_artifacts/

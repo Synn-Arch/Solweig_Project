@@ -1,0 +1,19 @@
+Lead autonomous implementation of a universal SOLWEIG-GPU interactive editor. Tree placement is only a reference example. Support validated edits to suitable SOLWEIG inputs/parameters: Building DSM or massing, vegetation DSM/components, land cover/surfaces, DEM where safe, date/time, meteorological forcing, directional wind-coefficient selection, audited model/receptor parameters, and output/view selection. Dynamic wind/CFD caused by edited geometry is excluded until separately implemented and validated.
+
+READ FIRST: docs/incremental_design_tool/universal_editing/* plus agent/mission_universal.yaml, agent/multi_agent_orchestration_universal.md, and agent/master_prompt_universal.md. Inspect the pipeline, tests, CI, shadow.py, solweig.py, and utci_process.py. Maintain WORKLOG.md and a subagent ledger.
+
+MULTI-AGENT: maximize useful parallelism with isolated workspaces/worktrees or strict disjoint ownership. Run independent agents for dependency audit, adapter families, oracle fixtures, cache/bitpack, exact solver, frontend, API/persistence, profiling, CI/deployment, and red-team review. One writer per file. The lead integrates; subagents never push main. Scientific-core changes require a non-author reviewer and independent differential runner. Performance claims require independent reproduction. Reassign stalled agents while unrelated work continues.
+
+ARCHITECTURE: each EditAdapter validates old/new state, applies a source delta, supplies preview metadata, and emits changed source nodes. A versioned dependency graph resolves invalidated stages, reusable caches, spatial scope (none/windows/full), temporal scope (selected/range/replay/all), halo, memory estimate, and fallback reasons. Coalesce heterogeneous edits into one topological plan. Global edits stay interactive by reusing geometry/SVF caches. Locality is an optimization only; uncertainty selects full-tile execution.
+
+INVARIANTS: full-domain SOLWEIG is the scientific oracle. Preserve raster orientation, half-open windows, units, nodata, visibility polarity, sky-patch order, and temporal state. Baseline caches are immutable. Never publish stale scene_revision/job_id results. Preview is never exact. Never weaken tolerance or precision to hide errors.
+
+LOOP: audit -> characterization/failing test -> minimum correct implementation -> narrow tests -> integration/dependency tests -> fresh full-domain differential for scientific changes -> benchmark for performance changes -> independent review -> integrate -> rerun gates -> docs/WORKLOG -> focused commit. Sync main only at clean checkpoints.
+
+VALIDATE T0-T6: static, unit, integration, scientific differential, CPU/RSS performance, full repository/docs, and deployment/UI smoke. Qualify every enabled adapter and cross-family batch. Validate old-state cleanup, local/full fallback, temporal replay, boundaries, stale edits, invalidated/reused nodes, outside-window invariance, errors/quantiles, wall time, peak RSS, cache/serialization time, fixture, and machine metadata.
+
+CONTINUITY: checkpoint at phase boundaries and hourly with agents/branches, ownership, HEAD, gates, commands/evidence, failures, rollback, and exact next command. Resume from repository state and first unverified gate, not memory.
+
+STOP only for material scientific ambiguity, controlled oracle non-determinism, scope change without criteria, access/license blocker, unresolved scientific semantic conflict, unisolatable baseline failure, or multiple plausible numerical fixes without evidence. Do not stop for ordinary test, dependency, lint, frontend, or performance failures.
+
+DONE only when all universal edit gates pass; enabled adapters are scientifically validated; full tests/docs/UI/deployment smoke and target CPU measurements pass; limitations are explicit; the working tree is clean; and commits/evidence are reported. Push only when credentials and protection permit. Never bypass policy. Begin immediately unless a hard stop exists.

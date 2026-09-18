@@ -1,0 +1,1461 @@
+{
+  "record_type": "p5_scientific_gate_evidence_postmerge_subset",
+  "date": "2026-09-02",
+  "title": "T3 post-merge subset differential (sanity, S01, S05, S08) on the P5 review-remediation merge (644cbe1 via b372fe2), fixed repo cache",
+  "overall_verdict": "PASS",
+  "gates": {
+    "SANITY_oracle_equivalence": {
+      "verdict": "PASS",
+      "statement": "MERGED-code run_full_tile reproduces the corrected baseline GeoTIFFs bitwise (recomputed, not reused from the pre-merge run)",
+      "per_variable": {
+        "utci": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        },
+        "tmrt": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        },
+        "shadow": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        }
+      },
+      "oracle_code_invariance_old_vs_new": {
+        "baseline": {
+          "utci": true,
+          "tmrt": true,
+          "shadow": true
+        },
+        "addA": {
+          "utci": true,
+          "tmrt": true,
+          "shadow": true
+        },
+        "tallNW": {
+          "utci": true,
+          "tmrt": true,
+          "shadow": true
+        },
+        "sceneAB": {
+          "utci": true,
+          "tmrt": true,
+          "shadow": true
+        }
+      }
+    },
+    "SCI-001_inside_window_exact": {
+      "verdict": "PASS",
+      "scenarios": [
+        "S01",
+        "S05",
+        "S08"
+      ],
+      "note": "all three jobs ran mode=full post-merge, so inside-window output is bitwise vs the edited oracle (stronger than the tolerance envelope)"
+    },
+    "SCI-002_outside_window_invariance": {
+      "verdict": "PASS",
+      "criterion": "adjudicated spec criterion: outside-window bitwise vs the prior published store; vs-edited-oracle retained as diagnostic",
+      "scenarios": [
+        "S01",
+        "S08"
+      ],
+      "note": "moot in practice post-merge: every job is full-tile, so there is no partial write window; checks still pass bitwise"
+    },
+    "SCI-003_seam_diagnostics": {
+      "verdict": "PASS",
+      "note": "boundary ring / distance bands computed for S01/S05/S08; with full-tile write windows the ring is the site edge and all metrics are bitwise-zero"
+    },
+    "SCI-004_safe_fallback": {
+      "verdict": "PASS",
+      "scenario": "S05",
+      "mode": "full",
+      "fallback_reason": null,
+      "full_tile_bitwise_vs_edited_oracle": {
+        "utci": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        },
+        "tmrt": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        },
+        "shadow": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        }
+      },
+      "finding": "the amaxvalue SOLVER GUARD is unreachable end-to-end on this site under merged defaults: choose_recompute_mode selects full first (dirty fraction 0.5735 > 0.30 policy threshold), fallback_reason is None. Pre-merge the guard fired verbatim (T3 full run S05). Output exactness still holds bitwise. Guard correctness now rests on repo unit tests; end-to-end guard coverage needs either a site/config where the policy does not pre-empt it or a direct solve_window-level test."
+    }
+  },
+  "findings": [
+    "EVERY subset job routed to full-tile by POLICY (fallback=None): merged terrain-aware influence bounds (elevation_offset_m = DEM relief; shadow length cap raised to the oracle march bound) enlarged dirty windows ~5x in area (S01 dirty fraction 0.0635 -> 0.3145 vs the 0.30 full_recompute_fraction threshold; S08 jobs likewise), so choose_recompute_mode selects FULL before any local solve. Under default InfluenceConfig the incremental local path is DEAD on this 500x500@2m site - no local job, hence the new 12 px margins were never exercised end-to-end. Direct consequence for P8/P5 tuning: the policy threshold vs terrain-aware influence bounds interaction needs review if local mode is meant to engage on real terrain.",
+    "SCI-004 guard unobservable end-to-end (see gate finding): pre-merge the amaxvalue guard fired verbatim on S05; post-merge policy pre-empts it.",
+    "Oracle path is code-invariant across the P5 remediation: all four recomputed merged-code oracles are bitwise identical to the pre-merge cached oracles for utci/tmrt/shadow (cross-check table in SANITY gate).",
+    "The 12 px write margin (gvf_march_pixels(2.0)=11 +1) is confirmed in the merged worker, but no local write window was produced in this subset, so its end-to-end effect (window shrunk 23->12 px) could not be observed here; pre-merge T3 remains the evidence for local-mode correctness at 23 px, repo unit tests for the margin formula.",
+    "Repo cache consumed directly (fixed solar_geometry.altitude_m=3.0); byte-identical (27/27 files) to the runner's cross-check cache /tmp/p5sci/cache_alt3."
+  ],
+  "environment": {
+    "git_head": "fcafe1b436b9771a5579b9a130a35f066d4317ff",
+    "worker_commit_under_test": "b372fe2 (merge of 644cbe1 P5 review remediation); HEAD fcafe1b436b9771a5579b9a130a35f066d4317ff",
+    "pre_merge_evidence": "docs/incremental_design_tool/benchmarks/2026-09-01-p5-scientific.json (c159f38 lineage)",
+    "site": "500x500 @ 2.0 m Austin subset, tile 0_0, 24 steps, 2009-08-11",
+    "cache": "repo Input_subset/processed_inputs/incremental_cache_0_0 (altitude_m=3.0; byte-identical to the pre-merge run's rebuilt cache)",
+    "python": "3.14.7",
+    "platform": "macOS-26.5.2-arm64-arm-64bit-Mach-O"
+  },
+  "scenarios": [
+    {
+      "scenario": "sanity",
+      "title": "Oracle equivalence: unedited scene full-tile run vs corrected baseline",
+      "gates_targeted": [
+        "SANITY"
+      ],
+      "command": "run_full_tile(cache, TreeLayer(cache.tree_base, grid), forcing=load_site_forcing(...), site_dir=Input_subset/processed_inputs, scratch=/tmp/p5sci/scratch/oracle_baseline, selected_date_str='2009-08-11') compared bitwise to Input_subset/output_folder/0_0/{{UTCI,TMRT,Shadow}}_0_0.tif",
+      "jobs": [],
+      "oracles_used": [
+        {
+          "name": "baseline",
+          "reused": false,
+          "wall_seconds": 142.40039587020874
+        }
+      ],
+      "metrics": {},
+      "outside_checks": {},
+      "extra_checks": {
+        "per_variable": {
+          "utci": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "tmrt": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          }
+        },
+        "all_bitwise": true,
+        "spec_outside_rederivation": {
+          "vs_prior_published_store_bitwise": true,
+          "vs_edited_oracle_deviations_confined_or_absent": true
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [
+        "inside-window metrics exceed the tolerances.py envelope"
+      ],
+      "scenario_wall_seconds": 142.89329385757446,
+      "harness_strict_verdict": "PASS",
+      "verdict_basis": {
+        "rule": "post-merge subset re-derivation: (A) inside/ring vs edited oracle within tolerances.py envelope; (B) outside-window bitwise vs prior published store; (C) vs-edited-oracle outside-window as diagnostic (hard fail only outside all written windows); S05 graded on full-mode + bitwise output with the guard-unreachable finding",
+        "citations": [
+          "docs/incremental_design_tool/agent_execution_plan.md P5 exit criteria",
+          "tests/scientific/tolerances.py:9-10 (stored baseline results)",
+          "docs/incremental_design_tool/agent/validation_pipeline.md:123 (untouched regions)"
+        ]
+      }
+    },
+    {
+      "scenario": "S01",
+      "title": "Add tree t1 (h=6.0 m, r=3.0 m) at open cell row=166,col=102",
+      "gates_targeted": [
+        "S01"
+      ],
+      "command": "layer.add_tree(TreeSpec('t1', cell(166,102), h=6.0, r=3.0)); ExactWorker(default InfluenceConfig).run(); store=baseline+patch; compare vs independent oracle run_full_tile(scene)",
+      "jobs": [
+        {
+          "job_id": "job-489f44402318",
+          "status": "published",
+          "mode": "full",
+          "scene_revision": 1,
+          "wall_seconds": 128.19962692260742,
+          "solver_wall_seconds": 128.19918727874756,
+          "write_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 0,
+              "row_high": 0,
+              "col_low": 0,
+              "col_high": 0
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              32,
+              320,
+              0,
+              240
+            ]
+          ],
+          "dirty_fraction": 0.314496,
+          "batch_sequences": [
+            1,
+            1
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results2/s01/rev-000001-job-489f44402318"
+          ],
+          "write_window_fraction": 1.0,
+          "step": "add_t1"
+        }
+      ],
+      "oracles_used": [
+        {
+          "name": "addA",
+          "reused": false,
+          "wall_seconds": 134.7145700454712
+        }
+      ],
+      "metrics": {
+        "utci": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 122088,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 122088,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 240672,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 310656,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 4352712,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 0.0,
+          "per_timestep_boundary_ring_max_abs": 0.0,
+          "tolerance_used": 0.25,
+          "mae_tolerance_used": 0.02,
+          "p99_tolerance_used": 0.1,
+          "inside_bitwise_equal": true
+        },
+        "tmrt": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 122088,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 122088,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 240672,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 310656,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 4352712,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 0.0,
+          "per_timestep_boundary_ring_max_abs": 0.0,
+          "tolerance_used": 1.0,
+          "mae_tolerance_used": 0.05,
+          "p99_tolerance_used": 0.2,
+          "inside_bitwise_equal": true
+        },
+        "shadow": {
+          "inside": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 122088,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "tolerance_used": 0.001,
+          "inside_bitwise_equal": true
+        }
+      },
+      "outside_checks": {
+        "job1_add_t1": {
+          "n_outside_cells": 0,
+          "utci": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "tmrt": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "shadow": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          }
+        }
+      },
+      "extra_checks": {
+        "write_window_smaller_than_tile": false,
+        "spec_outside_rederivation": {
+          "vs_prior_published_store_bitwise": true,
+          "vs_edited_oracle_deviations_confined_or_absent": true
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "scenario_wall_seconds": 264.05328011512756,
+      "harness_strict_verdict": "PASS",
+      "verdict_basis": {
+        "rule": "post-merge subset re-derivation: (A) inside/ring vs edited oracle within tolerances.py envelope; (B) outside-window bitwise vs prior published store; (C) vs-edited-oracle outside-window as diagnostic (hard fail only outside all written windows); S05 graded on full-mode + bitwise output with the guard-unreachable finding",
+        "citations": [
+          "docs/incremental_design_tool/agent_execution_plan.md P5 exit criteria",
+          "tests/scientific/tolerances.py:9-10 (stored baseline results)",
+          "docs/incremental_design_tool/agent/validation_pipeline.md:123 (untouched regions)"
+        ]
+      }
+    },
+    {
+      "scenario": "S05",
+      "title": "Add t5 (h=34.0 m, r=4.0 m) at row=21,col=112 (site DEM maximum, 202.35 m; 42 px from the 27.27 m tree driving baseline amaxvalue 228.34 and 45 px from the 217.36 m building) -> raises scene amaxvalue to 236.35 > baseline 228.34",
+      "gates_targeted": [
+        "S05"
+      ],
+      "command": "layer.add_tree(TreeSpec('t5', cell(21,112), h=34.0, r=4.0)); ExactWorker(default InfluenceConfig).run(); expect local attempt refused by the solve_window amaxvalue guard and fallback to run_full_tile; patch must equal the edited oracle bitwise across the full tile",
+      "jobs": [
+        {
+          "job_id": "job-9cadf08ea3a6",
+          "status": "published",
+          "mode": "full",
+          "scene_revision": 1,
+          "wall_seconds": 132.91820001602173,
+          "solver_wall_seconds": 132.91786193847656,
+          "write_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 0,
+              "row_high": 0,
+              "col_low": 0,
+              "col_high": 0
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              0,
+              336,
+              0,
+              400
+            ]
+          ],
+          "dirty_fraction": 0.573504,
+          "batch_sequences": [
+            1,
+            1
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results2/s05/rev-000001-job-9cadf08ea3a6"
+          ],
+          "write_window_fraction": 1.0,
+          "step": "add_tall_t5"
+        }
+      ],
+      "oracles_used": [
+        {
+          "name": "tallNW",
+          "reused": false,
+          "wall_seconds": 137.53742003440857
+        }
+      ],
+      "metrics": {
+        "utci": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 122088,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 122088,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 240672,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 310656,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 4352712,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 0.0,
+          "per_timestep_boundary_ring_max_abs": 0.0,
+          "tolerance_used": 0.25,
+          "mae_tolerance_used": 0.02,
+          "p99_tolerance_used": 0.1,
+          "inside_bitwise_equal": true
+        },
+        "tmrt": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 122088,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 122088,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 240672,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 310656,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 4352712,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 0.0,
+          "per_timestep_boundary_ring_max_abs": 0.0,
+          "tolerance_used": 1.0,
+          "mae_tolerance_used": 0.05,
+          "p99_tolerance_used": 0.2,
+          "inside_bitwise_equal": true
+        },
+        "shadow": {
+          "inside": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 122088,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "tolerance_used": 0.001,
+          "inside_bitwise_equal": true
+        }
+      },
+      "outside_checks": {
+        "note": "write window is the full tile; no outside region exists"
+      },
+      "extra_checks": {
+        "mode_is_full": true,
+        "fallback_reason": null,
+        "write_window_is_full_tile": [
+          false
+        ],
+        "baseline_amaxvalue": 228.33999633789062,
+        "full_tile_bitwise_vs_edited_oracle": {
+          "utci": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "tmrt": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          }
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [
+        "FINDING (not a failure): the amaxvalue guard is unreachable on this site under merged defaults - choose_recompute_mode selected full first (dirty fraction 0.5735 > full_recompute_fraction 0.30), so fallback_reason is None and the guard path (SolverInputError -> fallback) is not exercised end-to-end here; guard behaviour is covered by repo unit tests, and the output-exactness half of the gate holds bitwise"
+      ],
+      "scenario_wall_seconds": 271.6380023956299,
+      "harness_strict_verdict": "PASS",
+      "verdict_basis": {
+        "rule": "post-merge subset re-derivation: (A) inside/ring vs edited oracle within tolerances.py envelope; (B) outside-window bitwise vs prior published store; (C) vs-edited-oracle outside-window as diagnostic (hard fail only outside all written windows); S05 graded on full-mode + bitwise output with the guard-unreachable finding",
+        "citations": [
+          "docs/incremental_design_tool/agent_execution_plan.md P5 exit criteria",
+          "tests/scientific/tolerances.py:9-10 (stored baseline results)",
+          "docs/incremental_design_tool/agent/validation_pipeline.md:123 (untouched regions)"
+        ]
+      }
+    },
+    {
+      "scenario": "S08",
+      "title": "job1: add t1 (h6 r3) at (166,102), publish; job2: add t2 (h8 r3) at (214,393), publish; patch2 must equal the scene2 oracle inside window2; outside window2 the store must stay exactly at the post-job1 state",
+      "gates_targeted": [
+        "S08"
+      ],
+      "command": "job1: add_tree(t1@(166,102) h6 r3) -> run(); job2: add_tree(t2@(214,393) h8 r3) -> run(); store2=baseline+patch1+patch2 vs oracle(scene2 = t1+t2) inside window2",
+      "jobs": [
+        {
+          "job_id": "job-3962d94c5243",
+          "status": "published",
+          "mode": "full",
+          "scene_revision": 1,
+          "wall_seconds": 132.03879690170288,
+          "solver_wall_seconds": 132.03828406333923,
+          "write_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 0,
+              "row_high": 0,
+              "col_low": 0,
+              "col_high": 0
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              32,
+              320,
+              0,
+              240
+            ]
+          ],
+          "dirty_fraction": 0.314496,
+          "batch_sequences": [
+            1,
+            1
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results2/s08/rev-000001-job-3962d94c5243"
+          ],
+          "write_window_fraction": 1.0,
+          "step": "add_t1"
+        },
+        {
+          "job_id": "job-c8ab40fe3757",
+          "status": "published",
+          "mode": "full",
+          "scene_revision": 2,
+          "wall_seconds": 139.66979026794434,
+          "solver_wall_seconds": 139.66946578025818,
+          "write_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "derived_halo_px": [
+            {
+              "row_low": 0,
+              "row_high": 0,
+              "col_low": 0,
+              "col_high": 0
+            }
+          ],
+          "read_window_covers_full_site": [
+            false
+          ],
+          "write_window_covers_full_site": [
+            false
+          ],
+          "dirty_windows": [
+            [
+              80,
+              384,
+              240,
+              500
+            ]
+          ],
+          "dirty_fraction": 0.356864,
+          "batch_sequences": [
+            2,
+            2
+          ],
+          "fallback_reason": null,
+          "patch_paths": [
+            "/tmp/p5sci/results2/s08/rev-000002-job-c8ab40fe3757"
+          ],
+          "write_window_fraction": 1.0,
+          "step": "add_t2"
+        }
+      ],
+      "oracles_used": [
+        {
+          "name": "addA",
+          "reused": true,
+          "wall_seconds": 134.7145700454712
+        },
+        {
+          "name": "sceneAB",
+          "reused": false,
+          "wall_seconds": 128.66440510749817
+        }
+      ],
+      "metrics": {
+        "utci": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 122088,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 122088,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 240672,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 310656,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 4352712,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 0.0,
+          "per_timestep_boundary_ring_max_abs": 0.0,
+          "tolerance_used": 0.25,
+          "mae_tolerance_used": 0.02,
+          "p99_tolerance_used": 0.1,
+          "inside_bitwise_equal": true
+        },
+        "tmrt": {
+          "inside": {
+            "n_compared": 5026128,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 122088,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "distance_bands": {
+            "0-2": {
+              "n_compared": 122088,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "3-8": {
+              "n_compared": 240672,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "9-16": {
+              "n_compared": 310656,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            },
+            "interior": {
+              "n_compared": 4352712,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "rmse": 0.0,
+              "abs_error_p50": 0.0,
+              "abs_error_p95": 0.0,
+              "abs_error_p99": 0.0,
+              "count_above_tolerance": 0,
+              "fraction_above_tolerance": 0.0
+            }
+          },
+          "per_timestep_max_abs": 0.0,
+          "per_timestep_boundary_ring_max_abs": 0.0,
+          "tolerance_used": 1.0,
+          "mae_tolerance_used": 0.05,
+          "p99_tolerance_used": 0.2,
+          "inside_bitwise_equal": true
+        },
+        "shadow": {
+          "inside": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "boundary_ring": {
+            "n_compared": 122088,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          },
+          "tolerance_used": 0.001,
+          "inside_bitwise_equal": true
+        }
+      },
+      "outside_checks": {
+        "job2_add_t2": {
+          "n_outside_cells": 0,
+          "utci": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "tmrt": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "shadow": {
+            "vs_prior_published_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "prior_vs_edited_oracle": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          }
+        }
+      },
+      "extra_checks": {
+        "job1_vs_addA": {
+          "utci": {
+            "n_compared": 5026128,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "tmrt": {
+            "n_compared": 5026128,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0,
+            "rmse": 0.0,
+            "abs_error_p50": 0.0,
+            "abs_error_p95": 0.0,
+            "abs_error_p99": 0.0,
+            "count_above_tolerance": 0,
+            "fraction_above_tolerance": 0.0
+          },
+          "shadow": {
+            "n_compared": 5026128,
+            "mismatch_count": 0,
+            "mismatch_fraction": 0.0
+          }
+        },
+        "window1_disjoint_from_window2": false,
+        "spec_outside_rederivation": {
+          "vs_prior_published_store_bitwise": true,
+          "vs_edited_oracle_deviations_confined_or_absent": true
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "scenario_wall_seconds": 402.23459911346436,
+      "harness_strict_verdict": "PASS",
+      "verdict_basis": {
+        "rule": "post-merge subset re-derivation: (A) inside/ring vs edited oracle within tolerances.py envelope; (B) outside-window bitwise vs prior published store; (C) vs-edited-oracle outside-window as diagnostic (hard fail only outside all written windows); S05 graded on full-mode + bitwise output with the guard-unreachable finding",
+        "citations": [
+          "docs/incremental_design_tool/agent_execution_plan.md P5 exit criteria",
+          "tests/scientific/tolerances.py:9-10 (stored baseline results)",
+          "docs/incremental_design_tool/agent/validation_pipeline.md:123 (untouched regions)"
+        ]
+      }
+    }
+  ],
+  "pre_post_comparison": {
+    "sanity": {
+      "mode": {
+        "pre_merge": [],
+        "post_merge": []
+      },
+      "windows": {
+        "pre_merge": [],
+        "post_merge": []
+      },
+      "wall_seconds": {
+        "pre_merge": [],
+        "post_merge": []
+      },
+      "inside_utci_max_abs": {
+        "pre_merge": null,
+        "post_merge": null
+      },
+      "inside_bitwise": {
+        "pre_merge": null,
+        "post_merge": null
+      }
+    },
+    "S01": {
+      "mode": {
+        "pre_merge": [
+          "local"
+        ],
+        "post_merge": [
+          "full"
+        ]
+      },
+      "windows": {
+        "pre_merge": [
+          {
+            "write": [
+              [
+                105,
+                231,
+                41,
+                167
+              ]
+            ],
+            "read": [
+              [
+                0,
+                467,
+                0,
+                403
+              ]
+            ],
+            "dirty_fraction": 0.063504
+          }
+        ],
+        "post_merge": [
+          {
+            "write": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "read": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "dirty_fraction": 0.314496
+          }
+        ]
+      },
+      "wall_seconds": {
+        "pre_merge": [
+          115.50371289253235
+        ],
+        "post_merge": [
+          128.19962692260742
+        ]
+      },
+      "inside_utci_max_abs": {
+        "pre_merge": 6.103515625e-05,
+        "post_merge": 0.0
+      },
+      "inside_bitwise": {
+        "pre_merge": false,
+        "post_merge": true
+      }
+    },
+    "S05": {
+      "mode": {
+        "pre_merge": [
+          "full"
+        ],
+        "post_merge": [
+          "full"
+        ]
+      },
+      "windows": {
+        "pre_merge": [
+          {
+            "write": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "read": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "dirty_fraction": 0.2537
+          }
+        ],
+        "post_merge": [
+          {
+            "write": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "read": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "dirty_fraction": 0.573504
+          }
+        ]
+      },
+      "wall_seconds": {
+        "pre_merge": [
+          146.76627612113953
+        ],
+        "post_merge": [
+          132.91820001602173
+        ]
+      },
+      "inside_utci_max_abs": {
+        "pre_merge": 0.0,
+        "post_merge": 0.0
+      },
+      "inside_bitwise": {
+        "pre_merge": true,
+        "post_merge": true
+      }
+    },
+    "S08": {
+      "mode": {
+        "pre_merge": [
+          "local",
+          "local"
+        ],
+        "post_merge": [
+          "full",
+          "full"
+        ]
+      },
+      "windows": {
+        "pre_merge": [
+          {
+            "write": [
+              [
+                105,
+                231,
+                41,
+                167
+              ]
+            ],
+            "read": [
+              [
+                0,
+                467,
+                0,
+                403
+              ]
+            ],
+            "dirty_fraction": 0.063504
+          },
+          {
+            "write": [
+              [
+                137,
+                295,
+                313,
+                471
+              ]
+            ],
+            "read": [
+              [
+                0,
+                500,
+                77,
+                500
+              ]
+            ],
+            "dirty_fraction": 0.099856
+          }
+        ],
+        "post_merge": [
+          {
+            "write": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "read": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "dirty_fraction": 0.314496
+          },
+          {
+            "write": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "read": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "dirty_fraction": 0.356864
+          }
+        ]
+      },
+      "wall_seconds": {
+        "pre_merge": [
+          110.27068614959717,
+          111.37647008895874
+        ],
+        "post_merge": [
+          132.03879690170288,
+          139.66979026794434
+        ]
+      },
+      "inside_utci_max_abs": {
+        "pre_merge": 6.4849853515625e-05,
+        "post_merge": 0.0
+      },
+      "inside_bitwise": {
+        "pre_merge": false,
+        "post_merge": true
+      }
+    }
+  },
+  "notes": [
+    "Subset per dispatch: sanity + S01 + S05 + S08. Original full-run evidence and parts preserved untouched (parts/ vs parts2/, oracles/ vs oracles2/).",
+    "Oracles for this run were RECOMPUTED with merged code (oracles2/) so the sanity scenario exercises the merged run_full_tile; the old cached oracles were then cross-checked bitwise against them.",
+    "Grading uses the adjudicated SCI-002 criterion (stored-results invariance bitwise; edited-oracle outside-window as diagnostic)."
+  ]
+}

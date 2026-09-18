@@ -1,0 +1,7 @@
+# Optional web dependencies for the SOLWEIG incremental design-tool API
+# (solweig_gpu.server). Install with: pip install -r requirements-server.txt
+# or: pip install 'solweig-gpu[server]'.
+fastapi>=0.110
+uvicorn>=0.29
+httpx>=0.27
+zstandard>=0.22

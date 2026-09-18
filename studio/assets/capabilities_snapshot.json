@@ -1,0 +1,817 @@
+{
+ "schema_version": 1,
+ "adapters": [
+  {
+   "id": "building_geometry",
+   "group": "geometry",
+   "status": "full_only_initially",
+   "source_nodes": [
+    "building_dsm"
+   ],
+   "operations": [
+    "add",
+    "move",
+    "update",
+    "delete",
+    "raster_patch"
+   ],
+   "nominal_spatial_scope": "conservative_windows_or_full",
+   "locality_modes": [
+    "local",
+    "full"
+   ],
+   "temporal_scope": "replay",
+   "preview": "massing_and_shadow",
+   "validation_fixtures": [
+    "height",
+    "footprint",
+    "wall_aspect",
+    "low_sun",
+    "boundary"
+   ],
+   "integrated": true,
+   "dirty_nodes": [
+    "building_dsm",
+    "building_visibility",
+    "radiation",
+    "relative_geometry",
+    "surface_thermal_state",
+    "svf",
+    "time_shadow",
+    "tmrt",
+    "utci",
+    "vegetation_visibility",
+    "wall_aspect",
+    "walls",
+    "wbgt"
+   ],
+   "property_schema": {
+    "identity_property": "building_id",
+    "properties": {
+     "footprint_m": {
+      "type": "array",
+      "items": {
+       "type": "array",
+       "items": {
+        "type": "number"
+       },
+       "minItems": 2
+      },
+      "min_items": 3,
+      "units": "m (site CRS polygon ring, unclosed)",
+      "description": "ring of (x_m, y_m) vertices; at least 3 distinct vertices, closed by the rasterizer"
+     },
+     "height_m": {
+      "type": "number",
+      "units": "m",
+      "minimum": 0.0,
+      "exclusive_minimum": true,
+      "maximum": 1000.0
+     }
+    }
+   }
+  },
+  {
+   "id": "dynamic_wind_from_geometry",
+   "group": "environment",
+   "status": "scientific_extension",
+   "source_nodes": [
+    "building_dsm",
+    "vegetation_dsm"
+   ],
+   "operations": [
+    "rebuild"
+   ],
+   "nominal_spatial_scope": "full",
+   "locality_modes": [
+    "full"
+   ],
+   "temporal_scope": "all",
+   "preview": "unsupported_disclosure",
+   "validation_fixtures": [],
+   "integrated": false,
+   "dirty_nodes": [
+    "building_dsm",
+    "building_visibility",
+    "radiation",
+    "relative_geometry",
+    "surface_thermal_state",
+    "svf",
+    "time_shadow",
+    "tmrt",
+    "utci",
+    "vegetation_dsm",
+    "vegetation_visibility",
+    "wall_aspect",
+    "walls",
+    "wbgt"
+   ],
+   "property_schema": null,
+   "notes": "Parity gap: oracle applies WindCoeff rasters, incremental path assumes coeff=1 (solver.py:1238-1239, :1414-1415 pass windcoeff=None). Until a wind-coefficient adapter exists, the incremental system MUST detect wind-coefficient rasters and refuse/fall back \u2014 fenced, never silent (lead ruling 2026-09-02)."
+  },
+  {
+   "id": "landcover_surface",
+   "group": "surface",
+   "status": "adapter_required",
+   "source_nodes": [
+    "landcover"
+   ],
+   "operations": [
+    "paint",
+    "polygon_assign",
+    "reset"
+   ],
+   "nominal_spatial_scope": "windows",
+   "locality_modes": [
+    "local",
+    "full"
+   ],
+   "temporal_scope": "replay_if_stateful",
+   "preview": "surface_material",
+   "validation_fixtures": [
+    "class_replace",
+    "mixed_mask",
+    "reset"
+   ],
+   "integrated": true,
+   "dirty_nodes": [
+    "landcover",
+    "radiation",
+    "surface_thermal_state",
+    "tmrt",
+    "utci",
+    "wbgt"
+   ],
+   "property_schema": {
+    "valid_classes": [
+     1,
+     2,
+     5,
+     6
+    ],
+    "fenced_classes": [
+     7
+    ],
+    "fence_reason": "water (class 7) is fenced: the physics tests lc_grid == 3, never 7 \u2014 the Twater branch is dead upstream, so no adapter may claim water semantics it cannot deliver",
+    "class_semantics": "class codes index the land-cover parameter table (albedo, emissivity, Psun); painting re-labels cells, it never invents new materials"
+   }
+  },
+  {
+   "id": "meteorological_forcing",
+   "group": "environment",
+   "status": "adapter_required",
+   "source_nodes": [
+    "meteorology"
+   ],
+   "operations": [
+    "update_time_row",
+    "update_range",
+    "preset",
+    "reset"
+   ],
+   "nominal_spatial_scope": "full_downstream_only",
+   "locality_modes": [
+    "full"
+   ],
+   "temporal_scope": "changed_and_dependent_times",
+   "preview": "environment_status",
+   "validation_fixtures": [
+    "air_temperature",
+    "humidity",
+    "radiation",
+    "wind_speed_direction"
+   ],
+   "integrated": true,
+   "dirty_nodes": [
+    "meteorology",
+    "radiation",
+    "solar_atmospheric_state",
+    "surface_thermal_state",
+    "time_shadow",
+    "tmrt",
+    "utci",
+    "wbgt"
+   ],
+   "property_schema": {
+    "identity_property": null,
+    "properties": {
+     "air_temperature": {
+      "type": "number",
+      "units": "degC",
+      "minimum": -60.0,
+      "maximum": 60.0,
+      "bounds_basis": "dry-bulb air temperature (Td, read as Ta at utci_process.py:674): drives vapour pressure, clearness index, wall/surface temperature parameterisation, nocturnal Lup, UTCI; the UTCI polynomial is fitted far inside this range",
+      "uncertain": "the code enforces no bound; +/-60 degC is a loose plausibility fence (record extremes), not a model-validity range"
+     },
+     "humidity": {
+      "type": "number",
+      "units": "percent",
+      "minimum": 0.0,
+      "maximum": 100.0,
+      "bounds_basis": "relative humidity (RH, utci_process.py:675): enters physics as RH/100 (clearness index :787-788), so the physical [0, 1] fraction bounds the percent spelling to [0, 100] exactly"
+     },
+     "radiation": {
+      "type": "number",
+      "units": "W m-2",
+      "minimum": 0.0,
+      "maximum": 1500.0,
+      "bounds_basis": "global shortwave radiation (Kdn/radG, utci_process.py:676): drives the clearness index and, under onlyglobal = 1, the estimated diffuse/direct split (solweig.py:2055-2059)",
+      "uncertain": "the code enforces no bound; 1500 W m-2 covers the solar constant plus cloud-enhancement excursions, loosely"
+     },
+     "wind_speed": {
+      "type": "number",
+      "units": "m s-1",
+      "minimum": 0.0,
+      "maximum": 75.0,
+      "bounds_basis": "wind speed (Wind/Ws, utci_process.py:680): the near-ground wind is coeff * Ws clamped to >= 0.15 m/s (:870-873) for UTCI",
+      "uncertain": "the code enforces no upper bound; 75 m s-1 is a loose plausibility fence well above any sustained observation"
+     },
+     "pressure": {
+      "type": "number",
+      "units": "hPa",
+      "minimum": 300.0,
+      "maximum": 1100.0,
+      "bounds_basis": "station pressure (press/P, utci_process.py:679; the met column carries hPa, standard atmosphere 1013): clearness index (:787-788) and the WBGT wet-bulb input (:694); the fence spans high-altitude stations (~300 hPa) to above any recorded surface high",
+      "uncertain": "the code enforces no bound; the range is a loose plausibility fence"
+     },
+     "uhii": {
+      "type": "number",
+      "units": "K",
+      "minimum": -10.0,
+      "maximum": 15.0,
+      "bounds_basis": "urban-heat-island intensity (uhii, utci_process.py:688): added to the Ta plane only (:874/:877 -> UTCI/ta outputs) and to the WBGT wet-bulb input (:692, disabled incrementally); it never enters the radiation physics",
+      "uncertain": "the code enforces no bound; -10/+15 K is a loose plausibility fence around observed UHI intensities"
+     }
+    },
+    "blocked_variables": [
+     "day_of_year",
+     "diffuse_radiation",
+     "direct_radiation",
+     "hour",
+     "minute",
+     "wind_direction",
+     "year"
+    ],
+    "time_support": "update_time_row edits one time index; update_range edits a range; time columns themselves are solar-cache-pinned and editable only through selected_date_time"
+   }
+  },
+  {
+   "id": "model_receptor_parameters",
+   "group": "advanced",
+   "status": "adapter_required",
+   "source_nodes": [
+    "model_parameters"
+   ],
+   "operations": [
+    "update",
+    "reset"
+   ],
+   "nominal_spatial_scope": "full_downstream_stage_specific",
+   "locality_modes": [
+    "full"
+   ],
+   "temporal_scope": "affected_times",
+   "preview": "parameter_scope_disclosure",
+   "validation_fixtures": [
+    "baseline_restore",
+    "lower_bound",
+    "upper_bound"
+   ],
+   "integrated": true,
+   "dirty_nodes": [
+    "model_parameters",
+    "radiation",
+    "surface_thermal_state",
+    "tmrt",
+    "utci",
+    "wbgt"
+   ],
+   "property_schema": {
+    "identity_property": null,
+    "properties": {
+     "albedo_b": {
+      "type": "float",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 0.2,
+      "default_source": "code:utci_process.py:50",
+      "bounds_basis": "albedo is a reflectance fraction; forwarded as a kernel arg at utci_process.py:824"
+     },
+     "ewall": {
+      "type": "float",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 0.9,
+      "default_source": "code:utci_process.py:52",
+      "bounds_basis": "emissivity is a fraction; kernel arg at :824"
+     },
+     "absK": {
+      "type": "float",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 0.7,
+      "default_source": "code:utci_process.py:54",
+      "bounds_basis": "shortwave absorptivity fraction; kernel arg at :824"
+     },
+     "absL": {
+      "type": "float",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 0.95,
+      "default_source": "code:utci_process.py:55",
+      "bounds_basis": "longwave absorptivity fraction; kernel arg at :824"
+     },
+     "Fside": {
+      "type": "float",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 0.22,
+      "default_source": "code:utci_process.py:58",
+      "bounds_basis": "Sstr side-weighting fraction; kernel arg at :824",
+      "uncertain": "the code enforces no bound and no Fside/Fup sum constraint; only the per-parameter [0, 1] fraction bound is documented"
+     },
+     "Fup": {
+      "type": "float",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 0.06,
+      "default_source": "code:utci_process.py:59",
+      "bounds_basis": "Sstr up-weighting fraction; kernel arg at :824",
+      "uncertain": "see Fside: no cross-parameter sum constraint is enforced"
+     },
+     "Fcyl": {
+      "type": "float",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 0.28,
+      "default_source": "code:utci_process.py:60",
+      "bounds_basis": "cylinder-side weighting fraction; kernel arg at :824",
+      "uncertain": "see Fside: no cross-parameter sum constraint is enforced"
+     },
+     "cyl": {
+      "type": "bool",
+      "default": true,
+      "default_source": "code:utci_process.py:62",
+      "bounds_basis": "boolean branch selector for the Sstr/Lside merge; kernel arg at :825"
+     },
+     "height": {
+      "type": "float",
+      "minimum": 0.0,
+      "maximum": null,
+      "exclusive_minimum": true,
+      "default": 1.1,
+      "default_source": "code:utci_process.py:716",
+      "bounds_basis": "height of calculation (m); drives the GVF walk reach first/second at :719-722",
+      "uncertain": "no upper bound is documented in the code (the march reach grows as round(height*20)); only strict positivity is enforced"
+     },
+     "transVeg": {
+      "type": "float",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 0.03,
+      "default_source": "code:utci_process.py:649",
+      "bounds_basis": "vegetation transmissivity fraction (3/100); feeds psi :713, svfbuveg :730, diffsh :734"
+     },
+     "firstdayleaf": {
+      "type": "int",
+      "minimum": 1.0,
+      "maximum": 366.0,
+      "default": 97,
+      "default_source": "code:utci_process.py:67",
+      "bounds_basis": "day of year; leaf-on mask at :708-711 (wraparound allowed when firstdayleaf > lastdayleaf)"
+     },
+     "lastdayleaf": {
+      "type": "int",
+      "minimum": 1.0,
+      "maximum": 366.0,
+      "default": 300,
+      "default_source": "code:utci_process.py:68",
+      "bounds_basis": "day of year; leaf-on mask at :708-711"
+     },
+     "elvis": {
+      "type": "int",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 0,
+      "default_source": "code:utci_process.py:63",
+      "bounds_basis": "esky-correction switch (solweig.py:2046); kernel arg at utci_process.py:825"
+     },
+     "anisotropic_sky": {
+      "type": "int",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 1,
+      "default_source": "code:utci_process.py:658",
+      "bounds_basis": "Perez diffuse + anisotropic longwave switch; kernel arg at :827, loop-local assignment at :658"
+     }
+    },
+    "blocked_parameters": [
+     "albedo_g",
+     "location",
+     "onlyglobal",
+     "patch_option",
+     "scale",
+     "utc",
+     "walllimit"
+    ]
+   }
+  },
+  {
+   "id": "output_view",
+   "group": "analysis",
+   "status": "view_only",
+   "source_nodes": [
+    "output_selection"
+   ],
+   "operations": [
+    "select_layer",
+    "compare",
+    "legend",
+    "cached_time"
+   ],
+   "nominal_spatial_scope": "none",
+   "locality_modes": [],
+   "temporal_scope": "none",
+   "preview": "immediate",
+   "validation_fixtures": [
+    "zero_solver_job"
+   ],
+   "integrated": false,
+   "dirty_nodes": [
+    "output_selection"
+   ],
+   "property_schema": null,
+   "producible_incremental": [
+    "utci",
+    "tmrt",
+    "shadow",
+    "kup",
+    "kdown",
+    "lup",
+    "ldown",
+    "ta",
+    "wind"
+   ]
+  },
+  {
+   "id": "selected_date_time",
+   "group": "environment",
+   "status": "adapter_required",
+   "source_nodes": [
+    "selected_date_time"
+   ],
+   "operations": [
+    "select"
+   ],
+   "nominal_spatial_scope": "full_downstream_only",
+   "locality_modes": [
+    "full"
+   ],
+   "temporal_scope": "selected_or_replay",
+   "preview": "solar_time_and_shadow",
+   "validation_fixtures": [
+    "morning",
+    "noon",
+    "low_sun",
+    "date_change"
+   ],
+   "integrated": false,
+   "dirty_nodes": [
+    "radiation",
+    "selected_date_time",
+    "solar_atmospheric_state",
+    "surface_thermal_state",
+    "time_shadow",
+    "tmrt",
+    "utci",
+    "wbgt"
+   ],
+   "property_schema": null
+  },
+  {
+   "id": "terrain_dem",
+   "group": "geometry",
+   "status": "full_only_initially",
+   "source_nodes": [
+    "dem"
+   ],
+   "operations": [
+    "raster_patch",
+    "sculpt",
+    "reset"
+   ],
+   "nominal_spatial_scope": "full",
+   "locality_modes": [
+    "full"
+   ],
+   "temporal_scope": "replay",
+   "preview": "terrain_mesh",
+   "validation_fixtures": [
+    "grading",
+    "relative_height",
+    "boundary"
+   ],
+   "integrated": false,
+   "dirty_nodes": [
+    "dem",
+    "radiation",
+    "relative_geometry",
+    "surface_thermal_state",
+    "svf",
+    "time_shadow",
+    "tmrt",
+    "utci",
+    "vegetation_visibility",
+    "wbgt"
+   ],
+   "property_schema": null
+  },
+  {
+   "id": "vegetation_geometry",
+   "group": "geometry",
+   "status": "adapter_required",
+   "source_nodes": [
+    "vegetation_dsm"
+   ],
+   "operations": [
+    "add",
+    "move",
+    "update",
+    "delete"
+   ],
+   "nominal_spatial_scope": "directional_windows",
+   "locality_modes": [
+    "local",
+    "full"
+   ],
+   "temporal_scope": "replay_if_stateful",
+   "preview": "vegetation_geometry_and_shadow",
+   "validation_fixtures": [
+    "isolated",
+    "overlap",
+    "low_sun",
+    "boundary",
+    "delete"
+   ],
+   "integrated": true,
+   "dirty_nodes": [
+    "radiation",
+    "relative_geometry",
+    "surface_thermal_state",
+    "svf",
+    "time_shadow",
+    "tmrt",
+    "utci",
+    "vegetation_dsm",
+    "vegetation_visibility",
+    "wbgt"
+   ],
+   "property_schema": {
+    "identity_property": "tree_id",
+    "properties": {
+     "x_m": {
+      "type": "number",
+      "units": "m",
+      "bounds": "site extent (world coordinates; validated per edit)"
+     },
+     "y_m": {
+      "type": "number",
+      "units": "m",
+      "bounds": "site extent (world coordinates; validated per edit)"
+     },
+     "height_m": {
+      "type": "number",
+      "units": "m",
+      "minimum": 3.0,
+      "maximum": 40.0
+     },
+     "canopy_radius_m": {
+      "type": "number",
+      "units": "m",
+      "minimum": 0.5,
+      "maximum": 15.0
+     },
+     "trunk_ratio": {
+      "type": "number",
+      "units": "ratio",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "exclusive_maximum": true,
+      "default": 0.25
+     }
+    },
+    "rejected_properties": [
+     "transmissivity"
+    ],
+    "rejection_reason": "transmissivity is validated by the data model but inert in the physics (global transVeg = 0.03, utci_process.py:649); edit it through model_receptor_parameters.transVeg instead"
+   },
+   "notes": "Per-tree transmissivity is validated but NOT consumed (global transVeg=0.03, utci_process.py:649) \u2014 transmissivity is EXCLUDED from the v1 property schema; inert until transVeg becomes per-tree/runtime (lead ruling 2026-09-02). trunk_ratio IS consumed (trees.py:152 \u2192 vegdem2 trunk zone = trunk_ratio * height_m). Spatial-coordinate disclosure (u-e2 L5): x_m/y_m outside the site extent PASS validation (the schema bounds geometry, not geography) and rasterize to zero cells \u2014 the edit commits with NO scene effect."
+  }
+ ],
+ "edit_families": {
+  "building_dsm": {
+   "dirty_nodes": [
+    "building_dsm",
+    "building_visibility",
+    "radiation",
+    "relative_geometry",
+    "surface_thermal_state",
+    "svf",
+    "time_shadow",
+    "tmrt",
+    "utci",
+    "vegetation_visibility",
+    "wall_aspect",
+    "walls",
+    "wbgt"
+   ],
+   "adapters": [
+    "building_geometry",
+    "dynamic_wind_from_geometry"
+   ]
+  },
+  "dem": {
+   "dirty_nodes": [
+    "dem",
+    "radiation",
+    "relative_geometry",
+    "surface_thermal_state",
+    "svf",
+    "time_shadow",
+    "tmrt",
+    "utci",
+    "vegetation_visibility",
+    "wbgt"
+   ],
+   "adapters": [
+    "terrain_dem"
+   ]
+  },
+  "landcover": {
+   "dirty_nodes": [
+    "landcover",
+    "radiation",
+    "surface_thermal_state",
+    "tmrt",
+    "utci",
+    "wbgt"
+   ],
+   "adapters": [
+    "landcover_surface"
+   ]
+  },
+  "meteorology": {
+   "dirty_nodes": [
+    "meteorology",
+    "radiation",
+    "solar_atmospheric_state",
+    "surface_thermal_state",
+    "time_shadow",
+    "tmrt",
+    "utci",
+    "wbgt"
+   ],
+   "adapters": [
+    "meteorological_forcing"
+   ]
+  },
+  "model_parameters": {
+   "dirty_nodes": [
+    "model_parameters",
+    "radiation",
+    "surface_thermal_state",
+    "tmrt",
+    "utci",
+    "wbgt"
+   ],
+   "adapters": [
+    "model_receptor_parameters"
+   ]
+  },
+  "output_selection": {
+   "dirty_nodes": [
+    "output_selection"
+   ],
+   "adapters": [
+    "output_view"
+   ]
+  },
+  "selected_date_time": {
+   "dirty_nodes": [
+    "radiation",
+    "selected_date_time",
+    "solar_atmospheric_state",
+    "surface_thermal_state",
+    "time_shadow",
+    "tmrt",
+    "utci",
+    "wbgt"
+   ],
+   "adapters": [
+    "selected_date_time"
+   ]
+  },
+  "vegetation_dsm": {
+   "dirty_nodes": [
+    "radiation",
+    "relative_geometry",
+    "surface_thermal_state",
+    "svf",
+    "time_shadow",
+    "tmrt",
+    "utci",
+    "vegetation_dsm",
+    "vegetation_visibility",
+    "wbgt"
+   ],
+   "adapters": [
+    "dynamic_wind_from_geometry",
+    "vegetation_geometry"
+   ]
+  }
+ },
+ "fences": {
+  "landcover_valid_classes": [
+   1,
+   2,
+   5,
+   6
+  ],
+  "landcover_fenced_classes": [
+   7
+  ],
+  "vegetation_rejected_properties": [
+   "transmissivity"
+  ],
+  "model_parameters_safe": [
+   "Fcyl",
+   "Fside",
+   "Fup",
+   "absK",
+   "absL",
+   "albedo_b",
+   "anisotropic_sky",
+   "cyl",
+   "elvis",
+   "ewall",
+   "firstdayleaf",
+   "height",
+   "lastdayleaf",
+   "transVeg"
+  ],
+  "model_parameters_blocked": [
+   "albedo_g",
+   "location",
+   "onlyglobal",
+   "patch_option",
+   "scale",
+   "utc",
+   "walllimit"
+  ],
+  "meteorology_variables_safe": [
+   "air_temperature",
+   "humidity",
+   "pressure",
+   "radiation",
+   "uhii",
+   "wind_speed"
+  ],
+  "meteorology_variables_blocked": [
+   "day_of_year",
+   "diffuse_radiation",
+   "direct_radiation",
+   "hour",
+   "minute",
+   "wind_direction",
+   "year"
+  ]
+ },
+ "locality_modes": [
+  "local",
+  "full"
+ ],
+ "view_only": {
+  "adapter_ids": [
+   "output_view"
+  ],
+  "operations": [
+   "cached_time",
+   "compare",
+   "legend",
+   "select_layer"
+  ],
+  "producible_layers": [
+   "kdown",
+   "kup",
+   "ldown",
+   "lup",
+   "shadow",
+   "ta",
+   "tmrt",
+   "utci",
+   "wind"
+  ],
+  "zero_scientific_jobs": true,
+  "basis": "UEDIT-007: view operations select among already-published layers; they are answered from capability metadata plus the published result manifest and never enqueue a solver job"
+ }
+}

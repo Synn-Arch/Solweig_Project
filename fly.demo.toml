@@ -1,0 +1,83 @@
+# Fly.io DEMO deployment of the realtime SOLWEIG design tool (single machine).
+#
+# Shape: one shared-cpu machine runs BOTH the API (uvicorn :8000) and the
+# studio frontend proxy (studio/serve.py :8080,
+# same-origin /api reverse proxy — the compose shape collapsed onto one VM).
+# Scale-to-zero: the machine suspends when idle and cold-starts on the first
+# HTTPS request (~10 s boot + ~30-60 s numba JIT + cache mmap; demo-grade).
+#
+# Fly machines mount AT MOST ONE volume per machine — state and site cache
+# share the single `solweig_disk` at /data (subdirs /data/state, /data/cache).
+#
+# Provisioning (one-time, after `flyctl auth login`):
+#   flyctl apps create solweig-rt-demo          # pick a globally unique name; mirror it below
+#   flyctl volumes create solweig_disk --size 3 -r nrt
+#   flyctl deploy -c fly.demo.toml --build-target demo
+#   ./deploy/fly-demo/upload_site_cache.sh      # 504 MB one-time upload
+#   flyctl machine restart -a solweig-rt-demo   # pick up the cache
+#
+# Cost (trial/budget shape): performance-1x 2 GB suspended-at-zero ≈
+# pay-per-demo-minute + volume GB-months; idle cost ≈ disk only (~$1-2/mo).
+# Comfortably inside a $14/mo ceiling even with regular demo use.
+
+app = "solweig-rt-demo"
+primary_region = "nrt"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  SOLWEIG_STATE_ROOT = "/data/state"
+  SOLWEIG_CACHE_ROOT = "/data/cache"     # cache at /data/cache/<site_id>/
+  SOLWEIG_SITE_ID = "site_500"
+  # The exact lane refuses to run from the cache alone: the oracle-location
+  # derivation opens Building_DSM/Building_DSM_0_0.tif from the SITE dir
+  # (no cache carries tifs) and forcing re-derives the UTC offset from the
+  # SELECTED DATE — a date that disagrees with the cache's solar geometry
+  # refuses too. Both ride the volume via upload_site_cache.sh.
+  SOLWEIG_SITE_DIR_SITE_500 = "/data/site_dirs/site_500"
+  SOLWEIG_SELECTED_DATE_STR_SITE_500 = "2009-08-11"  # the cache's build date
+  SOLWEIG_HOST = "127.0.0.1"
+  SOLWEIG_PORT = "8000"
+  # The per-IP request gate sees ONE client behind the serve.py proxy (every
+  # browser arrives from loopback), so the default 30/min would throttle all
+  # visitors as a single shared bucket. 600/min keeps the IP gate out of the
+  # way: editing pace is governed by the realtime admission layer, not this
+  # defence-in-depth transport cap.
+  SOLWEIG_REQUESTS_PER_MINUTE = "600"
+  # One shared vCPU: torch/OMP/numba default to the HOST's core count and
+  # parallelize every small op across a thread pool that then synchronizes
+  # on barriers — the exact solve crawled at ~10% CPU for 20+ min while
+  # "runnable" (measured live on the demo). Pinning every runtime to a
+  # single thread makes the solve CPU-bound at the full vCPU instead of
+  # barrier-bound.
+  OMP_NUM_THREADS = "1"
+  MKL_NUM_THREADS = "1"
+  OPENBLAS_NUM_THREADS = "1"
+  NUMBA_NUM_THREADS = "1"
+
+[http_service]
+  internal_port = 8080                   # serve.py frontend proxy
+  force_https = true
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  min_machines_running = 0               # scale to zero — cheapest demo
+
+[[mounts]]                               # SQLite store + site cache share ONE volume
+  source = "solweig_disk"                # (fly: max 1 volume/machine) — /data/state,
+  destination = "/data"                  # /data/cache (data policy: cache NEVER in image)
+
+[vm]
+  # Billing enabled 2026-09-06 (was trial-org-barred). A full-tile exact
+  # solve on shared-cpu-1x measured 20+ min at ~7-10% effective CPU (heavy
+  # steal on the shared slice) — unusable for the demo's exact lane. One
+  # dedicated core + 2 GB; scale-to-zero keeps idle cost ≈ volume only.
+  size = "performance-1x"
+  memory = 2048                          # 1 dedicated vCPU / 2 GB; active cost ≈ 2x shared
+                                         # — still inside a $14/mo budget at demo usage
+
+# Single-process container runs two cooperating processes (API + same-origin
+# frontend proxy). Demo-only shape; the classroom shape keeps them separate
+# (docker-compose.yml).
+[deploy]
+  release_command = "sh -c 'mkdir -p /data/state /data/cache || true'"

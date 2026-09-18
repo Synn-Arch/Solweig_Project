@@ -1,0 +1,24 @@
+{
+  "recorded_at_utc": "2026-09-07T21:51:24.414622+00:00",
+  "host_purpose": "T00 baseline host (not the acceptance 4-core pinned reference)",
+  "cpu_model": "Apple M1 Pro",
+  "physical_cores": 10,
+  "logical_cores": 10,
+  "memory_bytes": 17179869184,
+  "os": {
+    "system": "Darwin",
+    "release": "25.5.0",
+    "version": "26.5.2"
+  },
+  "blas": "accelerate",
+  "venv_python": "/Users/alansynn/Workspace/solweig/.venv/bin/python",
+  "packages": {
+    "python": "3.14.7",
+    "numpy": "2.5.2",
+    "torch": "2.14.0",
+    "numba": "0.67.0",
+    "torch_threads": 8,
+    "torch_interop_threads": 10,
+    "cuda_available": false
+  }
+}

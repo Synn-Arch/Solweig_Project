@@ -1,0 +1,22 @@
+schema_version: 1
+gates:
+  - id: UEDIT-001
+    requirement: every enabled editor has a registered adapter and schema
+  - id: UEDIT-002
+    requirement: every scientific adapter resolves valid dependency nodes
+  - id: UEDIT-003
+    requirement: local adapters pass full-domain differential fixtures
+  - id: UEDIT-004
+    requirement: global edits reuse unaffected geometry caches
+  - id: UEDIT-005
+    requirement: heterogeneous edit batches produce one valid topological plan
+  - id: UEDIT-006
+    requirement: stale scene revisions never publish
+  - id: UEDIT-007
+    requirement: view-only operations enqueue zero scientific jobs
+  - id: UEDIT-008
+    requirement: target CPU latency and peak RSS are measured per edit family
+  - id: UEDIT-009
+    requirement: frontend exposes changed, reused, and recomputed stages
+  - id: UEDIT-010
+    requirement: dynamic wind limitations are disclosed unless independently validated

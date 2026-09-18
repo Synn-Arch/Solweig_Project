@@ -1,0 +1,120 @@
+{
+ "site": "site_500",
+ "amplitudes": {
+  "a_min": 183.97442626953125,
+  "a_max": 217.36346435546875,
+  "canopy_max": 30.772857666015625,
+  "dem_min": 183.97442626953125,
+  "dem_max": 202.35031127929688,
+  "vegdsm_max": 241.82763671875,
+  "vegdsm2_max": 223.16226196289062,
+  "vegdem_canopy_plus_dem_max": 228.33999633789062,
+  "abs_amaxvalue": 228.33999633789062,
+  "relative_bound": 57.85321044921875,
+  "effective_amplitude": 57.85321044921875,
+  "clamp_active_bound_gt_abs": false,
+  "bush_any_nonzero": false,
+  "scale_px_per_m": 0.5
+ },
+ "A_vs_cache_vegsh": {
+  "label": "A-vs-cache vegsh",
+  "total_mismatch_pairs": 0,
+  "patches_with_mismatch": 0,
+  "bitwise_identical": true,
+  "per_patch_mismatching": []
+ },
+ "A_vs_cache_vbsh": {
+  "label": "A-vs-cache vbsh",
+  "total_mismatch_pairs": 0,
+  "patches_with_mismatch": 0,
+  "bitwise_identical": true,
+  "per_patch_mismatching": []
+ },
+ "E_vs_cache_vegsh": {
+  "label": "E-vs-cache vegsh",
+  "total_mismatch_pairs": 0,
+  "patches_with_mismatch": 0,
+  "bitwise_identical": true,
+  "per_patch_mismatching": []
+ },
+ "E_vs_cache_vbsh": {
+  "label": "E-vs-cache vbsh",
+  "total_mismatch_pairs": 0,
+  "patches_with_mismatch": 0,
+  "bitwise_identical": true,
+  "per_patch_mismatching": []
+ },
+ "E_vs_A_vegsh": {
+  "label": "E-vs-A vegsh",
+  "total_mismatch_pairs": 0,
+  "patches_with_mismatch": 0,
+  "bitwise_identical": true,
+  "per_patch_mismatching": []
+ },
+ "E_vs_A_vbsh": {
+  "label": "E-vs-A vbsh",
+  "total_mismatch_pairs": 0,
+  "patches_with_mismatch": 0,
+  "bitwise_identical": true,
+  "per_patch_mismatching": []
+ },
+ "E_scalars_vs_cache": {
+  "svfveg": {
+   "bitwise_equal": true,
+   "mismatch_cells": 0,
+   "max_abs_diff": 0.0
+  },
+  "svfEveg": {
+   "bitwise_equal": true,
+   "mismatch_cells": 0,
+   "max_abs_diff": 0.0
+  },
+  "svfSveg": {
+   "bitwise_equal": true,
+   "mismatch_cells": 0,
+   "max_abs_diff": 0.0
+  },
+  "svfWveg": {
+   "bitwise_equal": true,
+   "mismatch_cells": 0,
+   "max_abs_diff": 0.0
+  },
+  "svfNveg": {
+   "bitwise_equal": true,
+   "mismatch_cells": 0,
+   "max_abs_diff": 0.0
+  },
+  "svfaveg": {
+   "bitwise_equal": true,
+   "mismatch_cells": 0,
+   "max_abs_diff": 0.0
+  },
+  "svfEaveg": {
+   "bitwise_equal": true,
+   "mismatch_cells": 0,
+   "max_abs_diff": 0.0
+  },
+  "svfSaveg": {
+   "bitwise_equal": true,
+   "mismatch_cells": 0,
+   "max_abs_diff": 0.0
+  },
+  "svfWaveg": {
+   "bitwise_equal": true,
+   "mismatch_cells": 0,
+   "max_abs_diff": 0.0
+  },
+  "svfNaveg": {
+   "bitwise_equal": true,
+   "mismatch_cells": 0,
+   "max_abs_diff": 0.0
+  },
+  "svftotal": {
+   "bitwise_equal": true,
+   "mismatch_cells": 0,
+   "max_abs_diff": 0.0
+  }
+ },
+ "verdict_absolute_oracle_vs_cache": true,
+ "verdict_current_path_vs_cache": true
+}

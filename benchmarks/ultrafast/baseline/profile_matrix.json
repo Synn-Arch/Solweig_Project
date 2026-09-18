@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-09-07",
+  "note": "T00 draft. canonical_cpu_v1 does not exist yet (T02+ creates solweig_core); the row records the legacy CPU incremental path measured today under that future name slot. GPU rows are policy-BLOCKED on this host (no CUDA device; unavailable_gpu_is_not_pass).",
+  "profiles": [
+    {
+      "profile_id": "canonical_cpu_v1",
+      "backend": "numba CPU (solweig_core) - FUTURE",
+      "status": "NOT_RUN",
+      "reason": "profile not implemented at T00; baseline of the legacy CPU exact lane measured instead",
+      "measured_proxy": "legacy_cpu_incremental_e0d19fc"
+    },
+    {
+      "profile_id": "legacy_cpu_v1",
+      "backend": "torch CPU exact incremental lane (solve_window, cuda never initialized)",
+      "status": "MEASURED_T00",
+      "evidence": "benchmarks/ultrafast/baseline/raw_runs.jsonl + artifact root run_record.json files",
+      "host": "Apple M1 Pro, 10 cores, torch threads=8"
+    },
+    {
+      "profile_id": "legacy_cuda_v1",
+      "backend": "torch CUDA batch path (GPU full-domain solver)",
+      "status": "BLOCKED",
+      "reason": "no CUDA device on this host; acceptance policy forbids claiming GPU results elsewhere as pass; remote-GPU reruns are a separate task's decision"
+    },
+    {
+      "profile_id": "cuda_canonical_v1",
+      "backend": "future CUDA canonical profile",
+      "status": "BLOCKED",
+      "reason": "profile not implemented and no local CUDA device"
+    }
+  ]
+}

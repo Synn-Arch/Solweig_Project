@@ -1,0 +1,626 @@
+#SOLWEIG-GPU: GPU-accelerated SOLWEIG model for urban thermal comfort simulation
+#Copyright (C) 2022–2025 Harsh Kamath and Naveen Sudharsan
+
+#This program is free software: you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation, either version 3 of the License, or
+#(at your option) any later version.
+
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#GNU General Public License for more details.
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+import math
+import numpy as np
+from math import radians
+from copy import deepcopy
+from osgeo import gdal, osr
+import datetime
+import calendar
+import scipy.ndimage.interpolation as sc
+import torch
+import torch.nn.functional as F
+from scipy.ndimage import rotate
+import time
+import os
+import zipfile
+
+gdal.UseExceptions()
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+def load_raster_to_tensor(dem_path, device=device):
+    dataset = gdal.Open(dem_path)
+    if dataset is None:
+        raise FileNotFoundError(f"Could not open raster: {dem_path}")
+
+    band = dataset.GetRasterBand(1)
+    array = band.ReadAsArray().astype(np.float32)
+
+    return torch.tensor(array, device=device), dataset
+
+def ensure_tensor(x, device=None):
+    """
+    Convert input to PyTorch tensor on specified device.
+    
+    Args:
+        x: Input data (can be numpy array, list, or torch tensor)
+        device (torch.device, optional): Target device. Auto-detects GPU if available.
+    
+    Returns:
+        torch.Tensor: Input converted to tensor on specified device
+    """
+    if device is None:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if not isinstance(x, torch.Tensor):
+        x = torch.tensor(x, device=device)
+    return x
+
+def tensor_to_numpy(x):
+    """
+    Move GPU/CPU torch tensor to CPU NumPy array before writing.
+    """
+    if isinstance(x, torch.Tensor):
+        return x.detach().cpu().numpy()
+    return np.asarray(x)
+
+
+def save_raster_like_gdal(gdal_template, output_path, array):
+    """
+    Save a 2D array as GeoTIFF using geotransform/projection
+    from the input DSM raster.
+    """
+    array = tensor_to_numpy(array).astype(np.float32)
+
+    driver = gdal.GetDriverByName("GTiff")
+    rows, cols = array.shape
+
+    out_ds = driver.Create(
+        output_path,
+        cols,
+        rows,
+        1,
+        gdal.GDT_Float32,
+    )
+
+    out_ds.SetGeoTransform(gdal_template.GetGeoTransform())
+    out_ds.SetProjection(gdal_template.GetProjection())
+
+    out_band = out_ds.GetRasterBand(1)
+    out_band.WriteArray(array)
+    out_band.FlushCache()
+
+    out_ds.FlushCache()
+    out_ds = None
+
+
+def save_svf_zip_npz_outputs(output_dir, gdal_dsm, svf, svfE, svfS, svfW, svfN, svfveg, svfEveg, svfSveg, svfWveg, svfNveg, svfaveg, svfEaveg, svfSaveg,
+    svfWaveg, svfNaveg, shmat, vegshmat, vbshvegshmat, svftotal, number=None,):
+    """
+    - svfs.zip containing SVF GeoTIFFs
+    - shadowmats.npz containing shadow matrices
+    - SkyViewFactor.tif or SkyViewFactor_<number>.tif
+    """
+
+    if output_dir is None:
+        raise ValueError("output_dir must be provided when save_rasters=True")
+
+    if gdal_dsm is None:
+        raise ValueError("gdal_dsm must be provided when save_rasters=True")
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    suffix = f"_{number}" if number is not None else ""
+
+    zip_path = os.path.join(output_dir, f"svfs{suffix}.zip")
+    npz_path = os.path.join(output_dir, f"shadowmats{suffix}.npz")
+    svftotal_path = os.path.join(output_dir, f"SkyViewFactor{suffix}.tif")
+
+    if os.path.isfile(zip_path):
+        os.remove(zip_path)
+
+    rasters_to_save = {
+        "svf.tif": svf,
+        "svfE.tif": svfE,
+        "svfS.tif": svfS,
+        "svfW.tif": svfW,
+        "svfN.tif": svfN,
+        "svfveg.tif": svfveg,
+        "svfEveg.tif": svfEveg,
+        "svfSveg.tif": svfSveg,
+        "svfWveg.tif": svfWveg,
+        "svfNveg.tif": svfNveg,
+        "svfaveg.tif": svfaveg,
+        "svfEaveg.tif": svfEaveg,
+        "svfSaveg.tif": svfSaveg,
+        "svfWaveg.tif": svfWaveg,
+        "svfNaveg.tif": svfNaveg,
+    }
+
+    temporary_tifs = []
+
+    for tif_name, data in rasters_to_save.items():
+        tif_path = os.path.join(output_dir, tif_name)
+        save_raster_like_gdal(gdal_dsm, tif_path, data)
+        temporary_tifs.append(tif_path)
+
+    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for tif_path in temporary_tifs:
+            zf.write(tif_path, os.path.basename(tif_path))
+
+    for tif_path in temporary_tifs:
+        os.remove(tif_path)
+
+    save_raster_like_gdal(gdal_dsm, svftotal_path, svftotal)
+
+    np.savez_compressed(
+        npz_path,
+        shadowmat=tensor_to_numpy(shmat).astype(np.float32),
+        vegshadowmat=tensor_to_numpy(vegshmat).astype(np.float32),
+        vbshmat=tensor_to_numpy(vbshvegshmat).astype(np.float32),
+    )
+
+def shadow(amaxvalue, a, vegdem, vegdem2, bush, azimuth, altitude, scale):
+    """
+    Calculate shadow patterns from buildings and vegetation using GPU-accelerated ray tracing.
+    
+    This function performs GPU-accelerated shadow calculations by tracing sun rays
+    across the Digital Surface Model (DSM) accounting for buildings and vegetation.
+    
+    Args:
+        amaxvalue (torch.Tensor): Maximum elevation value in the domain
+        a (torch.Tensor): Digital Surface Model (DSM) array
+        vegdem (torch.Tensor): Vegetation canopy DSM
+        vegdem2 (torch.Tensor): Vegetation trunk zone DSM
+        bush (torch.Tensor): Bush/shrub layer DSM
+        azimuth (float): Solar azimuth angle (degrees, 0=North, clockwise)
+        altitude (float): Solar altitude angle (degrees above horizon)
+        scale (float): Grid resolution in pixels per meter
+    
+    Returns:
+        tuple: (sh, vegsh, vbshvegsh) where:
+            - sh: Shadow map (0=shadow, 1=sunlit)
+            - vegsh: Vegetation shadow influence
+            - vbshvegsh: Combined vegetation and building shadow
+    
+    Notes:
+        - Automatically uses GPU if available, otherwise CPU
+        - Implements anisotropic shadow casting
+        - Accounts for vegetation transmittance
+    """
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    degrees = torch.pi / 180.
+    if azimuth == 0.0:
+        azimuth = 1e-12
+    azimuth = ensure_tensor(azimuth)
+    altitude = ensure_tensor(altitude)
+    azimuth = azimuth * degrees #torch.tensor(azimuth * degrees, device=a.device)
+    altitude = altitude * degrees #torch.tensor(altitude * degrees, device=a.device)
+
+    dx = 0.
+    dy = 0.
+    dz = 0.
+    sizex = a.shape[0]
+    sizey = a.shape[1]
+
+    device = a.device
+
+    dx = torch.tensor(dx, device=device)
+    dy = torch.tensor(dy, device=device)
+    dz = torch.tensor(dz, device=device)
+
+    temp = torch.zeros((sizex, sizey), device=device)
+    tempvegdem = torch.zeros((sizex, sizey), device=device)
+    tempvegdem2 = torch.zeros((sizex, sizey), device=device)
+    sh = torch.zeros((sizex, sizey), device=device)
+    vbshvegsh = torch.zeros((sizex, sizey), device=device)
+    tempbush = torch.zeros((sizex, sizey), device=device)
+
+    f = a.clone()
+    g = torch.zeros((sizex, sizey), device=device)
+    bushplant = (bush > 1.).float()
+    vegsh = torch.zeros((sizex, sizey), device=device) + bushplant
+
+    pibyfour = torch.pi / 4.
+    threetimespibyfour = 3. * pibyfour
+    fivetimespibyfour = 5. * pibyfour
+    seventimespibyfour = 7. * pibyfour
+    sinazimuth = torch.sin(azimuth)
+    cosazimuth = torch.cos(azimuth)
+    tanazimuth = torch.tan(azimuth)
+    signsinazimuth = torch.sign(sinazimuth)
+    signcosazimuth = torch.sign(cosazimuth)
+    dssin = torch.abs((1. / sinazimuth))
+    dscos = torch.abs((1. / cosazimuth))
+    tanaltitudebyscale = torch.tan(altitude) / scale
+
+    index = 1
+    fabovea = None
+    gabovea = None
+    vegsh2 = None
+
+    while (amaxvalue >= dz and torch.abs(dx) < sizex and torch.abs(dy) < sizey):
+        if (pibyfour <= azimuth < threetimespibyfour or fivetimespibyfour <= azimuth < seventimespibyfour):
+            dy = signsinazimuth * index
+            dx = -1. * signcosazimuth * torch.abs(torch.round(index / tanazimuth))
+            ds = dssin
+        else:
+            dy = signsinazimuth * torch.abs(torch.round(index * tanazimuth))
+            dx = -1. * signcosazimuth * index
+            ds = dscos
+
+        dz = ds * index * tanaltitudebyscale
+
+        tempvegdem.zero_()
+        tempvegdem2.zero_()
+        temp.zero_()
+        absdx = torch.abs(dx)
+        absdy = torch.abs(dy)
+        xc1 = int((dx + absdx) / 2.)
+        xc2 = int(sizex + (dx - absdx) / 2.)
+        yc1 = int((dy + absdy) / 2.)
+        yc2 = int(sizey + (dy - absdy) / 2.)
+        xp1 = int(-((dx - absdx) / 2.))
+        xp2 = int(sizex - (dx + absdx) / 2.)
+        yp1 = int(-((dy - absdy) / 2.))
+        yp2 = int(sizey - (dy + absdy) / 2.)
+
+        tempvegdem[xp1:xp2, yp1:yp2] = vegdem[xc1:xc2, yc1:yc2] - dz
+        tempvegdem2[xp1:xp2, yp1:yp2] = vegdem2[xc1:xc2, yc1:yc2] - dz
+        temp[xp1:xp2, yp1:yp2] = a[xc1:xc2, yc1:yc2] - dz
+
+        f = torch.max(f, temp)
+        sh[f > a] = 1.
+        sh[f <= a] = 0.
+
+        fabovea = tempvegdem > a
+        gabovea = tempvegdem2 > a
+        vegsh2 = fabovea.float() - gabovea.float()
+
+        vegsh = torch.max(vegsh, vegsh2)
+        vegsh[(vegsh * sh > 0.)] = 0.
+
+        vbshvegsh = vegsh + vbshvegsh
+
+        if index == 1.:
+            firstvegdem = tempvegdem - temp
+            firstvegdem[firstvegdem <= 0.] = 1000.
+            vegsh[firstvegdem < dz] = 1.
+            vegsh = vegsh * (vegdem2 > a).float()
+            vbshvegsh.zero_()
+
+        if bush.max() > 0. and torch.max(fabovea * bush) > 0.:
+            tempbush.zero_()
+            tempbush[int(xp1):int(xp2), int(yp1):int(yp2)] = bush[int(xc1):int(xc2), int(yc1):int(yc2)] - dz
+            g = torch.max(g, tempbush)
+            g *= bushplant
+
+        index += 1.
+
+    sh = 1. - sh
+    vbshvegsh[vbshvegsh > 0.] = 1.
+    vbshvegsh = vbshvegsh - vegsh
+
+    if bush.max() > 0.:
+        g = g - bush
+        g[g > 0.] = 1.
+        g[g < 0.] = 0.
+        vegsh = vegsh - bushplant + g
+        vegsh[vegsh < 0.] = 0.
+
+    vegsh[vegsh > 0.] = 1.
+    vegsh = 1. - vegsh
+    vbshvegsh = 1. - vbshvegsh
+
+    # Changed here
+    del tempvegdem, tempvegdem2, temp, tempbush, fabovea, gabovea, vegsh2
+    torch.cuda.empty_cache()
+    # Changed here
+    return sh, vegsh, vbshvegsh
+
+def annulus_weight(altitude, aziinterval, device=None):
+    """
+    Calculate annulus weights for sky view factor computation.
+    
+    Computes weights for different altitude bands used in SVF calculation
+    based on the solid angle subtended by each annular ring.
+    
+    Args:
+        altitude (float or torch.Tensor): Solar altitude angle (degrees)
+        aziinterval (int): Azimuthal interval for discretization
+        device (torch.device, optional): PyTorch device. Auto-detects if None.
+    
+    Returns:
+        torch.Tensor: Array of annulus weights
+    """
+    if device is None:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    n = torch.tensor(90.0, device=device)
+    altitude = torch.tensor(altitude, device=device)
+
+    steprad = (360.0 / aziinterval) * (torch.pi / 180.0)
+    annulus = 91.0 - altitude
+    w = (1.0 / (2.0 * torch.pi)) * torch.sin(torch.pi / (2.0 * n)) * torch.sin((torch.pi * (2.0 * annulus - 1.0)) / (2.0 * n))
+    weight = steprad * w
+
+    return weight
+
+def create_patches(patch_option):
+    """
+    Create patch configuration for sky hemisphere discretization.
+    
+    Generates the angular resolution and patch geometry for sky view factor
+    calculations by dividing the sky hemisphere into discrete patches.
+    
+    Args:
+        patch_option (int): Number of patches (144 or 2304)
+            - 144: Coarser resolution (faster)
+            - 2304: Finer resolution (more accurate)
+    
+    Returns:
+        dict: Configuration containing:
+            - 'azimuthinterval': Number of azimuth bins
+            - 'altitudeinterval': Number of altitude bins
+            - 'patchnorm': Normalization factor
+    
+    Raises:
+        ValueError: If patch_option is not 144 or 2304
+    """
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    deg2rad = torch.pi / 180
+    skyvaultalt = torch.tensor([], device=device)
+    skyvaultazi = torch.tensor([], device=device)
+
+    if patch_option == 1:
+        annulino = torch.tensor([0, 12, 24, 36, 48, 60, 72, 84, 90], device=device)
+        skyvaultaltint = torch.tensor([6, 18, 30, 42, 54, 66, 78, 90], device=device)
+        azistart = torch.tensor([0, 4, 2, 5, 8, 0, 10, 0], device=device)
+        patches_in_band = torch.tensor([30, 30, 24, 24, 18, 12, 6, 1], device=device)
+    elif patch_option == 2:
+        annulino = torch.tensor([0, 12, 24, 36, 48, 60, 72, 84, 90], device=device)
+        skyvaultaltint = torch.tensor([6, 18, 30, 42, 54, 66, 78, 90], device=device)
+        azistart = torch.tensor([0, 4, 2, 5, 8, 0, 10, 0], device=device)
+        patches_in_band = torch.tensor([31, 30, 28, 24, 19, 13, 7, 1], device=device)
+    elif patch_option == 3:
+        annulino = torch.tensor([0, 12, 24, 36, 48, 60, 72, 84, 90], device=device)
+        skyvaultaltint = torch.tensor([6, 18, 30, 42, 54, 66, 78, 90], device=device)
+        azistart = torch.tensor([0, 4, 2, 5, 8, 0, 10, 0], device=device)
+        patches_in_band = torch.tensor([31*2, 30*2, 28*2, 24*2, 19*2, 13*2, 7*2, 1], device=device)
+    elif patch_option == 4:
+        annulino = torch.tensor([0, 4.5, 9, 15, 21, 27, 33, 39, 45, 51, 57, 63, 69, 75, 81, 90], device=device)
+        skyvaultaltint = torch.tensor([3, 9, 15, 21, 27, 33, 39, 45, 51, 57, 63, 69, 75, 81, 90], device=device)
+        patches_in_band = torch.tensor([31*2, 31*2, 30*2, 30*2, 28*2, 28*2, 24*2, 24*2, 19*2, 19*2, 13*2, 13*2, 7*2, 7*2, 1], device=device)
+        azistart = torch.tensor([0, 0, 4, 4, 2, 2, 5, 5, 8, 8, 0, 0, 10, 10, 0], device=device)
+
+    skyvaultaziint = 360 / patches_in_band
+
+    for j in range(skyvaultaltint.shape[0]):
+        for k in range(patches_in_band[j]):
+            skyvaultalt = torch.cat((skyvaultalt, torch.tensor([skyvaultaltint[j]], device=device)))
+            skyvaultazi = torch.cat((skyvaultazi, torch.tensor([k * skyvaultaziint[j] + azistart[j]], device=device)))
+
+    return skyvaultalt, skyvaultazi, annulino, skyvaultaltint, patches_in_band, skyvaultaziint, azistart
+
+
+def svf_calculator(patch_option, amaxvalue=None, a=None, vegdem=None, vegdem2=None, bush=None, scale=None, save_rasters=False,
+    building_dsm_path=None, tree_path=None, dem_path=None, output_dir=None, number=None, gdal_dsm=None,):
+    """
+    Calculate Sky View Factor (SVF) using GPU-accelerated hemisphere sampling.
+    
+    SVF represents the portion of visible sky from each point, accounting for
+    obstructions from buildings and vegetation. Directional SVFs are also computed
+    for cardinal directions (N, E, S, W).
+    
+    Args:
+        patch_option (int): Sky discretization option (144 or 2304 patches)
+        amaxvalue (torch.Tensor): Maximum elevation in domain
+        a (torch.Tensor): Digital Surface Model
+        vegdem (torch.Tensor): Vegetation canopy DSM
+        vegdem2 (torch.Tensor): Vegetation trunk zone DSM
+        bush (torch.Tensor): Bush layer DSM
+        scale (float): Grid resolution (pixels per meter)
+    
+    Returns:
+        tuple: (svf, svfE, svfS, svfW, svfN, svfveg, svfEveg, svfSveg, svfWveg, svfNveg,
+                svfaveg, svfEaveg, svfSaveg, svfWaveg, svfNaveg) where:
+
+            - svf: Total sky view factor [0-1]
+            - svfE/S/W/N: Directional SVFs for East/South/West/North
+            - svf*veg: Vegetation-obstructed SVFs
+            - svf*aveg: Vegetation-adjusted SVFs
+    
+    Notes:
+        - Uses GPU if available for fast computation
+        - Higher patch_option gives more accurate but slower results
+        - Directional SVFs useful for anisotropic radiation modeling
+    """
+
+    gdal_dsm_local = gdal_dsm
+
+    if save_rasters:
+        if output_dir is None:
+            raise ValueError("When save_rasters=True, output_dir must be provided.")
+
+        # Standalone mode: compute missing SVF inputs from raster paths
+        if any(x is None for x in [amaxvalue, a, vegdem, vegdem2, bush, scale]):
+            if building_dsm_path is None or tree_path is None or dem_path is None:
+                raise ValueError(
+                    "When save_rasters=True and SVF tensors are not provided, "
+                    "building_dsm_path, tree_path, and dem_path must be provided."
+                )
+
+            a, gdal_dsm_local = load_raster_to_tensor(building_dsm_path)
+            temp1, _ = load_raster_to_tensor(tree_path)
+            temp2, _ = load_raster_to_tensor(dem_path)
+
+            geotransform = gdal_dsm_local.GetGeoTransform()
+            scale = 1.0 / geotransform[1]
+
+            temp1[temp1 < 0.0] = 0.0
+
+            # Same logic as compute_utci()
+            vegdem_height = temp1 + temp2
+            vegdem2_height = torch.add(temp1 * 0.25, temp2)
+
+            bush = torch.logical_not(vegdem2_height * vegdem_height) * vegdem_height
+
+            vegdem = temp1 + a
+            vegdem[vegdem == a] = 0.0
+
+            vegdem2 = temp1 * 0.25 + a
+            vegdem2[vegdem2 == a] = 0.0
+
+            amaxvalue = torch.maximum(a.max(), vegdem_height.max())
+
+        else:
+            if gdal_dsm_local is None:
+                if building_dsm_path is not None:
+                    gdal_dsm_local = gdal.Open(building_dsm_path)
+                else:
+                    raise ValueError(
+                        "When save_rasters=True with precomputed tensors, provide "
+                        "either gdal_dsm or building_dsm_path so GeoTIFF metadata can be copied."
+                    )
+
+    else:
+        required = {
+            "amaxvalue": amaxvalue,
+            "a": a,
+            "vegdem": vegdem,
+            "vegdem2": vegdem2,
+            "bush": bush,
+            "scale": scale,
+        }
+
+        missing = [name for name, value in required.items() if value is None]
+
+        if missing:
+            raise ValueError(
+                "When save_rasters=False, these arguments must be provided: "
+                + ", ".join(missing)
+            )
+        
+    device = a.device
+    rows = a.shape[0]
+    cols = a.shape[1]
+    
+    svf = torch.zeros([rows, cols], device=device)
+    svfE = torch.zeros([rows, cols], device=device)
+    svfS = torch.zeros([rows, cols], device=device)
+    svfW = torch.zeros([rows, cols], device=device)
+    svfN = torch.zeros([rows, cols], device=device)
+    svfveg = torch.zeros((rows, cols), device=device)
+    svfEveg = torch.zeros((rows, cols), device=device)
+    svfSveg = torch.zeros((rows, cols), device=device)
+    svfWveg = torch.zeros((rows, cols), device=device)
+    svfNveg = torch.zeros((rows, cols), device=device)
+    svfaveg = torch.zeros((rows, cols), device=device)
+    svfEaveg = torch.zeros((rows, cols), device=device)
+    svfSaveg = torch.zeros((rows, cols), device=device)
+    svfWaveg = torch.zeros((rows, cols), device=device)
+    svfNaveg = torch.zeros((rows, cols), device=device)
+
+    skyvaultalt, skyvaultazi, annulino, skyvaultaltint, aziinterval, skyvaultaziint, azistart = create_patches(patch_option)
+    skyvaultaziint = torch.tensor([360 / patches for patches in aziinterval], device=device)
+    iazimuth = torch.zeros((1, torch.sum(aziinterval).item()), device=device)
+
+    shmat = torch.zeros((rows, cols, sum(aziinterval)), device=device)
+    vegshmat = torch.zeros((rows, cols, sum(aziinterval)), device=device)
+    vbshvegshmat = torch.zeros((rows, cols, sum(aziinterval)), device=device)
+
+    index = 0
+    for j in range(skyvaultaltint.shape[0]):
+        for k in range(int(360 / skyvaultaziint[j])):
+            iazimuth[0, index] = k * skyvaultaziint[j] + azistart[j]
+            if iazimuth[0, index] > 360.:
+                iazimuth[0, index] = iazimuth[0, index] - 360.
+            index += 1
+
+    aziintervalaniso = torch.ceil(aziinterval / 2.0)
+
+    index = 0
+    for i in range(skyvaultaltint.shape[0]):
+        for j in range(aziinterval[i].int()):
+            altitude = skyvaultaltint[i]
+            azimuth = iazimuth[0, index]
+            sh, vegsh, vbshvegsh = shadow(amaxvalue, a, vegdem, vegdem2, bush, azimuth, altitude, scale)
+
+            vegshmat[:, :, index] = vegsh
+            vbshvegshmat[:, :, index] = vbshvegsh
+            shmat[:, :, index] = sh
+
+            for k in range(annulino[i]+1, annulino[i+1]+1):
+                weight = annulus_weight(k, aziinterval[i], device) * sh
+                svf = svf + weight
+                weight = annulus_weight(k, aziintervalaniso[i], device) * sh
+                if 0 <= azimuth < 180:
+                    svfE = svfE + weight
+                if 90 <= azimuth < 270:
+                    svfS = svfS + weight
+                if 180 <= azimuth < 360:
+                    svfW = svfW + weight
+                if azimuth >= 270 or azimuth < 90:
+                    svfN = svfN + weight
+
+                weight = annulus_weight(k, aziinterval[i], device)
+                svfveg = svfveg + weight * vegsh
+                svfaveg = svfaveg + weight * vbshvegsh
+                weight = annulus_weight(k, aziintervalaniso[i], device)
+                if 0 <= azimuth < 180:
+                    svfEveg = svfEveg + weight * vegsh
+                    svfEaveg = svfEaveg + weight * vbshvegsh
+                if 90 <= azimuth < 270:
+                    svfSveg = svfSveg + weight * vegsh
+                    svfSaveg = svfSaveg + weight * vbshvegsh
+                if 180 <= azimuth < 360:
+                    svfWveg = svfWveg + weight * vegsh
+                    svfWaveg = svfWaveg + weight * vbshvegsh
+                if azimuth >= 270 or azimuth < 90:
+                    svfNveg = svfNveg + weight * vegsh
+                    svfNaveg = svfNaveg + weight * vbshvegsh
+
+            index += 1
+    svfS = svfS + 3.0459e-004
+    svfW = svfW + 3.0459e-004
+    svf[svf > 1.] = 1.
+    svfE[svfE > 1.] = 1.
+    svfS[svfS > 1.] = 1.
+    svfW[svfW > 1.] = 1.
+    svfN[svfN > 1.] = 1.
+
+    last = torch.zeros((rows, cols), device=device)
+    last[vegdem2 == 0.] = 3.0459e-004
+    svfSveg = svfSveg + last
+    svfWveg = svfWveg + last
+    svfSaveg = svfSaveg + last
+    svfWaveg = svfWaveg + last
+    svfveg[svfveg > 1.] = 1.
+    svfEveg[svfEveg > 1.] = 1.
+    svfSveg[svfSveg > 1.] = 1.
+    svfWveg[svfWveg > 1.] = 1.
+    svfNveg[svfNveg > 1.] = 1.
+    svfaveg[svfaveg > 1.] = 1.
+    svfEaveg[svfEaveg > 1.] = 1.
+    svfSaveg[svfSaveg > 1.] = 1.
+    svfWaveg[svfWaveg > 1.] = 1.
+    svfNaveg[svfNaveg > 1.] = 1.
+
+    trans = torch.tensor(0.03, device=device)  # Tree transmission hardcoded to 3%
+    SVFtotal = svf - (1 - svfveg) * (1 - trans)
+
+    if save_rasters:
+        save_svf_zip_npz_outputs(output_dir=output_dir, gdal_dsm=gdal_dsm_local, svf=svf, svfE=svfE, svfS=svfS, svfW=svfW, svfN=svfN,
+            svfveg=svfveg, svfEveg=svfEveg, svfSveg=svfSveg, svfWveg=svfWveg, svfNveg=svfNveg, svfaveg=svfaveg, svfEaveg=svfEaveg,
+            svfSaveg=svfSaveg, svfWaveg=svfWaveg, svfNaveg=svfNaveg, shmat=shmat, vegshmat=vegshmat, vbshvegshmat=vbshvegshmat,
+            svftotal=SVFtotal, number=number,
+        )
+
+    del sh, vegsh,vbshvegsh, last, weight
+    torch.cuda.empty_cache()
+    
+    return svf, svfaveg, svfE, svfEaveg, svfEveg, svfN, svfNaveg, svfNveg, svfS, svfSaveg, svfSveg, svfveg, svfW, svfWaveg, svfWveg, vegshmat, vbshvegshmat, shmat, SVFtotal
+

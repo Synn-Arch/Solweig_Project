@@ -1,0 +1,44 @@
+/goal AlanSynn/solweig-project의 exact incremental editing engine을 docs/incremental_design_tool/ultrafast_bitwise/DESIGN.ko.md와 TASKS.ko.md에 따라 구현하고 최적화하라. CPU 우선의 초경량 runtime과 CUDA backend를 만들되, 고정 full-domain oracle에 대한 raw-bit parity와 기존 edit/publication 의미를 보존하라. 설명이나 계획 작성으로 끝내지 말고 실제 source 변경, 독립 검증, 반복 benchmark, review evidence가 있는 구현을 남겨라.
+
+필수 문서와 현재 상태
+- 먼저 이 디렉터리의 README.ko.md, DESIGN.ko.md, TASKS.ko.md, acceptance_targets.yaml, SOURCES.md를 읽어라.
+- 검토 기준 SHA는 e0d19fc98220a333ea312efe4604780803bbdd17이다. 실행 시 HEAD가 다르면 source diff를 audit하고 current commit을 기록하라. User changes나 unrelated worktree를 reset하지 마라.
+- 기존 R4 persistent occlusion state, R5 G2.1 warm-start/G2.2 restart, R6 amplitude escalation은 이미 존재하는 기반이다. 예전 문서만 보고 재구현하지 마라. 실제 current call graph와 tests를 확인하라.
+- 2026-09-07 문서의 incremental path는 CPU-only이며 기존 CPU와 CUDA full outputs도 서로 다르다. 현재 GPU path가 이미 검증되어 있다고 가정하지 마라.
+
+변경 불가능한 정확성 계약
+1. Raw float32 bits, dtype, logical shape, global time/window, validity/sentinel과 coverage가 oracle와 같아야 한다. Signed zero와 NaN payload도 비교하라. allclose, equal_nan array_equal, 1-ULP allowance로 통과시키지 마라.
+2. canonical_cpu_v1은 고정 CPU full-domain oracle 기준이다. 새 CPU와 canonical CUDA를 여기에 맞춰라. 기존 GPU backward compatibility는 legacy_cuda_v1로 별도 검증하라. 서로 다른 profile의 cache/checkpoint/result를 섞지 마라. Canonical CUDA가 인증되기 전에는 같은 workspace의 CPU↔GPU auto dispatch를 enable하지 마라.
+3. Oracle는 다른 pinned worktree/process에서 실행하라. Imported module origin과 source hash를 확인하라. Candidate와 oracle가 같은 변경된 helper를 공유하게 하지 마라. Golden/reference/targets를 변경해 green으로 만드는 것은 금지한다.
+4. 6° sky floor, physical read reach, model coefficients, trunk composition semantics, operation order, precision을 바꾸지 마라. Approximation/surrogate/downsample/stale heatmap을 exact speedup으로 계산하지 마라.
+5. Fastmath, unordered FP reduction, new FMA contraction, Horner rewrite, subtract-old/add-new float SVF update는 허용하지 않는다. 엄밀한 동치와 독립 evidence가 없는 대수적 변환을 하지 마라.
+6. Shadow의 previous-state while condition, last overshoot step, exact dx/dy/dz, OOB zero fill, first-step reset, target-local trunk gate, suppression order를 유지하라. R4의 corridor ∪ C, pre/post offsets, clamp/regime/bush guards와 R6 amplitude escalation을 유지하라. vbsh가 2.0인 case를 bool로 pack하지 마라.
+7. Geometry edit에 이전 scene의 thermal checkpoint를 재사용하지 마라. Six thermal planes, CI/firstdaytime/timeadd/Twater, own-next_step prefix fingerprint, sparse global time scatter를 모두 검증하라.
+8. Accepted operation을 잃거나 stale revision을 publish하지 마라. Mixed-family no-op, legacy/native operation mixing, restart, exact-lane liveness를 검증하라.
+
+성능 목표와 측정
+- acceptance_targets.yaml의 final targets를 달성하라. 대표 site_500 selected-time exact end-to-end p95는 CPU 100 ms, canonical CUDA 33.3 ms다. 이 값들은 아직 달성되지 않은 설계 목표이며, baseline이나 달성 결과라고 서술하지 마라.
+- 24-band local edit, full recompute, memory, startup, Torch-free 목표도 같은 파일을 따른다. 목표를 측정값에 맞춰 느슨하게 변경하지 마라.
+- Queue/epoch wait, causal replay, transfer/synchronization, pack/encode/decode와 client application을 포함하라. Compute-only time과 cold/warm을 별도 기록하라. CUDA enqueue time만 재지 마라.
+- 동일 HEAD/input/edit/time coverage/hardware/config에서 baseline과 candidate를 비교하라. 이전 날짜·다른 host의 숫자를 speedup으로 나누지 마라. p99에는 충분한 sample과 accepted/superseded/pending epoch accounting이 필요하다.
+
+구현 순서
+- T00/T01: 현재 경로와 incident audit, independent baseline, source/input/environment manifest, raw-bit comparator, primitive context matrix, durable benchmark CLI를 만든다.
+- T02~T07: Torch-neutral ABI와 explicit device, exact step tables, serial dense Numba march, composed-diff corridor, sparse serial/parallel march, unique-owner packing, canonical ordered SVF fold를 순서대로 구현한다.
+- T08~T11: Radiation ordered fusion, UTCI primitive compatibility/typed expression graph, 기존 R5 기반 temporal reuse, 모든 지원 family의 정확한 full fallback을 구현한다.
+- T12/T13: 같은 명세의 CUDA kernels, canonical/legacy 별도 parity, resident buffers, optional CUDA Graphs, measured dispatch를 구현한다.
+- T14~T16: 필요 시 CPU AOT로 경량화하고 Torch 없는 clean runtime에서 general inputs와 fallback을 실행한다. End-to-end workload, memory/startup, concurrency/restart를 검증하고 non-author review를 받는다.
+- Numba decorator를 붙이는 것 자체가 목적이 아니다. 같은 dense work의 fusion 효과와 sparse work elimination 효과를 분리해서 측정하라. Torch 제거만으로 실시간 target이 달성된다고 가정하지 마라.
+
+에이전트 작업 규칙
+- 한 번에 하나의 bounded task를 수행하라. Characterization/red test → minimal implementation → narrow tests → independent full-domain differential → paired benchmark → reviewer → integration rerun → focused commit 순서를 지켜라.
+- Subagents를 사용할 수 있으면 numerical author, oracle/test owner, non-author reviewer의 writable files를 분리하라. 같은 solver seam을 여러 author가 동시에 수정하지 않게 하라. Subagent 결과의 evidence를 직접 읽고 확인하라.
+- 각 변경에서 최소 하나의 meaningful mutation이 지정 test를 실패시키는지 확인하라. Test count나 공유 helper끼리의 equality만으로 정확성을 주장하지 마라.
+- 실제 inputs, cache, live state, production deployment는 read-only다. 승인되지 않은 server restart/deploy, force-push, credential 접근/기록, GPU job 종료, user data 삭제를 하지 마라. Private rasters를 repository에 commit하지 마라.
+- WORKLOG_ULTRAFAST.md에 task/HEAD/files/commands/evidence/status/failure/rollback/next_command를 지속적으로 기록하라. Raw logs와 reproducibility scripts는 사라지는 /tmp 경로에만 남기지 마라.
+
+완료와 중단
+- PASS/FAIL/BLOCKED/NOT_RUN/TARGET_MISSED를 구분하라. GPU가 없으면 GPU gate는 BLOCKED이며 CPU 작업은 계속할 수 있다. Real-site input이 없으면 synthetic 결과를 real-site PASS라고 하지 마라.
+- 한 후보의 실패를 전체 목표의 불가능성으로 해석하지 마라. First divergent operation 또는 남은 exclusive bottleneck을 찾고 다음 정당한 후보를 실험하라. Correctness를 희생하는 shortcut은 시도하지 마라.
+- User/system budget 또는 실제 resource/permission blocker에 도달하면 best verified commit, 실패/미달 gate, raw evidence, 남은 병목, 정확한 재개 명령을 남겨라. Budget 종료나 부분 완료를 goal completed라고 하지 마라.
+- 전체 goal은 최종 latency/memory/startup targets, 모든 mandatory raw-bit contracts, Torch-free supported runtime와 exact fallback, certified canonical CUDA, legacy CUDA regression, publication/restart/liveness gates가 실제 evidence로 모두 통과했을 때만 완료한다.

@@ -1,0 +1,5 @@
+read 473x425 = 201025 cells
+threads=8: 74.9s
+threads=4: 68.7s
+threads=2: 78.6s
+threads=1: 88.1s

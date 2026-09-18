@@ -1,0 +1,56 @@
+threads=8 interop=10
+write=0.218 site  read=0.804 site
+rep  0:   78.42s  (warmup)
+rep  1:   93.94s  (warmup)
+rep  2:   96.62s  (warmup)
+rep  3:   90.89s
+rep  4:   88.72s
+rep  5:   89.00s
+rep  6:   93.89s
+rep  7:   89.64s
+rep  8:   87.55s
+rep  9:   87.68s
+rep 10:   91.44s
+rep 11:   94.40s
+rep 12:   92.66s
+rep 13:   92.45s
+rep 14:   92.84s
+rep 15:   92.96s
+rep 16:   86.77s
+rep 17:   83.89s
+rep 18:   84.82s
+rep 19:   92.42s
+rep 20:   87.78s
+rep 21:   88.64s
+rep 22:   88.77s
+
+REPS=20  min=83.89  p50=89.32  p95=93.89  max=94.40
+gate PERF-001 p50<20s: FAIL
+gate PERF-002 p95<60s: FAIL
+         927214 function calls (927133 primitive calls) in 93.065 seconds
+
+   Ordered by: cumulative time
+   List reduced from 249 to 18 due to restriction <18>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.001    0.001   93.064   93.064 /Users/alansynn/Workspace/solweig/.claude/worktrees/p8-perf/solweig_gpu/incremental/solver.py:981(solve_window)
+        1    0.177    0.177   63.478   63.478 /Users/alansynn/Workspace/solweig/.claude/worktrees/p8-perf/solweig_gpu/utci_process.py:386(run_utci_window)
+       24    0.798    0.033   61.151    2.548 /Users/alansynn/Workspace/solweig/.claude/worktrees/p8-perf/solweig_gpu/solweig.py:1907(Solweig_2022a_calc)
+       24    0.095    0.004   39.402    1.642 /Users/alansynn/Workspace/solweig/.claude/worktrees/p8-perf/solweig_gpu/solweig.py:1610(Lcyl_v2022a)
+       24   36.709    1.530   39.275    1.636 /Users/alansynn/Workspace/solweig/.claude/worktrees/p8-perf/solweig_gpu/solweig.py:1419(define_patch_characteristics)
+        1    0.000    0.000   29.558   29.558 /Users/alansynn/Workspace/solweig/.claude/worktrees/p8-perf/solweig_gpu/incremental/solver.py:654(window_svf_bundle)
+        1    1.782    1.782   29.554   29.554 /Users/alansynn/Workspace/solweig/.claude/worktrees/p8-perf/solweig_gpu/incremental/solver.py:777(_recompute_veg_svf_window)
+      153   19.729    0.129   27.600    0.180 /Users/alansynn/Workspace/solweig/.claude/worktrees/p8-perf/solweig_gpu/shadow.py:166(shadow)
+       13    0.231    0.018    8.841    0.680 /Users/alansynn/Workspace/solweig/.claude/worktrees/p8-perf/solweig_gpu/solweig.py:291(gvf_2018a)
+      234    7.573    0.032    8.595    0.037 /Users/alansynn/Workspace/solweig/.claude/worktrees/p8-perf/solweig_gpu/solweig.py:75(sunonsurface_2018a)
+       13    6.095    0.469    8.449    0.650 /Users/alansynn/Workspace/solweig/.claude/worktrees/p8-perf/solweig_gpu/solweig.py:564(Kside_veg_v2022a)
+   122440    0.180    0.000    4.319    0.000 /Users/alansynn/Workspace/solweig/.venv/lib/python3.14/site-packages/torch/_tensor.py:32(wrapped)
+    43185    2.806    0.000    2.806    0.000 {method 'zero_' of 'torch._C.TensorBase' objects}
+    35441    2.435    0.000    2.435    0.000 {method 'float' of 'torch._C.TensorBase' objects}
+    77192    0.057    0.000    2.350    0.000 /Users/alansynn/Workspace/solweig/.venv/lib/python3.14/site-packages/torch/_tensor.py:1106(__rsub__)
+    77192    2.293    0.000    2.293    0.000 {built-in method torch.rsub}
+       13    1.348    0.104    2.240    0.172 /Users/alansynn/Workspace/solweig/.claude/worktrees/p8-perf/solweig_gpu/solweig.py:1059(shadowingfunction_wallheight_23)
+       24    0.116    0.005    2.071    0.086 /Users/alansynn/Workspace/solweig/.claude/worktrees/p8-perf/solweig_gpu/calculate_utci.py:259(utci_calculator)
+
+
+

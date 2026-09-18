@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-09-07",
+  "comparison": "E1 representative edit, two independent cold processes, same HEAD/inputs/edit/time-coverage, float32 logical C-order raw bits via design-package tools/bitwise_check.py (signed zeros + NaN payload sensitive)",
+  "left": "/Users/alansynn/Workspace/solweig_ultrafast_artifacts/e1_r1/sample0",
+  "right": "/Users/alansynn/Workspace/solweig_ultrafast_artifacts/e1_r2/sample0",
+  "mismatch_count": 0,
+  "all_equal": true,
+  "per_plane": {
+    "shadow.f32.npy": {
+      "status": "PASS",
+      "mismatch_count": 0,
+      "elements": 1309440
+    },
+    "tmrt.f32.npy": {
+      "status": "PASS",
+      "mismatch_count": 0,
+      "elements": 1309440
+    },
+    "utci.f32.npy": {
+      "status": "PASS",
+      "mismatch_count": 0,
+      "elements": 1309440
+    }
+  },
+  "verdict": "PASS",
+  "note": "repeat timing delta (rep1 161.5s cold page cache vs rep2 58.9s warm page cache) did not affect output bits"
+}

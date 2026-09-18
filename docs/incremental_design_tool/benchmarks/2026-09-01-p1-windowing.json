@@ -1,0 +1,66 @@
+{
+  "record_type": "p1_windowing_gate_evidence",
+  "recorded_at": "2026-09-01",
+  "phase": "P1",
+  "gates": ["WIN-001", "WIN-002", "WIN-003"],
+  "change": "compute_utci physics loop extracted verbatim into run_utci_window(); new solweig_gpu/incremental/io.py window I/O",
+  "fixture_id": "site_500 (Input_subset, DOY223 24h)",
+  "environment": "same as 2026-09-01-full-domain-baseline.json (M1 Pro, .venv py3.14.7, torch 2.13.0 CPU)",
+  "win_002_bitwise": {
+    "command": "/usr/bin/time -l .venv/bin/python run_test.py",
+    "peak_rss_bytes": 1241794432,
+    "note": "peak RSS 1.24 GB vs 1.41 GB P0 baseline (append-lists replaced by preallocated requested volumes)",
+    "output_sha256": {
+      "UTCI_0_0.tif": "351e18ade151d67ca29380193cda08c8df1a5376e76a1516c18f23416a6db1d1",
+      "TMRT_0_0.tif": "04d91548504e428c8724987d7f74af97027e2c251902c39d2f40101ff5aa5f71",
+      "Shadow_0_0.tif": "925ee0f70a6442eb34cd48ab8febe134db5d030d091d6d95fd44814a26194970"
+    },
+    "verdict": "bitwise identical to P0 baseline for all three outputs (stronger than the 'within tolerance' gate)",
+    "array_level_check": "np.array_equal(equal_nan=True) vs oracle GeoTIFF bands for utci/tmrt/shadow: True/True/True (direct run_utci_window call, requested_variables=utci,tmrt,shadow)",
+    "revalidation_after_svf_cache_correction": {
+      "recorded_at": "2026-09-01 (post-P4)",
+      "context": "baseline oracle re-recorded after replacing a stale-foreign SVF cache (see svf_cache_correction in 2026-09-01-full-domain-baseline.json); P1 code unchanged",
+      "array_level_check": "np.array_equal(equal_nan=True) vs corrected oracle GeoTIFFs for utci/tmrt/shadow: True/True/True (harness /tmp/win003_measure.py utci,tmrt,shadow; wall 89.9 s)",
+      "corrected_output_sha256": {
+        "UTCI_0_0.tif": "af54933d4efd3136f36ede945cbb0880aed1c379513e8582b764a7e1c1234331",
+        "TMRT_0_0.tif": "adb6ca268f60c509c839a9c115fd490aee3d8f7efc78bab8ef331fea07fb83e4",
+        "Shadow_0_0.tif": "925ee0f70a6442eb34cd48ab8febe134db5d030d091d6d95fd44814a26194970"
+      }
+    }
+  },
+  "win_003_memory": {
+    "harness": "/tmp/win003_measure.py (identical loader, varied requested_variables, ru_maxrss deltas)",
+    "runs": [
+      {"requested": ["utci"], "output_nbytes": 24000000, "rss_before_kb": 950222848, "rss_after_kb": 1033830400, "delta_kb": 83607552},
+      {"requested": ["utci","tmrt","kup","kdown","lup","ldown","shadow","ta","wind"], "output_nbytes": 216000000, "rss_before_kb": 896696320, "rss_after_kb": 1058357248, "delta_kb": 161660928}
+    ],
+    "verdict": "utci-only run allocates 24 MB of output volumes vs 216 MB when all nine variables are requested; peak RSS with utci only (1,033,830,400 B) is below the all-variable run (1,058,357,248 B). Pre-refactor code always allocated all seven output lists."
+  },
+  "win_001_api": {
+    "command": ".venv/bin/python -m pytest -q tests/ (PATH including .venv/bin)",
+    "result": "99 passed, 5 skipped; node --test 22 passed",
+    "note": "tests/test_cli.py fails only when .venv/bin is absent from PATH (subprocess invokes the installed console script); pre-existing environment issue, reproduced independent of this change",
+    "signature": "compute_utci(building_dsm_path, tree_path, dem_path, walls_path, aspect_path, landcover_path, windcoeff_path, met_file, output_path, number, selected_date_str, save_*) unchanged; run_test.py end-to-end still produces the baseline outputs"
+  },
+  "independent_review": {
+    "reviewer": "p1-core-reviewer subagent (code-reviewer)",
+    "verdict": "APPROVE",
+    "method": "mechanical whitespace-normalized diff of moved physics vs HEAD; call site char-identical; state threading verbatim; float32 preallocation bit-equivalent to list+gdal path",
+    "findings_addressed": [
+      "io.py clamp_to_extent flag removed (rasterio 1.5.1 silently truncates rather than raising — reviewer probe)",
+      "rasterio declared in requirements.txt + setup.py (was a hard import of solweig_gpu.incremental but undeclared)",
+      "run_utci_window docstring documents full cold-start state scope (CI, Twater, firstdaytime, timeadd) and replay-from-0 rationale",
+      "write_window now requires exactly 2-D data"
+    ],
+    "findings_noted_not_changed": [
+      "CUDA-only: cleaned landcover values now reach the kernel on GPU (bug-fix direction; CPU bitwise path unaffected and unverified on GPU)",
+      "CUDA-only: direct run_utci_window callers passing an uncleaned landcover tensor get cleaned Tgmaps_v1 input but uncleaned lcgrid tensor on GPU; compute_utci pre-cleans",
+      "redundant vegdem/vegdsm/bush recompute in core (pure waste, bitwise-neutral; removal deferred to avoid re-verification churn)"
+    ]
+  },
+  "behavior_notes": [
+    "landcover cleaning is now re-wrapped explicitly (torch.as_tensor) so cleaned values reach the core on any device; on CPU this is a storage no-op (numpy view aliased the tensor before)",
+    "run_utci_window always includes 'utci' in requested set; unrequested outputs are neither computed nor allocated",
+    "temporal state (Tgmap1 family, TgOut1) starts cold at time_start; documented warm-up policy for windowed replay is time_start=0"
+  ]
+}

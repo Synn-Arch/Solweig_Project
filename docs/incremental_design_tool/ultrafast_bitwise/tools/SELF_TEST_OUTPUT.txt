@@ -1,0 +1,23 @@
+test_assert_helper (test_bitwise_check.ExactFloat32ComparatorTests.test_assert_helper) ... ok
+test_bad_options (test_bitwise_check.ExactFloat32ComparatorTests.test_bad_options) ... ok
+test_big_endian_same_and_different (test_bitwise_check.ExactFloat32ComparatorTests.test_big_endian_same_and_different) ... ok
+test_chunk_mismatch_coordinates_and_count (test_bitwise_check.ExactFloat32ComparatorTests.test_chunk_mismatch_coordinates_and_count) ... ok
+test_cli_cannot_overwrite_input (test_bitwise_check.ExactFloat32ComparatorTests.test_cli_cannot_overwrite_input) ... ok
+test_distinct_nan_payloads_fail (test_bitwise_check.ExactFloat32ComparatorTests.test_distinct_nan_payloads_fail) ... ok
+test_empty_policy (test_bitwise_check.ExactFloat32ComparatorTests.test_empty_policy) ... ok
+test_float64_refused (test_bitwise_check.ExactFloat32ComparatorTests.test_float64_refused) ... ok
+test_hash_matches_raw_c_order (test_bitwise_check.ExactFloat32ComparatorTests.test_hash_matches_raw_c_order) ... ok
+test_identical_nan_payloads_pass (test_bitwise_check.ExactFloat32ComparatorTests.test_identical_nan_payloads_pass) ... ok
+test_inputs_are_unchanged (test_bitwise_check.ExactFloat32ComparatorTests.test_inputs_are_unchanged) ... ok
+test_nan_sign_and_signaling_payload_fail (test_bitwise_check.ExactFloat32ComparatorTests.test_nan_sign_and_signaling_payload_fail) ... ok
+test_npy_cli_and_memmap (test_bitwise_check.ExactFloat32ComparatorTests.test_npy_cli_and_memmap) ... ok
+test_one_ulp_fails (test_bitwise_check.ExactFloat32ComparatorTests.test_one_ulp_fails) ... ok
+test_scalar (test_bitwise_check.ExactFloat32ComparatorTests.test_scalar) ... ok
+test_shape_mismatch (test_bitwise_check.ExactFloat32ComparatorTests.test_shape_mismatch) ... ok
+test_signed_zero_fails (test_bitwise_check.ExactFloat32ComparatorTests.test_signed_zero_fails) ... ok
+test_strided_and_negative_stride_are_logical (test_bitwise_check.ExactFloat32ComparatorTests.test_strided_and_negative_stride_are_logical) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 1.197s
+
+OK

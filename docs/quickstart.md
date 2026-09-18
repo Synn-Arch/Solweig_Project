@@ -1,0 +1,261 @@
+# Quick Start Guide
+
+This guide will get you running SOLWEIG-GPU in minutes.
+
+## Basic Workflow
+
+1. Prepare input rasters 
+2. Prepare meteorological data
+3. Run simulation
+4. Analyze outputs
+
+## Sample Data
+
+Sample data is available in [Zenodo](https://doi.org/10.5281/zenodo.21081622).
+
+## Example 0 (Optional): Download Input Data Automatically
+
+New in Version 2: if you do not have input rasters for your study area, `build_inputs()` can download and build them from near-globally available urban datasets. This requires an authenticated [Google Earth Engine](https://earthengine.google.com/) project and the optional dependencies (`earthengine-api`, `geemap`, `geopandas`, `osmnx`).
+
+```python
+import os
+from solweig_gpu import build_inputs
+
+os.environ["EE_PROJECT"] = "your-gee-project-id"  # Your own GEE/GCP project ID
+
+base_path = build_inputs(
+    lat=30.27,
+    lon=-97.74,
+    city="Austin",
+    km_buffer=2,        # km from the central lat-lon to set the download extent
+    km_reduced_lat=1,
+    km_reduced_lon=1,
+    base_folder="/path/to/save/inputs",
+    resolution=2,       # spatial resolution of the generated rasters in meters
+)
+
+print("SOLWEIG input folder:", base_path)
+```
+
+## Example 1: Using Your Own Met Data
+
+The simplest way to run SOLWEIG-GPU:
+
+```python
+from solweig_gpu import thermal_comfort
+
+thermal_comfort(
+    base_path='/path/to/your/data',
+    selected_date_str='2020-08-13',
+    building_dsm_filename='Building_DSM.tif',
+    dem_filename='DEM.tif',
+    trees_filename='Trees.tif',
+    use_own_met=True,
+    own_met_file='met_data.txt'
+)
+```
+
+### Required Input Files
+
+Place these in your `base_path` directory (or pass complete paths to rasters in other locations):
+
+1. **Building_DSM.tif** - Building + terrain heights
+2. **DEM.tif** - Digital elevation model (terrain only)
+3. **Trees.tif** - Vegetation heights
+4. **met_data.txt** - Meteorological forcing data
+
+To write outputs to a different folder, set `base_path` to that directory and give full paths for Building DSM, DEM, Trees, and land cover (optional).
+
+### Met Data Format
+
+Create a text file with hourly data using the [UMEP MetProcessor](https://umep-docs.readthedocs.io/en/latest/pre-processor/Meteorological%20Data%20MetPreprocessor.html).
+
+## Example 2: Using ERA5 Data
+
+Download ERA5 from the Climate Data Store and run:
+
+```python
+from solweig_gpu import thermal_comfort
+
+thermal_comfort(
+    base_path='/path/to/data',
+    selected_date_str='2020-08-13',
+    use_own_met=False,
+    data_source_type='ERA5',
+    data_folder='/path/to/era5/files',
+    start_time='2020-08-13 00:00:00',
+    end_time='2020-08-14 23:00:00',
+    ERA_5_z0_find=True,   # compute directional wind coefficients from ERA5 roughness (requires data_stream-oper_stepType-instant.nc in data_folder)
+    use_uhi=True,         # ERA5 only: diagnostic urban heat island intensity
+    save_wbgt=True,       # also save Wet Bulb Globe Temperature
+)
+```
+When using ERA-5 dataset, the package can find the corresponding data for `start_time` and `end_time`. For example, if ERA-5 data is downloaded from 2020-08-13 00 UTC to 2020-08-14 23 UTC and the model is to be run from 2020-08-13 06 UTC to 2020-08-14 05 UTC, the package can select data from 2020-08-13 06 UTC to 2020-08-14 05 UTC by itself (selected_date_str = '2020-08-13', start_time = '2020-08-13 00:00:00', and end_time = '2020-08-14 23:00:00')
+`start_time` and `end_time` must be in **UTC**. The package will automatically convert to local time based on the geographic location of your study area.
+
+## Example 3: Using WRF Output
+
+```python
+from solweig_gpu import thermal_comfort
+
+thermal_comfort(
+    base_path='/path/to/data',
+    selected_date_str='2020-08-13',
+    use_own_met=False,
+    data_source_type='wrfout',
+    data_folder='/path/to/wrfout/files',
+    start_time='2020-08-13 06:00:00',
+    end_time='2020-08-14 05:00:00',
+    ERA_5_z0_find=False,  # set True only if data_folder also contains the ERA5 file data_stream-oper_stepType-instant.nc
+    use_uhi=False,        # always keep False with WRF forcing
+)
+```
+When using wrfout, the `start_time` and `end_time` should be the first and last time stamps in the wrfout dataset. The package won't compare the selected `start_time` and `end_time` to the wrfout file timestamps and automatically fetch the corresponding data. 
+`start_time` and `end_time` must be in **UTC**. The package will automatically convert to local time based on the geographic location of your study area.
+
+### Note for Windows Users
+On Windows, Python uses the *spawn* start method for new processes: each worker re-imports your script. Without guarding the entry point, a top-level call to `thermal_comfort()` would run again in every child process, causing repeated execution and failures (e.g. `BrokenProcessPool`). Always call `thermal_comfort()` inside a `main()` function and use `if __name__ == "__main__":` (see example below).
+```python
+from solweig_gpu import thermal_comfort
+import multiprocessing as mp
+
+def main():
+    thermal_comfort(
+        base_path='/path/to/input',
+        selected_date_str="2020-08-13",
+        building_dsm_filename="Building_DSM.tif",
+        dem_filename="DEM.tif",
+        trees_filename="Trees.tif",
+        landcover_filename="Landcover.tif",
+        tile_size=1000,
+        overlap=100,
+        use_own_met=False,
+        own_met_file='/path/to/met.txt',  # placeholder; ignored when use_own_met=False
+        start_time="2020-08-13 06:00:00",
+        end_time="2020-08-14 05:00:00",
+        data_source_type="era5",
+        data_folder='/path/to/era5_or_wrfout',
+        save_tmrt=False,
+        save_svf=False,
+        save_kup=False,
+        save_kdown=False,
+        save_lup=False,
+        save_ldown=False,
+        save_shadow=False,
+    )
+
+if __name__ == "__main__":
+    mp.freeze_support() 
+    main()
+```
+
+## Command-Line Usage
+
+```bash
+# Using own met data
+thermal_comfort \
+    --base_path /path/to/data \
+    --date 2020-08-13 \
+    --tile_size 1000 \
+    --use_own_met True \
+    --own_metfile /path/to/ownmet.txt
+
+# Using ERA5 (with v2 options)
+thermal_comfort \
+    --base_path /path/to/data \
+    --date 2020-08-13 \
+    --tile_size 1000 \
+    --overlap 100 \
+    --use_own_met False \
+    --data_source_type ERA5 \
+    --data_folder /path/to/era5 \
+    --start "2020-08-13 00:00:00" \
+    --end "2020-08-14 23:00:00" \
+    --era5_z0_find True \
+    --use_uhi True \
+    --save_wbgt True
+```
+
+New in Version 2, the CLI also accepts `--era5_z0_find` (directional wind coefficients from ERA5 forecast surface roughness; defaults to `True` when `--data_folder` is provided), `--use_uhi` (diagnostic urban heat island intensity, ERA5 only), and the output flags `--save_wbgt`, `--save_ta`, and `--save_wind`. Use `thermal_comfort --help` for the full option list.
+
+## Configuration Options
+
+### Tile Size
+
+Adjust based on GPU memory:
+
+```python
+thermal_comfort(
+    base_path='/path/to/data',
+    selected_date_str='2020-08-13',
+    tile_size=1000,  # Smaller = less memory, more tiles
+    overlap=100,     # Overlap for shadow continuity
+    ...
+)
+```
+
+**Guidelines:**
+- 8GB GPU: `tile_size=1000-2000`
+- 16GB GPU: `tile_size=2000-4000`
+- 32GB GPU: `tile_size=4000+`
+
+### Output Options
+
+```python
+thermal_comfort(
+    base_path='/path/to/data',
+    selected_date_str='2020-08-13',
+    save_tmrt=True,      # Mean radiant temperature
+    save_svf=True,       # Sky view factor
+    save_kup=True,       # Upward shortwave
+    save_kdown=True,     # Downward shortwave
+    save_lup=True,       # Upward longwave
+    save_ldown=True,     # Downward longwave
+    save_shadow=True,    # Shadow maps
+    save_wbgt=True,      # Wet Bulb Globe Temperature (new in v2)
+    save_ta=True,        # Diagnostic air temperature field (new in v2)
+    save_wind=True,      # Diagnostic wind speed field (new in v2)
+    ...
+)
+```
+## Output Files
+
+Results are saved in `{base_path}/output_folder/{tile_key}/`:
+
+```
+output_folder/
+├── 0_0/
+│   ├── UTCI_0_0.tif       # Thermal comfort index (multi-band, one per hour)
+│   ├── TMRT_0_0.tif       # Mean radiant temperature (if save_tmrt=True)
+│   ├── SVF_0_0.tif        # Sky view factor (if save_svf=True)
+│   └── ...
+├── 1000_0/
+│   └── ...
+```
+
+See [Outputs](outputs.md) for full details. Each time-varying `.tif` is a multi-band raster (one band per hour).
+
+## Calling pipeline stages separately
+
+You can run the workflow in four steps: **preprocess** → **run_walls_aspect** → **calculate_svf** → **run_utci_tiles**. This is useful to run only a subset of tiles or to reuse preprocessed data. The CLI still uses the one-shot `thermal_comfort()`; no changes there.
+
+```python
+from solweig_gpu import preprocess, run_walls_aspect, calculate_svf, run_utci_tiles
+
+preprocess_dir = preprocess(base_path=base_path, selected_date_str=date_str, ...)
+run_walls_aspect(preprocess_dir)
+calculate_svf(preprocess_dir, patch_option=2, overwrite=False)
+run_utci_tiles(base_path=base_path, preprocess_dir=preprocess_dir, selected_date_str=date_str, ...)
+```
+
+For full parameter lists and examples (including running only specific tiles), see [Developer Guide – Pipeline stages](developer_guide.md#pipeline-stages) and [API Reference](api_reference.md).
+
+## Next Steps
+
+- [Detailed Input Data Guide](input_data.md)
+- [Meteorological Forcing Options](configuration.md)
+- [Outputs](outputs.md)
+- [Developer Guide](developer_guide.md) (pipeline stages, architecture)
+- [Testing Guide](testing.md)
+- [API Reference](api_reference.md)
+- [Examples Gallery](examples.md)

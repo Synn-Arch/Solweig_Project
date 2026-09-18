@@ -1,0 +1,61 @@
+# Research-level two-process deployment: API (with in-process worker) plus
+# the stdlib frontend with its same-origin /api proxy. Site caches come from
+# a read-only bind mount — create ./site-cache/<site_id>/ before
+# `docker compose up` (never commit or bake site data into an image).
+services:
+  api:
+    build: .
+    image: solweig-design-api
+    restart: unless-stopped
+    environment:
+      SOLWEIG_STATE_ROOT: /state
+      SOLWEIG_SITE_ID: campus-1km-v1        # comma-separated for multiple sites
+      SOLWEIG_CACHE_ROOT: /site-cache       # cache lives at /site-cache/<site_id>/
+      SOLWEIG_HOST: 0.0.0.0
+      SOLWEIG_PORT: "8000"
+      # Optional knobs (defaults shown; see deployment_operations.md):
+      # SOLWEIG_MAX_TREES_PER_SCENARIO: "200"
+      # SOLWEIG_COALESCE_MS: "500"
+      # SOLWEIG_EDITS_PER_MINUTE: "20"
+      # SOLWEIG_REQUESTS_PER_MINUTE: "30"
+    volumes:
+      - solweig-state:/state                # SQLite store + results (RW)
+      - ./site-cache:/site-cache:ro         # immutable baseline caches (RO)
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12                          # first boot JIT-imports torch: allow ~2 min
+      start_period: 30s
+
+  frontend:
+    image: python:3.14-slim
+    restart: unless-stopped
+    environment:
+      # Mirror of the api service's SOLWEIG_SITE_ID (keep in sync): the
+      # studio injects the first entry so a bare / URL boots connected
+      # against the same site the API serves.
+      SOLWEIG_SITE_ID: campus-1km-v1
+    working_dir: /app
+    command:
+      - python
+      - studio/serve.py
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8765"
+      - --api
+      - http://api:8000
+    volumes:
+      - .:/app:ro
+    ports:
+      - "8765:8765"
+    depends_on:
+      api:
+        condition: service_healthy         # proxy 502s until the API is ready
+
+volumes:
+  solweig-state:

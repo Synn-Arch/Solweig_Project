@@ -1,0 +1,52 @@
+{
+  "machine": "Apple M1 Pro 10-core/16GB, py3.14, torch 2.13 CPU",
+  "site": "site_500 500x500@2m",
+  "date": "2009-08-11",
+  "jobs": 10,
+  "rss_after_cache_load_mb": 347.7,
+  "first_job_seconds_incl_cache_load": 63.5,
+  "first_job_mode": "local",
+  "rss_per_job_mb": [
+    640.1,
+    661.5,
+    650.8,
+    680.4,
+    653.1,
+    613.6,
+    594.1,
+    557.8,
+    548.8,
+    546.6
+  ],
+  "rss_drift_jobs5_to_10_mb": -106.4,
+  "patch_variables": [
+    "utci",
+    "tmrt",
+    "shadow"
+  ],
+  "patch_shape_t_hw": [
+    24,
+    248,
+    220
+  ],
+  "io_patch_zstd_mb": 5.942,
+  "io_patch_identity_mb": 15.713,
+  "gate_IO_001_lt_5mb": false,
+  "steady_idle_rss_mb": 504.9,
+  "peak_rss_mb": 978.6,
+  "gate_MEM_001_peak_lt_3000mb": true,
+  "gate_MEM_002_idle_lt_1500mb": true,
+  "leak_bounded_abs_drift_lt_150mb": true,
+  "restart_fresh_cache_load": {
+    "fresh_cache_load_rss_mb": 337.2
+  },
+  "io_patch_subsets_mb": {
+    "utci_only": 2.666,
+    "utci_shadow": 2.747,
+    "utci_tmrt_typical_client": 5.862,
+    "utci_tmrt_shadow_all": 5.942,
+    "zstd_level19_all_three": 5.443,
+    "single_timestep_utci_tmrt": 0.49
+  },
+  "gate_IO_001_detail": "FAIL for the full-day two-variable (utci+tmrt) typical patch at 5.86 MB; utci-only 2.67 MB and single-timestep refined patches pass. zstd level 19 saves only 8% (float32 fields). Mitigations: byte shuffle/delta encoding, or per-variable refine payloads."
+}

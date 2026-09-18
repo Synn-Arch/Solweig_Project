@@ -1,0 +1,132 @@
+schema_version: 1
+status: proposed_not_measured
+reviewed_at: '2026-09-07'
+reviewed_repository: AlanSynn/solweig-project
+reviewed_commit: e0d19fc98220a333ea312efe4604780803bbdd17
+agent_may_relax_targets: false
+
+scope:
+  representative_site: site_500
+  representative_shape: [500, 500]
+  representative_pixel_size_m: 2.0
+  representative_tree_height_m: 10.0
+  representative_tree_radius_m: 4.0
+  representative_selected_global_times: [12]
+  representative_full_day_steps: 24
+  fixture_policy: freeze_exact_inputs_edits_coverage_in_T00
+  primary_cpu_policy: fixed_reference_host_four_physical_core_budget
+  primary_gpu_policy: one_fixed_authorized_nvidia_device
+  include_causal_replay: true
+  include_queue_epoch_wait: true
+  include_pack_transport_decode_apply: true
+  include_gpu_transfers_and_synchronization: true
+  network_scope: local_test_transport_not_arbitrary_WAN
+  input_data_policy: read_only_private_data_not_committed
+
+parity:
+  raw_element_mismatch_count_max: 0
+  compare_signed_zero_bits: true
+  compare_nan_payload_and_sign_bits: true
+  compare_dtype_shape_logical_order: true
+  compare_validity_and_sentinel_masks: true
+  require_global_time_and_window_coverage: true
+  allow_allclose_for_acceptance: false
+  allow_equal_nan_array_equal_for_acceptance: false
+  primary_profile: canonical_cpu_v1
+  mandatory_contracts:
+    - cpu_candidate_vs_pinned_cpu_full_oracle
+    - cuda_canonical_vs_cpu_canonical
+    - cuda_legacy_vs_pinned_cuda_full_oracle
+  cross_profile_cache_sharing: false
+  cross_device_dispatch_requires_same_certified_profile: true
+  golden_or_oracle_change_requires_explicit_approval: true
+
+latency_ms:
+  ux_local_geometry_feedback:
+    metric: p95
+    milestone: 16.7
+    final: 16.7
+    counts_as_scientific_exact: false
+  cpu_selected_exact:
+    metric: p95
+    milestone: 1000.0
+    final: 100.0
+  cuda_selected_exact:
+    metric: p95
+    milestone: 250.0
+    final: 33.3
+  cpu_full_day_local:
+    metric: p95
+    milestone: 10000.0
+    final: 3000.0
+  cuda_full_day_local:
+    metric: p95
+    milestone: 3000.0
+    final: 1000.0
+  cpu_full_recompute_warm:
+    metric: p95
+    final: 15000.0
+  cuda_full_recompute_warm:
+    metric: p95
+    final: 5000.0
+
+memory_mib:
+  cpu_aot_single_site_single_scenario_steady_rss_max: 256
+  cpu_aot_representative_job_peak_rss_max: 768
+  cpu_aot_twenty_warm_scenarios_process_peak_rss_max: 1536
+  cpu_accounting_includes_resident_mmap_scratch_checkpoints_threads_code: true
+  offline_preprocessing_excluded_but_reported: true
+  gpu_runtime_owned_single_scenario_live_bytes_max: 1024
+  gpu_runtime_owned_twenty_scenarios_live_bytes_max: 2048
+  gpu_driver_context_total_residency_must_be_reported: true
+
+startup_ms:
+  cpu_aot_prebuilt_site_process_to_ready_p95_max: 3000
+  cuda_aot_prebuilt_site_process_to_ready_p95_max: 5000
+  jit_compile_and_unseen_signature_latency_report_required: true
+  cold_first_edit_end_to_end_report_required: true
+  site_cache_build_report_required: true
+
+sampling:
+  warmup_min: 5
+  expensive_reference_paired_runs_target_min: 30
+  fast_candidate_runs_for_p50_p95_min: 100
+  completed_epochs_for_p99_claim_min: 1000
+  report_all_accepted_superseded_and_pending_epochs: true
+  randomize_paired_ab_order: true
+  report_hardware_affinity_load_and_coverage: true
+  use_exclusive_stage_timings: true
+
+forbidden_shortcuts:
+  - raising_sky_patch_floor_or_shortening_physical_read_reach
+  - lowering_precision_or_lossy_output_encoding
+  - unordered_fp_reduction_or_unapproved_fma_contraction
+  - polynomial_horner_or_algebraic_reassociation_without_exact_equivalence
+  - subtract_old_add_new_float_svf_update
+  - boolean_packing_of_unvalidated_vbsh_values
+  - removing_r4_guards_or_r6_escalation_without_reviewed_equivalence
+  - stale_checkpoint_or_wrong_profile_cache_reuse
+  - dropping_accepted_operations_or_publishing_incomplete_coverage_as_full
+  - counting_surrogate_stale_or_geometry_only_frames_as_exact_results
+  - changing_goldens_or_acceptance_to_make_tests_pass
+  - timing_only_cuda_enqueue_or_only_successful_survivors
+
+release:
+  require_torch_absent_clean_runtime_test: true
+  require_native_exact_fallback_for_all_supported_edit_families: true
+  require_independent_full_domain_differential: true
+  require_primitive_and_stage_trace_tests: true
+  require_mutation_sensitivity_tests: true
+  require_mixed_plane_liveness_and_restart_tests: true
+  require_non_author_review: true
+  require_source_input_environment_hashes: true
+  require_raw_benchmark_artifacts_and_reproduction_commands: true
+  allowed_status:
+    - PASS
+    - FAIL
+    - BLOCKED
+    - NOT_RUN
+    - TARGET_MISSED
+  unavailable_gpu_is_not_pass: true
+  synthetic_only_is_not_real_site_pass: true
+  budget_limit_is_not_goal_completion: true

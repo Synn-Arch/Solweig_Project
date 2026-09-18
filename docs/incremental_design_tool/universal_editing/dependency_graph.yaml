@@ -1,0 +1,65 @@
+schema_version: 1
+nodes:
+  - {id: dem, kind: source}
+  - {id: building_dsm, kind: source}
+  - {id: vegetation_dsm, kind: source}
+  - {id: landcover, kind: source}
+  - {id: meteorology, kind: source}
+  - {id: selected_date_time, kind: source}
+  - {id: wind_coefficients, kind: source}
+  - {id: model_parameters, kind: source}
+  - {id: output_selection, kind: view}
+  - {id: relative_geometry, kind: derived}
+  - {id: walls, kind: derived}
+  - {id: wall_aspect, kind: derived}
+  - {id: building_visibility, kind: derived}
+  - {id: vegetation_visibility, kind: derived}
+  - {id: svf, kind: derived}
+  - {id: solar_atmospheric_state, kind: derived}
+  - {id: time_shadow, kind: derived}
+  - {id: radiation, kind: derived}
+  - {id: surface_thermal_state, kind: stateful}
+  - {id: tmrt, kind: output}
+  - {id: utci, kind: output}
+  - {id: wbgt, kind: output}
+edges:
+  # Reconciled to code by the U-A audit (2026-09-02); see
+  # audit/2026-09-02-u-a-audit.md section (h) for the evidence per edge.
+  - [dem, relative_geometry]
+  - [building_dsm, relative_geometry]
+  - [vegetation_dsm, relative_geometry]
+  - [building_dsm, walls]                        # walls derive from Building_DSM only (walls_aspect preprocessing)
+  - [building_dsm, wall_aspect]                  # sibling product of the same preprocessing pass
+  - [building_dsm, building_visibility]          # SVF/marches read `a` only, not DEM
+  - [dem, vegetation_visibility]
+  - [relative_geometry, vegetation_visibility]   # bush derived at utci_process.py:517
+  - [vegetation_dsm, vegetation_visibility]
+  - [building_visibility, svf]
+  - [vegetation_visibility, svf]
+  - [meteorology, solar_atmospheric_state]
+  - [selected_date_time, solar_atmospheric_state]
+  - [solar_atmospheric_state, time_shadow]
+  - [building_visibility, time_shadow]
+  - [vegetation_visibility, time_shadow]
+  - [walls, time_shadow]                         # march input, solweig.py:2062-2063
+  - [wall_aspect, time_shadow]                   # march input, utci_process.py:745
+  - [svf, radiation]
+  - [time_shadow, radiation]
+  - [landcover, radiation]
+  - [meteorology, radiation]
+  - [model_parameters, radiation]
+  - [landcover, surface_thermal_state]
+  - [meteorology, surface_thermal_state]
+  - [radiation, surface_thermal_state]
+  - [radiation, tmrt]
+  - [surface_thermal_state, tmrt]
+  - [meteorology, tmrt]
+  - [tmrt, utci]
+  - [meteorology, utci]
+  - [wind_coefficients, utci]
+  - [tmrt, wbgt]
+  - [meteorology, wbgt]
+  - [wind_coefficients, wbgt]                    # utci_process.py:818-825
+  - [time_shadow, wbgt]                          # sun/shade cond :822/:826
+  # [model_parameters, utci] removed: no direct path — parameters act via
+  # radiation/tmrt (calculate_utci.py:259 takes Ta, RH, Tmrt, va only).

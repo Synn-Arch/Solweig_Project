@@ -1,0 +1,28 @@
+site: 500x500@2.0m  a in [183.97, 217.36]
+config: sun_floor=6.429deg max_shadow=2172.5m offset=0.0
+conservative halo: 225px (old read window = write+225)
+scene amaxvalue=228.34
+
+[S01_add_h6_r3] tree at cell (166, 102)
+  per-tree offset: [11.49]
+  dirty windows: [(80, 256, 16, 192)]
+  dirty fraction: 0.1239 -> mode local
+  write(=dirty+margin): (68, 268, 4, 204)  frac 0.1600
+  exact read: (0, 470, 0, 389)  frac 0.7313
+  old read (halo): frac 0.8460
+
+[typical_h10_r4] tree at cell (166, 102)
+  per-tree offset: [11.49]
+  dirty windows: [(48, 272, 0, 208)]
+  dirty fraction: 0.1864 -> mode local
+  write(=dirty+margin): (36, 284, 0, 220)  frac 0.2182
+  exact read: (0, 473, 0, 425)  frac 0.8041
+  old read (halo): frac 0.8900
+
+[tall_h18_r6] tree at cell (166, 102)
+  per-tree offset: [6.16]
+  dirty windows: [(48, 288, 0, 224)]
+  dirty fraction: 0.2150 -> mode local
+  write(=dirty+margin): (36, 300, 0, 236)  frac 0.2492
+  exact read: (0, 486, 0, 427)  frac 0.8301
+  old read (halo): frac 0.9220

@@ -1,0 +1,1784 @@
+{
+  "benchmark": "U-C T3 differential sweep \u2014 PlanExecutor vs independent full-tile oracles",
+  "date": "2026-09-03",
+  "runner": "uc-t3-runner (Scientist, CPU chain)",
+  "objective": "Drive all five edit families (vegetation, meteorology, landcover, model params, building) through PlanExecutor.execute and compare the published store bitwise (equal_nan) against independent full-tile oracles on the real 500x500@2m Austin tile, plus mixed-batch, multi-batch accumulation, and wedge-recovery orchestration.",
+  "site": {
+    "tile": "0_0",
+    "site_id": "site_500",
+    "grid": "500x500 @ 2.0 m",
+    "origin_xy_m": [
+      621734.7066,
+      3354614.3479
+    ],
+    "date": "2009-08-11",
+    "solar": {
+      "latitude": 30.312645,
+      "longitude": -97.728679,
+      "altitude_m": 3.0,
+      "utc_offset_hours": -5.0
+    },
+    "met": "metfiles/metfile_0_0.txt (24 steps x 24 columns; t=12 air_temperature 34.34)",
+    "cache": "/Users/alansynn/Workspace/solweig/Input_subset/processed_inputs/incremental_cache_0_0",
+    "derived_site_note": "see anomaly UC-T3-A1 for the lr (real-landcover) site used by U3/U6/U7"
+  },
+  "comparison_discipline": {
+    "gate": "bitwise (np.array_equal equal_nan) \u2014 matches the packet's own E2E tests",
+    "no_tolerance_relaxation": true,
+    "divergence_reporting": "any non-bitwise difference is recorded with n_different_cells and max_abs_diff"
+  },
+  "code_state": {
+    "HEAD": "e607bfaa349d4df6aeddd21908c9278e3aaa973e",
+    "dispatched": "5d2df4d",
+    "HEAD_subject": "docs(agent): ledger row U-C-T3 dispatched",
+    "solweig_gpu_dirty": false,
+    "tests_dirty": false,
+    "diff_dispatched_HEAD_code": "(empty)",
+    "python": "3.14.7",
+    "solweig_gpu_file": "/Users/alansynn/Workspace/solweig/solweig_gpu/__init__.py"
+  },
+  "scenarios": {
+    "sanity": {
+      "scenario": "sanity",
+      "title": "Baseline full-tile run bitwise-reproducible vs P8 cached oracle",
+      "inputs": {
+        "cache": "/Users/alansynn/Workspace/solweig/Input_subset/processed_inputs/incremental_cache_0_0",
+        "manifest_sha256": "42aaa08c68f1490813a3b7e93d18d7944d1b950302b467a7db88e4dcaf394506",
+        "baseline_tifs_sha256": {
+          "utci": "af54933d4efd3136f36ede945cbb0880aed1c379513e8582b764a7e1c1234331",
+          "tmrt": "adb6ca268f60c509c839a9c115fd490aee3d8f7efc78bab8ef331fea07fb83e4",
+          "shadow": "925ee0f70a6442eb34cd48ab8febe134db5d030d091d6d95fd44814a26194970"
+        }
+      },
+      "executor": {},
+      "oracle": {
+        "fresh_run": {
+          "name": "sanity_20260903",
+          "cache_dir": "/Users/alansynn/Workspace/solweig/Input_subset/processed_inputs/incremental_cache_0_0",
+          "site_dir": "/Users/alansynn/Workspace/solweig/Input_subset/processed_inputs",
+          "model_parameters": null,
+          "wall_seconds": 146.7730839252472,
+          "computed_utc": "2026-09-02T20:08:56Z",
+          "sha256": {
+            "utci": "8db68a0d3dcebcd8ee7b118db2ed92023209941bc80aa2ccb95c4f676bf63e55",
+            "tmrt": "487a912aa73fdf63c04f7a897d6a6ea1393e91e8898c6b75ccc2153625d2aa81",
+            "shadow": "f8f75196a68796fdef7bce63b53a44a81730c9591bb291d2d61e74e642f2e864"
+          },
+          "reused": false
+        },
+        "cached_oracle": {
+          "path": "/tmp/p8sci/oracles/baseline",
+          "computed_utc": "2026-09-02T06:25:05Z",
+          "wall_seconds_original": 137.6467740535736,
+          "sha256": {
+            "utci": "8db68a0d3dcebcd8ee7b118db2ed92023209941bc80aa2ccb95c4f676bf63e55",
+            "tmrt": "487a912aa73fdf63c04f7a897d6a6ea1393e91e8898c6b75ccc2153625d2aa81",
+            "shadow": "f8f75196a68796fdef7bce63b53a44a81730c9591bb291d2d61e74e642f2e864"
+          }
+        }
+      },
+      "comparison": {
+        "per_variable": {
+          "utci": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "tmrt": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          }
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "wall_seconds": 147.24653720855713,
+      "code_state": {
+        "HEAD": "e607bfaa349d4df6aeddd21908c9278e3aaa973e",
+        "dispatched": "5d2df4d",
+        "HEAD_subject": "docs(agent): ledger row U-C-T3 dispatched",
+        "solweig_gpu_dirty": false,
+        "tests_dirty": false,
+        "diff_dispatched_HEAD_code": "(empty)",
+        "python": "3.14.7",
+        "solweig_gpu_file": "/Users/alansynn/Workspace/solweig/solweig_gpu/__init__.py"
+      }
+    },
+    "u1": {
+      "scenario": "u1",
+      "title": "Executor tree add (windowed path) vs independent full-tile oracle (P5 addA)",
+      "inputs": {
+        "cache": "/Users/alansynn/Workspace/solweig/Input_subset/processed_inputs/incremental_cache_0_0",
+        "baseline_tifs_sha256": {
+          "utci": "af54933d4efd3136f36ede945cbb0880aed1c379513e8582b764a7e1c1234331",
+          "tmrt": "adb6ca268f60c509c839a9c115fd490aee3d8f7efc78bab8ef331fea07fb83e4",
+          "shadow": "925ee0f70a6442eb34cd48ab8febe134db5d030d091d6d95fd44814a26194970"
+        },
+        "oracle_meta_scene": "TreeSpec(tree_id='t1', x_m=621939.7066, y_m=3354281.3479, height_m=6.0, canopy_radius_m=3.0, trunk_ratio=0.25, transmissivity=0.03)",
+        "tree": {
+          "row": 166,
+          "col": 102,
+          "height_m": 6.0,
+          "radius_m": 3.0
+        }
+      },
+      "executor": {
+        "status": "published",
+        "mode": "local",
+        "job_id": "job-55e1f9403ffb",
+        "scene_revision": 1,
+        "wall_seconds": 54.19107103347778,
+        "write_windows": [
+          [
+            68,
+            268,
+            4,
+            204
+          ]
+        ],
+        "read_windows": [
+          [
+            0,
+            470,
+            0,
+            389
+          ]
+        ],
+        "patch_paths": [
+          "/tmp/uc/results/u1/u1/rev-000001-job-55e1f9403ffb"
+        ],
+        "patch_details": [
+          {
+            "path": "/tmp/uc/results/u1/u1/rev-000001-job-55e1f9403ffb",
+            "files_sha256": {
+              "shadow.f32.npy": "176d21f96b8a0f72c0cbd257ee284f5cd933796477113c0742ff147ef3429dc2",
+              "tmrt.f32.npy": "882c7c36c27520b23296a52fd98cfdc6e99891e30194b461e1d8fbe9e34bfc92",
+              "utci.f32.npy": "835044ec9ea138027f325ab7c1bd15bc62ad3382fb8b9e632dd51ed6f9915a02"
+            }
+          }
+        ],
+        "requested_variables": [
+          "shadow",
+          "tmrt",
+          "utci"
+        ],
+        "unpublished_variables": [],
+        "fallback_reason": null,
+        "diagnostics": {
+          "dirty_windows": [
+            [
+              80,
+              256,
+              16,
+              192
+            ]
+          ],
+          "dirty_fraction": 0.16,
+          "batch_sequences": [
+            1,
+            1
+          ],
+          "elapsed_seconds": 54.18885087966919,
+          "forcing_overlay_pending": false,
+          "landcover_overlay_pending": false,
+          "model_parameters_pending": false
+        },
+        "scene_revision_after": 1,
+        "store_len": 72,
+        "store_max_revision": 1
+      },
+      "oracle": {},
+      "comparison": {
+        "write_window": [
+          68,
+          268,
+          4,
+          204
+        ],
+        "inside_vs_oracle": {
+          "utci": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "tmrt": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          }
+        },
+        "outside_vs_prior_store": {
+          "n_outside_cells": 210000,
+          "utci": {
+            "vs_prior_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "tmrt": {
+            "vs_prior_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "shadow": {
+            "vs_prior_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          }
+        },
+        "full_tile_vs_oracle": {
+          "utci": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "tmrt": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          }
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "wall_seconds": 54.833067178726196,
+      "code_state": {
+        "HEAD": "e607bfaa349d4df6aeddd21908c9278e3aaa973e",
+        "dispatched": "5d2df4d",
+        "HEAD_subject": "docs(agent): ledger row U-C-T3 dispatched",
+        "solweig_gpu_dirty": false,
+        "tests_dirty": false,
+        "diff_dispatched_HEAD_code": "(empty)",
+        "python": "3.14.7",
+        "solweig_gpu_file": "/Users/alansynn/Workspace/solweig/solweig_gpu/__init__.py"
+      }
+    },
+    "u2": {
+      "scenario": "u2",
+      "title": "Executor air_temperature edit (t=12, 34.34->38.0) vs physically-edited met twin",
+      "inputs": {
+        "cache": "/Users/alansynn/Workspace/solweig/Input_subset/processed_inputs/incremental_cache_0_0",
+        "met_edit": {
+          "row": 12,
+          "column": 11,
+          "variable": "air_temperature",
+          "value": 38.0
+        },
+        "twin_site": "/tmp/uc/sites/rmet/processed_inputs",
+        "twin_cache": "/tmp/uc/caches/rmet",
+        "twin_met_sha256": "9b3cf0e0eb90138947f9efb96c17715a712e0846e10c2a85c0535beff5edc02e",
+        "twin_verification": "site_verification.json:rmet (1 met cell differs)"
+      },
+      "executor": {
+        "status": "published",
+        "mode": "full",
+        "job_id": "job-031a0726b57e",
+        "scene_revision": 1,
+        "wall_seconds": 136.4650480747223,
+        "write_windows": [
+          [
+            0,
+            500,
+            0,
+            500
+          ]
+        ],
+        "read_windows": [
+          [
+            0,
+            500,
+            0,
+            500
+          ]
+        ],
+        "patch_paths": [
+          "/tmp/uc/results/u2/u2/rev-000001-job-031a0726b57e"
+        ],
+        "patch_details": [
+          {
+            "path": "/tmp/uc/results/u2/u2/rev-000001-job-031a0726b57e",
+            "files_sha256": {
+              "shadow.f32.npy": "f8f75196a68796fdef7bce63b53a44a81730c9591bb291d2d61e74e642f2e864",
+              "tmrt.f32.npy": "b0f96b75c43d6954f324273efcb085e20d734cb89b5f06974823c66817a557f6",
+              "utci.f32.npy": "1e65473e638a33edc0482d0c23976e1c81c5e9dbc79416e1866dc620003cf66b"
+            }
+          }
+        ],
+        "requested_variables": [
+          "shadow",
+          "tmrt",
+          "utci"
+        ],
+        "unpublished_variables": [],
+        "fallback_reason": null,
+        "diagnostics": {
+          "dirty_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "dirty_fraction": 1.0,
+          "batch_sequences": null,
+          "elapsed_seconds": 136.10007905960083,
+          "forcing_overlay_pending": true,
+          "landcover_overlay_pending": false,
+          "model_parameters_pending": false
+        },
+        "scene_revision_after": 1,
+        "store_len": 72,
+        "store_max_revision": 1
+      },
+      "oracle": {
+        "name": "rmet",
+        "wall_seconds": 144.6562533378601,
+        "reused": false,
+        "sha256": {
+          "utci": "1e65473e638a33edc0482d0c23976e1c81c5e9dbc79416e1866dc620003cf66b",
+          "tmrt": "b0f96b75c43d6954f324273efcb085e20d734cb89b5f06974823c66817a557f6",
+          "shadow": "f8f75196a68796fdef7bce63b53a44a81730c9591bb291d2d61e74e642f2e864"
+        }
+      },
+      "comparison": {
+        "mode_expected_full": true,
+        "full_tile_vs_oracle": {
+          "utci": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "tmrt": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          }
+        },
+        "shadow_vs_baseline": {
+          "utci": null,
+          "tmrt": null,
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          }
+        },
+        "steps_before_edit_vs_baseline": {
+          "utci": {
+            "steps_checked": 12,
+            "all_bitwise_baseline": true,
+            "first_diverging_step": null
+          },
+          "tmrt": {
+            "steps_checked": 12,
+            "all_bitwise_baseline": true,
+            "first_diverging_step": null
+          }
+        },
+        "edit_step_and_forward": {
+          "utci": {
+            "edit_step_changes": true,
+            "max_abs_delta_vs_baseline_by_step": [
+              4.443210601806641,
+              0.09611129760742188,
+              0.02397918701171875,
+              0.005859375,
+              0.001506805419921875,
+              0.0004119873046875,
+              0.000152587890625,
+              8.0108642578125e-05,
+              5.340576171875e-05,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "tmrt": {
+            "edit_step_changes": true,
+            "max_abs_delta_vs_baseline_by_step": [
+              3.764739990234375,
+              0.406585693359375,
+              0.10223388671875,
+              0.025390625,
+              0.006317138671875,
+              0.001617431640625,
+              0.00042724609375,
+              0.000152587890625,
+              6.103515625e-05,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "wall_seconds": 281.6888937950134,
+      "code_state": {
+        "HEAD": "e607bfaa349d4df6aeddd21908c9278e3aaa973e",
+        "dispatched": "5d2df4d",
+        "HEAD_subject": "docs(agent): ledger row U-C-T3 dispatched",
+        "solweig_gpu_dirty": false,
+        "tests_dirty": false,
+        "diff_dispatched_HEAD_code": "(empty)",
+        "python": "3.14.7",
+        "solweig_gpu_file": "/Users/alansynn/Workspace/solweig/solweig_gpu/__init__.py"
+      }
+    },
+    "u3": {
+      "scenario": "u3",
+      "title": "Executor paint grass(5)->asphalt(1) window [201,245)x[228,272) vs physically-painted twin",
+      "inputs": {
+        "site": "real Austin tile + REAL Landcover.tif crop (Input_rasters/Landcover.tif)",
+        "cache": "/tmp/uc/caches/lr",
+        "paint_window": [
+          201,
+          245,
+          228,
+          272
+        ],
+        "classes": "5 (grass) -> 1 (dark asphalt)",
+        "twin": "/tmp/uc/sites/lr_paint",
+        "twin_verification": "landcover differs in exactly 1936 cells at the window"
+      },
+      "executor": {
+        "status": "published",
+        "mode": "local",
+        "job_id": "job-a47e8b04bc5e",
+        "scene_revision": 1,
+        "wall_seconds": 42.568816900253296,
+        "write_windows": [
+          [
+            189,
+            257,
+            216,
+            284
+          ]
+        ],
+        "read_windows": [
+          [
+            9,
+            456,
+            34,
+            486
+          ]
+        ],
+        "patch_paths": [
+          "/tmp/uc/results/u3/u3/rev-000001-job-a47e8b04bc5e"
+        ],
+        "patch_details": [
+          {
+            "path": "/tmp/uc/results/u3/u3/rev-000001-job-a47e8b04bc5e",
+            "files_sha256": {
+              "shadow.f32.npy": "94fcc555be9a5c5ffb91d118068a26c7e4fd35902224e8cf36446b58e38d76c7",
+              "tmrt.f32.npy": "85baa398f0913429f879e142c5aa2e4839250d843d77f14f5ddf048b3b94b945",
+              "utci.f32.npy": "c5621da3409a9e9f0a41928bca9d05bdcd476c7929cae8aa2e416249a43b34f5"
+            }
+          }
+        ],
+        "requested_variables": [
+          "shadow",
+          "tmrt",
+          "utci"
+        ],
+        "unpublished_variables": [],
+        "fallback_reason": null,
+        "diagnostics": {
+          "dirty_windows": [
+            [
+              201,
+              245,
+              228,
+              272
+            ]
+          ],
+          "dirty_fraction": 0.018496,
+          "batch_sequences": null,
+          "elapsed_seconds": 42.553436040878296,
+          "forcing_overlay_pending": false,
+          "landcover_overlay_pending": true,
+          "model_parameters_pending": false
+        },
+        "scene_revision_after": 1,
+        "store_len": 72,
+        "store_max_revision": 1
+      },
+      "oracle": {
+        "lr_baseline": {
+          "wall_seconds": 138.6158709526062,
+          "reused": false
+        },
+        "lr_paint": {
+          "wall_seconds": 131.55817985534668,
+          "reused": false,
+          "sha256": {
+            "utci": "16b5dd0d6c84ec2a941b32adb74b3078fc53494ea62470655f323363ba8c1a2d",
+            "tmrt": "a601b411d9372d12809ef3ea31c4568c4b480ce081e490757ed0ba83c7c7cce3",
+            "shadow": "f8f75196a68796fdef7bce63b53a44a81730c9591bb291d2d61e74e642f2e864"
+          }
+        }
+      },
+      "comparison": {
+        "write_windows": [
+          [
+            189,
+            257,
+            216,
+            284
+          ]
+        ],
+        "write_union": [
+          189,
+          257,
+          216,
+          284
+        ],
+        "stroke_window_covered_by_union": true,
+        "per_window_inside_vs_oracle": {
+          "[189, 257, 216, 284]": {
+            "utci": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "tmrt": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "shadow": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          }
+        },
+        "outside_union_vs_prior_store": {
+          "n_outside_cells": 245376,
+          "utci": {
+            "vs_prior_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "tmrt": {
+            "vs_prior_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          },
+          "shadow": {
+            "vs_prior_store": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          }
+        },
+        "dirty_windows": [
+          [
+            201,
+            245,
+            228,
+            272
+          ]
+        ],
+        "stroke_class_histogram": {
+          "5": 1936
+        },
+        "stroke_all_grass": true
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "wall_seconds": 313.64508390426636,
+      "code_state": {
+        "HEAD": "e607bfaa349d4df6aeddd21908c9278e3aaa973e",
+        "dispatched": "5d2df4d",
+        "HEAD_subject": "docs(agent): ledger row U-C-T3 dispatched",
+        "solweig_gpu_dirty": false,
+        "tests_dirty": false,
+        "diff_dispatched_HEAD_code": "(empty)",
+        "python": "3.14.7",
+        "solweig_gpu_file": "/Users/alansynn/Workspace/solweig/solweig_gpu/__init__.py"
+      }
+    },
+    "u4": {
+      "scenario": "u4",
+      "title": "Executor albedo_b 0.2->0.35 vs direct run_full_tile(model_parameters=...)",
+      "inputs": {
+        "cache": "/Users/alansynn/Workspace/solweig/Input_subset/processed_inputs/incremental_cache_0_0",
+        "param": {
+          "name": "albedo_b",
+          "before": 0.2,
+          "after": 0.35
+        }
+      },
+      "executor": {
+        "status": "published",
+        "mode": "full",
+        "job_id": "job-667307c25157",
+        "scene_revision": 1,
+        "wall_seconds": 128.03404474258423,
+        "write_windows": [
+          [
+            0,
+            500,
+            0,
+            500
+          ]
+        ],
+        "read_windows": [
+          [
+            0,
+            500,
+            0,
+            500
+          ]
+        ],
+        "patch_paths": [
+          "/tmp/uc/results/u4/u4/rev-000001-job-667307c25157"
+        ],
+        "patch_details": [
+          {
+            "path": "/tmp/uc/results/u4/u4/rev-000001-job-667307c25157",
+            "files_sha256": {
+              "shadow.f32.npy": "f8f75196a68796fdef7bce63b53a44a81730c9591bb291d2d61e74e642f2e864",
+              "tmrt.f32.npy": "5fd8416287c25619f51073e96624060e4da345268e7b779ed84b5f2f37a7c3f8",
+              "utci.f32.npy": "6e8874dce47ee9ef709a5eda63a8fb088e0191c372039ac75077bf5c31806337"
+            }
+          }
+        ],
+        "requested_variables": [
+          "shadow",
+          "tmrt",
+          "utci"
+        ],
+        "unpublished_variables": [],
+        "fallback_reason": null,
+        "diagnostics": {
+          "dirty_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "dirty_fraction": 1.0,
+          "batch_sequences": null,
+          "elapsed_seconds": 128.03068375587463,
+          "forcing_overlay_pending": false,
+          "landcover_overlay_pending": false,
+          "model_parameters_pending": true
+        },
+        "scene_revision_after": 1,
+        "store_len": 72,
+        "store_max_revision": 1
+      },
+      "oracle": {
+        "ident": {
+          "wall_seconds": 154.41803073883057,
+          "params": {
+            "albedo_b": 0.2
+          }
+        },
+        "b035": {
+          "wall_seconds": 132.69327688217163,
+          "params": {
+            "albedo_b": 0.35
+          }
+        }
+      },
+      "comparison": {
+        "mode_expected_full": true,
+        "full_tile_vs_direct_oracle": {
+          "utci": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "tmrt": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          }
+        },
+        "shadow_vs_baseline": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        },
+        "decoupling_table_oracle_level": {
+          "utci": {
+            "bitwise_equal": false,
+            "n_different_cells": 2721798,
+            "max_abs_diff": 1.2428054809570312,
+            "changes": true
+          },
+          "tmrt": {
+            "bitwise_equal": false,
+            "n_different_cells": 3249430,
+            "max_abs_diff": 5.10015869140625,
+            "changes": true
+          },
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0,
+            "changes": false
+          }
+        },
+        "note_fluxes": "kup/kdown/lup/ldown are not carried by ResultPatch (unpublished transport); the packet's own scientific suite proves flux decoupling on its fixture; here shadow is the patch-carried decoupled variable"
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "wall_seconds": 415.58181595802307,
+      "code_state": {
+        "HEAD": "e607bfaa349d4df6aeddd21908c9278e3aaa973e",
+        "dispatched": "5d2df4d",
+        "HEAD_subject": "docs(agent): ledger row U-C-T3 dispatched",
+        "solweig_gpu_dirty": false,
+        "tests_dirty": false,
+        "diff_dispatched_HEAD_code": "(empty)",
+        "python": "3.14.7",
+        "solweig_gpu_file": "/Users/alansynn/Workspace/solweig/solweig_gpu/__init__.py"
+      }
+    },
+    "u5": {
+      "scenario": "u5",
+      "title": "Executor building massing add vs independent regenerate_building_batch oracle",
+      "inputs": {
+        "cache": "/Users/alansynn/Workspace/solweig/Input_subset/processed_inputs/incremental_cache_0_0",
+        "footprint_window_rows_cols": [
+          243,
+          255,
+          242,
+          258
+        ],
+        "footprint_m": [
+          [
+            622218.7066,
+            3354128.3479
+          ],
+          [
+            622250.7066,
+            3354128.3479
+          ],
+          [
+            622250.7066,
+            3354104.3479
+          ],
+          [
+            622218.7066,
+            3354104.3479
+          ]
+        ],
+        "height_m_above_ground": 14.0,
+        "baseline_hashes_before": {
+          "Building_DSM/Building_DSM_0_0.tif": "4f4417c43db0132ae28b08beac374eecef1eebad42a9ff2533252b20dc9173e6",
+          "DEM/DEM_0_0.tif": "99a08e2921580f0909a48fc1bd239cb646e0e42ad512dc1f5e83827aba8da157",
+          "Trees/Trees_0_0.tif": "59f55dbbd2978014b131327b6b3a36acb2407b82884284227c9b98b8808f690a",
+          "metfiles/metfile_0_0.txt": "8ec5627181293c988f0078e14338a014283a85f721bba7e737585363ba06cf30"
+        }
+      },
+      "executor": {
+        "status": "published",
+        "mode": "full",
+        "job_id": "job-8ffcd5f4dc3f",
+        "scene_revision": 1,
+        "wall_seconds": 258.98226594924927,
+        "write_windows": [
+          [
+            0,
+            500,
+            0,
+            500
+          ]
+        ],
+        "read_windows": [
+          [
+            0,
+            500,
+            0,
+            500
+          ]
+        ],
+        "patch_paths": [
+          "/tmp/uc/results/u5/u5/rev-000001-job-8ffcd5f4dc3f"
+        ],
+        "patch_details": [
+          {
+            "path": "/tmp/uc/results/u5/u5/rev-000001-job-8ffcd5f4dc3f",
+            "files_sha256": {
+              "shadow.f32.npy": "86c11032d506b14ccc2c13bd2d74302d4f437330b3280b2d82a9171b94987b5e",
+              "tmrt.f32.npy": "71da8663c8eac47b382b91970d9cba7b2d3c303b76d5e68742398951ec7fc46c",
+              "utci.f32.npy": "d6a7d2b85cb9a30355986ac02969830cdd70ea03abcfdbf65f48c009995b8e76"
+            }
+          }
+        ],
+        "requested_variables": [
+          "shadow",
+          "tmrt",
+          "utci"
+        ],
+        "unpublished_variables": [],
+        "fallback_reason": null,
+        "diagnostics": {
+          "dirty_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "dirty_fraction": 1.0,
+          "elapsed_seconds": 258.98109579086304,
+          "building_batch": true,
+          "regeneration_stages": [
+            "stage_scenario_site",
+            "write_scenario_building_dsm",
+            "write_scenario_trees",
+            "regenerate_walls_aspect",
+            "regenerate_svf",
+            "rebuild_scenario_cache",
+            "run_scenario_full_tile"
+          ],
+          "building_disclosures": [],
+          "forcing_overlay_pending": false,
+          "landcover_overlay_pending": false
+        },
+        "scene_revision_after": 1,
+        "store_len": 72,
+        "store_max_revision": 1
+      },
+      "oracle": {
+        "independent_chain": "regenerate_building_batch(massing_edits_from_deltas(BuildingMassingDelta(...)))",
+        "wall_seconds": 243.2287609577179,
+        "stages": [
+          "stage_scenario_site",
+          "write_scenario_building_dsm",
+          "regenerate_walls_aspect",
+          "regenerate_svf",
+          "rebuild_scenario_cache",
+          "run_scenario_full_tile"
+        ],
+        "scenario_root": "/tmp/uc/scratch/u5_oracle_scenario"
+      },
+      "comparison": {
+        "utci": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        },
+        "tmrt": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        },
+        "shadow": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        },
+        "baseline_immutability": {
+          "site_rasters_unchanged": true,
+          "cache_manifest_unchanged": true
+        },
+        "disclosures": {
+          "executor": [],
+          "oracle": []
+        },
+        "mode_expected_full": true
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "wall_seconds": 502.3824782371521,
+      "code_state": {
+        "HEAD": "e607bfaa349d4df6aeddd21908c9278e3aaa973e",
+        "dispatched": "5d2df4d",
+        "HEAD_subject": "docs(agent): ledger row U-C-T3 dispatched",
+        "solweig_gpu_dirty": false,
+        "tests_dirty": false,
+        "diff_dispatched_HEAD_code": "(empty)",
+        "python": "3.14.7",
+        "solweig_gpu_file": "/Users/alansynn/Workspace/solweig/solweig_gpu/__init__.py"
+      }
+    },
+    "u6": {
+      "scenario": "u6",
+      "title": "Executor mixed batch (veg+met+paint, one plan) vs triple-edited twin",
+      "inputs": {
+        "site": "/tmp/uc/sites/lr/processed_inputs",
+        "cache": "/tmp/uc/caches/lr",
+        "edits": [
+          "veg t1@(166,102) h6 r3",
+          "met air_temperature t=12 -> 38.0",
+          "paint (201, 245, 228, 272) 5->1"
+        ],
+        "twin": "/tmp/uc/sites/lr_triple",
+        "twin_verification": "met 1 cell + landcover 1936 cells + tree_base 9 cells differ"
+      },
+      "executor": {
+        "status": "published",
+        "mode": "full",
+        "job_id": "job-9d8e72e525c3",
+        "scene_revision": 1,
+        "wall_seconds": 163.36433172225952,
+        "write_windows": [
+          [
+            0,
+            500,
+            0,
+            500
+          ]
+        ],
+        "read_windows": [
+          [
+            0,
+            500,
+            0,
+            500
+          ]
+        ],
+        "patch_paths": [
+          "/tmp/uc/results/u6/u6/rev-000001-job-9d8e72e525c3"
+        ],
+        "patch_details": [
+          {
+            "path": "/tmp/uc/results/u6/u6/rev-000001-job-9d8e72e525c3",
+            "files_sha256": {
+              "shadow.f32.npy": "6770bb10fbaa1f5f20510f98eb9547be062d716232993928b603803fe6eade2a",
+              "tmrt.f32.npy": "b23ff09a9171456069cff591f70be7807d86d2e488a80ca67f93aa2f9a6e0721",
+              "utci.f32.npy": "f2f70c553c9bf24ac04bffa71db392e0107ffac8fe16bce34ef5d279518bfd88"
+            }
+          }
+        ],
+        "requested_variables": [
+          "shadow",
+          "tmrt",
+          "utci"
+        ],
+        "unpublished_variables": [],
+        "fallback_reason": null,
+        "diagnostics": {
+          "dirty_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "dirty_fraction": 1.0,
+          "batch_sequences": [
+            1,
+            1
+          ],
+          "elapsed_seconds": 162.99186611175537,
+          "forcing_overlay_pending": true,
+          "landcover_overlay_pending": true,
+          "model_parameters_pending": false
+        },
+        "scene_revision_after": 1,
+        "store_len": 72,
+        "store_max_revision": 1,
+        "plan_node_impacts": [
+          {
+            "node": "solar_atmospheric_state",
+            "scope": "SpatialScope.FULL",
+            "temporal": "TemporalScope.ONE",
+            "time": [
+              12,
+              null
+            ]
+          },
+          {
+            "node": "relative_geometry",
+            "scope": "SpatialScope.WINDOWS",
+            "temporal": "TemporalScope.ALL",
+            "time": [
+              null,
+              null
+            ]
+          },
+          {
+            "node": "vegetation_visibility",
+            "scope": "SpatialScope.WINDOWS",
+            "temporal": "TemporalScope.ALL",
+            "time": [
+              null,
+              null
+            ]
+          },
+          {
+            "node": "svf",
+            "scope": "SpatialScope.WINDOWS",
+            "temporal": "TemporalScope.ALL",
+            "time": [
+              null,
+              null
+            ]
+          },
+          {
+            "node": "time_shadow",
+            "scope": "SpatialScope.FULL",
+            "temporal": "TemporalScope.ONE",
+            "time": [
+              12,
+              null
+            ]
+          },
+          {
+            "node": "radiation",
+            "scope": "SpatialScope.FULL",
+            "temporal": "TemporalScope.ONE",
+            "time": [
+              12,
+              null
+            ]
+          },
+          {
+            "node": "surface_thermal_state",
+            "scope": "SpatialScope.FULL",
+            "temporal": "TemporalScope.REPLAY",
+            "time": [
+              0,
+              12
+            ]
+          },
+          {
+            "node": "tmrt",
+            "scope": "SpatialScope.FULL",
+            "temporal": "TemporalScope.ONE",
+            "time": [
+              12,
+              null
+            ]
+          },
+          {
+            "node": "utci",
+            "scope": "SpatialScope.FULL",
+            "temporal": "TemporalScope.ONE",
+            "time": [
+              12,
+              null
+            ]
+          }
+        ]
+      },
+      "oracle": {
+        "name": "lr_triple",
+        "wall_seconds": 152.35943984985352,
+        "reused": false,
+        "sha256": {
+          "utci": "f2f70c553c9bf24ac04bffa71db392e0107ffac8fe16bce34ef5d279518bfd88",
+          "tmrt": "b23ff09a9171456069cff591f70be7807d86d2e488a80ca67f93aa2f9a6e0721",
+          "shadow": "6770bb10fbaa1f5f20510f98eb9547be062d716232993928b603803fe6eade2a"
+        }
+      },
+      "comparison": {
+        "mode_expected_full": true,
+        "one_revision_bump": true,
+        "one_job_one_batch": true,
+        "store_coverage": {
+          "utci_available_times": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23
+          ],
+          "utci_coverage_gaps_0_23": [],
+          "tmrt_available_times": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23
+          ],
+          "shadow_node_available_times": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23
+          ],
+          "revision_at_utci_0": 1,
+          "revision_at_utci_23": 1
+        },
+        "full_tile_vs_triple_twin": {
+          "utci": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "tmrt": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          }
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "wall_seconds": 316.5492091178894,
+      "code_state": {
+        "HEAD": "e607bfaa349d4df6aeddd21908c9278e3aaa973e",
+        "dispatched": "5d2df4d",
+        "HEAD_subject": "docs(agent): ledger row U-C-T3 dispatched",
+        "solweig_gpu_dirty": false,
+        "tests_dirty": false,
+        "diff_dispatched_HEAD_code": "(empty)",
+        "python": "3.14.7",
+        "solweig_gpu_file": "/Users/alansynn/Workspace/solweig/solweig_gpu/__init__.py"
+      }
+    },
+    "u7": {
+      "scenario": "u7",
+      "title": "Executor sequence U2->U3->U4 (met, paint, params) accumulating across three batches",
+      "inputs": {
+        "site": "/tmp/uc/sites/lr/processed_inputs",
+        "cache": "/tmp/uc/caches/lr",
+        "sequence": [
+          "batch1 met air_temperature t=12 -> 38.0",
+          "batch2 paint (201, 245, 228, 272) 5->1",
+          "batch3 params albedo_b 0.2 -> 0.35"
+        ],
+        "oracles": {
+          "lr_baseline": {
+            "reused": true,
+            "wall_seconds": 138.6158709526062
+          },
+          "lr_metlc": {
+            "reused": true,
+            "wall_seconds": 156.54300689697266,
+            "sha256": {
+              "utci": "7dcb517c2b50db1bd7c13c54be196d7430e66e10d3cf806c21a478aadeeceec6",
+              "tmrt": "4ff015946e40f2b0e18643ae8188afafc90421d867b717ca15ba2fb561d772bd",
+              "shadow": "f8f75196a68796fdef7bce63b53a44a81730c9591bb291d2d61e74e642f2e864"
+            }
+          },
+          "lr_metlc_params": {
+            "wall_seconds": 140.45878386497498,
+            "sha256": {
+              "utci": "39b2f91ebe037558de5c21a9354ce7789b841d7958133681ffe62cc8030f3fa1",
+              "tmrt": "ecb6e7d919b716603a67a8205ae5ac5439573ca87e08f8f698fd6946986ed20f",
+              "shadow": "f8f75196a68796fdef7bce63b53a44a81730c9591bb291d2d61e74e642f2e864"
+            }
+          }
+        }
+      },
+      "executor": {
+        "batches": [
+          {
+            "step": "met",
+            "status": "published",
+            "mode": "full",
+            "job_id": "job-fbe3316bb2fa",
+            "scene_revision": 1,
+            "wall_seconds": 148.16228032112122,
+            "write_windows": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "read_windows": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "patch_paths": [
+              "/tmp/uc/results/u7/u7/rev-000001-job-fbe3316bb2fa"
+            ],
+            "patch_details": [
+              {
+                "path": "/tmp/uc/results/u7/u7/rev-000001-job-fbe3316bb2fa",
+                "files_sha256": {
+                  "shadow.f32.npy": "f8f75196a68796fdef7bce63b53a44a81730c9591bb291d2d61e74e642f2e864",
+                  "tmrt.f32.npy": "a5ee913048d35726254d092ad4c0833953fab08ac2dfa09a064d3bafbef30bbc",
+                  "utci.f32.npy": "56f8b6a77ba215ba42b9b727a9007cfee057479e7639fbf04a798966c8502908"
+                }
+              }
+            ],
+            "requested_variables": [
+              "shadow",
+              "tmrt",
+              "utci"
+            ],
+            "unpublished_variables": [],
+            "fallback_reason": null,
+            "diagnostics": {
+              "dirty_windows": [
+                [
+                  0,
+                  500,
+                  0,
+                  500
+                ]
+              ],
+              "dirty_fraction": 1.0,
+              "batch_sequences": null,
+              "elapsed_seconds": 147.62428188323975,
+              "forcing_overlay_pending": true,
+              "landcover_overlay_pending": false,
+              "model_parameters_pending": false
+            },
+            "scene_revision_after": 3,
+            "store_len": 72,
+            "store_max_revision": 3
+          },
+          {
+            "step": "paint",
+            "status": "published",
+            "mode": "local",
+            "job_id": "job-e8b1353286b5",
+            "scene_revision": 2,
+            "wall_seconds": 41.08411502838135,
+            "write_windows": [
+              [
+                189,
+                257,
+                216,
+                284
+              ]
+            ],
+            "read_windows": [
+              [
+                9,
+                456,
+                34,
+                486
+              ]
+            ],
+            "patch_paths": [
+              "/tmp/uc/results/u7/u7/rev-000002-job-e8b1353286b5"
+            ],
+            "patch_details": [
+              {
+                "path": "/tmp/uc/results/u7/u7/rev-000002-job-e8b1353286b5",
+                "files_sha256": {
+                  "shadow.f32.npy": "94fcc555be9a5c5ffb91d118068a26c7e4fd35902224e8cf36446b58e38d76c7",
+                  "tmrt.f32.npy": "325c2be5a4364fe1176cf0f864df5ad3d1ef0e5979ab663f25844f96ea3a18ac",
+                  "utci.f32.npy": "d257132d80ab55fac085237c882656359e711df277d817b3689d1e431d18efce"
+                }
+              }
+            ],
+            "requested_variables": [
+              "shadow",
+              "tmrt",
+              "utci"
+            ],
+            "unpublished_variables": [],
+            "fallback_reason": null,
+            "diagnostics": {
+              "dirty_windows": [
+                [
+                  201,
+                  245,
+                  228,
+                  272
+                ]
+              ],
+              "dirty_fraction": 0.018496,
+              "batch_sequences": null,
+              "elapsed_seconds": 41.06733703613281,
+              "forcing_overlay_pending": false,
+              "landcover_overlay_pending": true,
+              "model_parameters_pending": false
+            },
+            "scene_revision_after": 3,
+            "store_len": 72,
+            "store_max_revision": 3
+          },
+          {
+            "step": "params",
+            "status": "published",
+            "mode": "full",
+            "job_id": "job-71f9e843c307",
+            "scene_revision": 3,
+            "wall_seconds": 164.172917842865,
+            "write_windows": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "read_windows": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "patch_paths": [
+              "/tmp/uc/results/u7/u7/rev-000003-job-71f9e843c307"
+            ],
+            "patch_details": [
+              {
+                "path": "/tmp/uc/results/u7/u7/rev-000003-job-71f9e843c307",
+                "files_sha256": {
+                  "shadow.f32.npy": "f8f75196a68796fdef7bce63b53a44a81730c9591bb291d2d61e74e642f2e864",
+                  "tmrt.f32.npy": "ecb6e7d919b716603a67a8205ae5ac5439573ca87e08f8f698fd6946986ed20f",
+                  "utci.f32.npy": "39b2f91ebe037558de5c21a9354ce7789b841d7958133681ffe62cc8030f3fa1"
+                }
+              }
+            ],
+            "requested_variables": [
+              "shadow",
+              "tmrt",
+              "utci"
+            ],
+            "unpublished_variables": [],
+            "fallback_reason": null,
+            "diagnostics": {
+              "dirty_windows": [
+                [
+                  0,
+                  500,
+                  0,
+                  500
+                ]
+              ],
+              "dirty_fraction": 1.0,
+              "batch_sequences": null,
+              "elapsed_seconds": 164.16401886940002,
+              "forcing_overlay_pending": false,
+              "landcover_overlay_pending": false,
+              "model_parameters_pending": true
+            },
+            "scene_revision_after": 3,
+            "store_len": 72,
+            "store_max_revision": 3
+          }
+        ],
+        "scene_revision_final": 3,
+        "applied_forcing_overlay": "not None",
+        "applied_landcover_overlay": "not None",
+        "applied_model_parameters": {
+          "albedo_b": 0.35
+        }
+      },
+      "oracle": {},
+      "comparison": {
+        "final_vs_metlc_params_oracle": {
+          "utci": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "tmrt": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          }
+        },
+        "final_changes_vs_metlc_oracle": {
+          "utci": {
+            "bitwise_equal": false,
+            "n_different_cells": 2721667,
+            "max_abs_diff": 1.2201690673828125
+          },
+          "tmrt": {
+            "bitwise_equal": false,
+            "n_different_cells": 3249449,
+            "max_abs_diff": 5.02899169921875
+          }
+        },
+        "batch2_mode_local": true,
+        "batch2_windows_vs_metlc_oracle": {
+          "[189, 257, 216, 284]": {
+            "utci": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "tmrt": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            },
+            "shadow": {
+              "bitwise_equal": true,
+              "n_different_cells": 0,
+              "max_abs_diff": 0.0
+            }
+          }
+        },
+        "batch1_shadow_vs_lr_baseline": {
+          "bitwise_equal": true,
+          "n_different_cells": 0,
+          "max_abs_diff": 0.0
+        },
+        "batch1_steps_before_edit_vs_lr_baseline": {
+          "utci": {
+            "steps_checked": 12,
+            "all_bitwise_baseline": true
+          },
+          "tmrt": {
+            "steps_checked": 12,
+            "all_bitwise_baseline": true
+          }
+        },
+        "revision_history": {
+          "store_window_entries_utci_t12": [
+            {
+              "revision": 3,
+              "mode": "full",
+              "job": "job-71f9e843c307"
+            }
+          ],
+          "store_revisions_present": [
+            3
+          ],
+          "store_supersede_semantics": "R2 (u-c1-review): newer batch supersedes only intersecting windows; the final params FULL publish intersects all earlier entries, so the live index carries revision 3 only \u2014 by design",
+          "patch_dirs": [
+            "rev-000001-job-fbe3316bb2fa",
+            "rev-000002-job-e8b1353286b5",
+            "rev-000003-job-71f9e843c307"
+          ],
+          "patch_dirs_readable": {
+            "rev-000001-job-fbe3316bb2fa": {
+              "variables": [
+                "shadow",
+                "tmrt",
+                "utci"
+              ],
+              "revision": 1,
+              "times": [
+                0,
+                24
+              ]
+            },
+            "rev-000002-job-e8b1353286b5": {
+              "variables": [
+                "shadow",
+                "tmrt",
+                "utci"
+              ],
+              "revision": 2,
+              "times": [
+                0,
+                24
+              ]
+            },
+            "rev-000003-job-71f9e843c307": {
+              "variables": [
+                "shadow",
+                "tmrt",
+                "utci"
+              ],
+              "revision": 3,
+              "times": [
+                0,
+                24
+              ]
+            }
+          }
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "wall_seconds": 495.9615421295166,
+      "code_state": {
+        "HEAD": "e607bfaa349d4df6aeddd21908c9278e3aaa973e",
+        "dispatched": "5d2df4d",
+        "HEAD_subject": "docs(agent): ledger row U-C-T3 dispatched",
+        "solweig_gpu_dirty": false,
+        "tests_dirty": false,
+        "diff_dispatched_HEAD_code": "(empty)",
+        "python": "3.14.7",
+        "solweig_gpu_file": "/Users/alansynn/Workspace/solweig/solweig_gpu/__init__.py"
+      }
+    },
+    "u8": {
+      "scenario": "u8",
+      "title": "Injected store-publish failure post-worker-publish on a met batch -> rollback -> retry",
+      "inputs": {
+        "cache": "/Users/alansynn/Workspace/solweig/Input_subset/processed_inputs/incremental_cache_0_0",
+        "injection": {
+          "point": "executor.store.publish (called from _record_temporal_entries, AFTER worker publish)"
+        }
+      },
+      "executor": {
+        "rollback_observation": {
+          "injected_failure": "RuntimeError: injected store publish failure (u8)",
+          "injection_to_exception_seconds": 147.2206838130951,
+          "scene_revision_rolled_back": true,
+          "applied_forcing_overlay_none": true,
+          "rev_dirs_after_failure": [],
+          "worker_pending_after_rollback": null,
+          "worker_forcing_watermark_none": true
+        },
+        "retry": {
+          "status": "published",
+          "mode": "full",
+          "job_id": "job-2d48edc64d14",
+          "scene_revision": 1,
+          "wall_seconds": 146.06860399246216,
+          "write_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "read_windows": [
+            [
+              0,
+              500,
+              0,
+              500
+            ]
+          ],
+          "patch_paths": [
+            "/tmp/uc/results/u8/u8/rev-000001-job-2d48edc64d14"
+          ],
+          "patch_details": [
+            {
+              "path": "/tmp/uc/results/u8/u8/rev-000001-job-2d48edc64d14",
+              "files_sha256": {
+                "shadow.f32.npy": "f8f75196a68796fdef7bce63b53a44a81730c9591bb291d2d61e74e642f2e864",
+                "tmrt.f32.npy": "b0f96b75c43d6954f324273efcb085e20d734cb89b5f06974823c66817a557f6",
+                "utci.f32.npy": "1e65473e638a33edc0482d0c23976e1c81c5e9dbc79416e1866dc620003cf66b"
+              }
+            }
+          ],
+          "requested_variables": [
+            "shadow",
+            "tmrt",
+            "utci"
+          ],
+          "unpublished_variables": [],
+          "fallback_reason": null,
+          "diagnostics": {
+            "dirty_windows": [
+              [
+                0,
+                500,
+                0,
+                500
+              ]
+            ],
+            "dirty_fraction": 1.0,
+            "batch_sequences": null,
+            "elapsed_seconds": 145.67696285247803,
+            "forcing_overlay_pending": true,
+            "landcover_overlay_pending": false,
+            "model_parameters_pending": false
+          },
+          "scene_revision_after": 1,
+          "store_len": 72,
+          "store_max_revision": 1
+        }
+      },
+      "oracle": {
+        "name": "rmet (reused from U2)",
+        "reused": true
+      },
+      "comparison": {
+        "retry_published": true,
+        "single_rev_dir_after_retry": [
+          "rev-000001-job-2d48edc64d14"
+        ],
+        "retry_vs_twin_oracle": {
+          "utci": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "tmrt": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          },
+          "shadow": {
+            "bitwise_equal": true,
+            "n_different_cells": 0,
+            "max_abs_diff": 0.0
+          }
+        }
+      },
+      "verdict": "PASS",
+      "verdict_reasons": [],
+      "wall_seconds": 294.2537488937378,
+      "code_state": {
+        "HEAD": "e607bfaa349d4df6aeddd21908c9278e3aaa973e",
+        "dispatched": "5d2df4d",
+        "HEAD_subject": "docs(agent): ledger row U-C-T3 dispatched",
+        "solweig_gpu_dirty": false,
+        "tests_dirty": false,
+        "diff_dispatched_HEAD_code": "(empty)",
+        "python": "3.14.7",
+        "solweig_gpu_file": "/Users/alansynn/Workspace/solweig/solweig_gpu/__init__.py"
+      }
+    }
+  },
+  "verdicts": {
+    "sanity": "PASS",
+    "u1": "PASS",
+    "u2": "PASS",
+    "u3": "PASS",
+    "u4": "PASS",
+    "u5": "PASS",
+    "u6": "PASS",
+    "u7": "PASS",
+    "u8": "PASS"
+  },
+  "overall_verdict": "PASS",
+  "anomalies": [
+    {
+      "id": "UC-T3-A1",
+      "severity": "informational",
+      "title": "Repo cache carries no landcover array; landcover scenarios ran on a derived real-landcover site",
+      "detail": "The real 500x500@2m Austin tile's packed cache (Input_subset/processed_inputs/incremental_cache_0_0) has no landcover array, so paint edits would be refused on it. U3/U6/U7 ran on the 'lr' derived site: the real site byte-for-byte plus the REAL Austin landcover (Input_rasters/Landcover.tif) cropped to the tile extent, repacked as a fresh cache with the repo cache's exact solar geometry. All non-landcover arrays verified bitwise-equal to the repo cache (site_verification.json)."
+    },
+    {
+      "id": "UC-T3-A2",
+      "severity": "informational",
+      "title": "Twin oracles recompute SVF fresh inside run_full_tile; twins do not pre-stage SVF artifacts",
+      "detail": "run_full_tile always stages its own scratch site and recomputes SVF, so physically edited twins need only their edited rasters plus a fresh cache pack. This mirrors the packet's own E2E twin construction and keeps the oracle independent of any executor SVF artifact. Baseline reproducibility (SANITY) confirms the SVF recompute is bitwise-stable run-to-run."
+    },
+    {
+      "id": "UC-T3-A3",
+      "severity": "informational",
+      "title": "U7 store index shows only revision 3 after the final FULL publish \u2014 R2 supersede semantics, not data loss",
+      "detail": "First U7 adjudication expected window_entries('utci', 12) to carry revisions [1,2,3]. The store's R2 retention rule (u-c1-review) supersedes only entries whose write windows INTERSECT the newer batch's windows: met(FULL) -> paint(local) -> params(FULL) means the final full-tile publish intersects every earlier entry, so the live index legitimately carries revision 3 only. Multi-revision index chains appear when windows are disjoint (see tests/test_incremental_uc8_residual_sweep.py). Revisions 1 and 2 remain durable and readable as patch directories (rev-000001..rev-0000003, load_patch-verified, revision and variables intact). Adjudication corrected to the engine's contract; physics comparisons unaffected."
+    },
+    {
+      "id": "UC-T3-A4",
+      "severity": "informational",
+      "title": "Harness path bug: patch directories nest under results/<scenario>/<scenario>/rev-*",
+      "detail": "The U7/U8 first pass globbed results/<scenario>/rev-* (one level too shallow), producing two false FAIL reasons ('store revisions [3]', 'no rev dir after retry'). The retry HAD published exactly one rev dir and U7 had all three. Harness fixed to derive the scenario dir from executed.patch_paths[0].parent; U7 and U8 were rerun from a clean publication state. No engine behavior involved."
+    },
+    {
+      "id": "UC-T3-A5",
+      "severity": "informational",
+      "title": "U2/U7 lack a met-only LR twin; met-only physics checked against the repo-site rmet twin plus in-batch checks",
+      "detail": "For U7 batch 1 the LR-site met edit was checked for shadow bitwise-vs-LR-baseline and pre-edit steps bitwise-vs-LR-baseline; the edited step's oracle is the same physical met edit proven bitwise on the repo site in U2. Landcover enters the met solve identically in both chains (real landcover array in LR twins), and the accumulated state is fully covered by the lr_metlc oracle at batch 2 and lr_metlc_params at batch 3."
+    },
+    {
+      "id": "UC-T3-A6",
+      "severity": "informational",
+      "title": "Main tree at e607bfa, one docs-only commit past dispatched 5d2df4d; code identical",
+      "detail": "git diff 5d2df4d..HEAD -- solweig_gpu/ tests/ is empty and both trees are clean, so all scenarios ran against code identical to the dispatch. solweig_gpu resolves to the repo checkout (recorded per scenario in code_state)."
+    }
+  ],
+  "open_items": [
+    "GPU-path differential remains OPEN: this sweep exercises the CPU chain only, per project setup (GPU execution is not faked locally)."
+  ],
+  "wall_seconds_total": 2822.1,
+  "generated_utc": "2026-09-02T21:16:58Z"
+}

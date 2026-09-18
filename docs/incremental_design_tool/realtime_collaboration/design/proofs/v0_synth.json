@@ -1,0 +1,63 @@
+{
+ "site": "synth_science_192",
+ "amplitudes": {
+  "a_min": 0.0,
+  "a_max": 12.0,
+  "canopy_max": 3.0,
+  "dem_min": 0.0,
+  "dem_max": 0.0,
+  "vegdsm_max": 15.0,
+  "vegdsm2_max": 12.75,
+  "vegdem_canopy_plus_dem_max": 3.0,
+  "abs_amaxvalue": 12.0,
+  "relative_bound": 15.0,
+  "effective_amplitude": 12.0,
+  "clamp_active_bound_gt_abs": true,
+  "bush_any_nonzero": false,
+  "scale_px_per_m": 0.25
+ },
+ "A_vs_cache_vegsh": {
+  "label": "synth A-vs-cache vegsh",
+  "total_mismatch_pairs": 0,
+  "patches_with_mismatch": 0,
+  "bitwise_identical": true,
+  "per_patch_mismatching": []
+ },
+ "A_vs_cache_vbsh": {
+  "label": "synth A-vs-cache vbsh",
+  "total_mismatch_pairs": 0,
+  "patches_with_mismatch": 0,
+  "bitwise_identical": true,
+  "per_patch_mismatching": []
+ },
+ "E_vs_cache_vegsh": {
+  "label": "synth E-vs-cache vegsh",
+  "total_mismatch_pairs": 0,
+  "patches_with_mismatch": 0,
+  "bitwise_identical": true,
+  "per_patch_mismatching": []
+ },
+ "E_vs_cache_vbsh": {
+  "label": "synth E-vs-cache vbsh",
+  "total_mismatch_pairs": 0,
+  "patches_with_mismatch": 0,
+  "bitwise_identical": true,
+  "per_patch_mismatching": []
+ },
+ "E_vs_A_vegsh": {
+  "label": "synth E-vs-A vegsh",
+  "total_mismatch_pairs": 0,
+  "patches_with_mismatch": 0,
+  "bitwise_identical": true,
+  "per_patch_mismatching": []
+ },
+ "E_vs_A_vbsh": {
+  "label": "synth E-vs-A vbsh",
+  "total_mismatch_pairs": 0,
+  "patches_with_mismatch": 0,
+  "bitwise_identical": true,
+  "per_patch_mismatching": []
+ },
+ "verdict_absolute_oracle_vs_cache": true,
+ "verdict_current_path_vs_cache": true
+}

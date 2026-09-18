@@ -1,0 +1,1635 @@
+{
+ "entries": [
+  {
+   "content_sha256": "861ddfff145292681d86a7629909c0a190c3aa9b5f2660e964e6062ef0a1c74c",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x80000001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x80000001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "7d78353fae3d27ad1f4887f152f114fb92abfc5b845c040157587b1c48e90c7a"
+  },
+  {
+   "content_sha256": "861ddfff145292681d86a7629909c0a190c3aa9b5f2660e964e6062ef0a1c74c",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x00000000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x00000000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "293ffb26b9ada8a4e4d61046e3595c9d564f0d40567ba3e89ca98f060003656d"
+  },
+  {
+   "content_sha256": "861ddfff145292681d86a7629909c0a190c3aa9b5f2660e964e6062ef0a1c74c",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x00000001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x00000001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "47771f9651d5724b6b271727f95db34e8a758a504351db07c0db35853ecbe3b5"
+  },
+  {
+   "content_sha256": "af77ee521b5aaae23dd9c2925fcf15a1a22aa043f0a1200573c8049247445fec",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42b3ffff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x42b3ffff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "4826cb94e9ac70fe68f36878edcc1e52424ac75bcb14ef326585a7b259f23fda"
+  },
+  {
+   "content_sha256": "af77ee521b5aaae23dd9c2925fcf15a1a22aa043f0a1200573c8049247445fec",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42b40000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x42b40000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "4a823d65e693b87dd820ef95262f6435cb2aa974c7ff376a0193ba9454d6d68e"
+  },
+  {
+   "content_sha256": "af77ee521b5aaae23dd9c2925fcf15a1a22aa043f0a1200573c8049247445fec",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42b40001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x42b40001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "52a2582bbf2bb320d17a1c9f47a3872a063d46a21713e05da09cf6108b3630d6"
+  },
+  {
+   "content_sha256": "d4b1801108c3f617262014304e0a48fad6629785495dc88ff0a21e57655aed27",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x4333ffff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x4333ffff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "47cf174a473482bc2e7d40f34bcb1ef70d937b10abd114138a86a93641ae2d96"
+  },
+  {
+   "content_sha256": "d4b1801108c3f617262014304e0a48fad6629785495dc88ff0a21e57655aed27",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43340000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x43340000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "eeb3d02cdd12713a20f591399a3439e9f2e80798912079f3333eda2982c71eaa"
+  },
+  {
+   "content_sha256": "d4b1801108c3f617262014304e0a48fad6629785495dc88ff0a21e57655aed27",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43340001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x43340001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "dabd1c4909fc34326315af182883feb256e6be7e64bd5f6a7c95bfbd3f6e3e3f"
+  },
+  {
+   "content_sha256": "9aa23f77fe4af44f3686e78c5ea66fa3d06062771ab4821b56e5855bb3fe82ee",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x4386ffff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x4386ffff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "bbb17cd24379c61b0cf726ffe9ef8e219be231be382a776f4a2f9d86348d7290"
+  },
+  {
+   "content_sha256": "9aa23f77fe4af44f3686e78c5ea66fa3d06062771ab4821b56e5855bb3fe82ee",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43870000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x43870000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "319a60a56a4159d046d3bb80e8f7f69d5a2a3e03e7889c8004e18b6d27b14e51"
+  },
+  {
+   "content_sha256": "9aa23f77fe4af44f3686e78c5ea66fa3d06062771ab4821b56e5855bb3fe82ee",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43870001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x43870001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "a45e872df09d3ad2d7d4b2ad3113a6b418c5c9fa958bf5a04f1dffc92ea80a22"
+  },
+  {
+   "content_sha256": "861ddfff145292681d86a7629909c0a190c3aa9b5f2660e964e6062ef0a1c74c",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43b3ffff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x43b3ffff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "17fec1e9f5d5aee0ea14beac988d707c2904a1a658eff3a2d2ebf5bf63b08f07"
+  },
+  {
+   "content_sha256": "861ddfff145292681d86a7629909c0a190c3aa9b5f2660e964e6062ef0a1c74c",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43b40000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x43b40000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "6d60d1023e437f9d15eb4dd8c3b61e18f9283b677e4b1bd1666b9d230c7da5b0"
+  },
+  {
+   "content_sha256": "861ddfff145292681d86a7629909c0a190c3aa9b5f2660e964e6062ef0a1c74c",
+   "count": 15,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43b40001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x43b40001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "6d79748f84ad4908b6fbcbfdea1c4b496d62b0e8331059bab262b2793ce8a8de"
+  },
+  {
+   "content_sha256": "e5c5b1ef31c0ffcf58bb64a07435d51ecd65674c2a38b89d7a403e1ba2a40fe9",
+   "count": 11,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x4233ffff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x4233ffff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "20e3f0725c12333a43d6cea97f672c577e79172dddbede9b0864ecbac51f2922"
+  },
+  {
+   "content_sha256": "b86b88d8b90bc7aeff2832a821b2ed8dc9cbb01217d7271cf03469386e73be46",
+   "count": 11,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42340000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x42340000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "81632c6b1c927db5b752c8830c45a5f1a88615788195c24708f3b2a389cde319"
+  },
+  {
+   "content_sha256": "e5c5b1ef31c0ffcf58bb64a07435d51ecd65674c2a38b89d7a403e1ba2a40fe9",
+   "count": 11,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42340001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x42340001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "bbae64c92b457a433de2febe49fdc646b0c0d497f734e661256dece1bc4dcca7"
+  },
+  {
+   "content_sha256": "d80552f568a3d185dc62d70bc8675f6d121b36aa38924c88592a86c1f42e8437",
+   "count": 11,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x4306ffff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x4306ffff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "c174a30f1726f2eb056742cb9c792a557409e747e47e4445c9248dc525e3ad91"
+  },
+  {
+   "content_sha256": "be6995d877add1107cc05b8c54db9648a56353fc86af16a29f601b05c51631f2",
+   "count": 11,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43070000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x43070000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "0c98cbaa77aa055d0e36142d76b4fd93d74a31f0226414ff9eaa2ba6e2221ccf"
+  },
+  {
+   "content_sha256": "d80552f568a3d185dc62d70bc8675f6d121b36aa38924c88592a86c1f42e8437",
+   "count": 11,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43070001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x43070001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "1cd5e97a06c8feba2b30243065ac456470186deb0906e1bf365ef8f55d0944f8"
+  },
+  {
+   "content_sha256": "50d12a04bc955366f17c5230b86ebfca4179caf1ffcbdd227da5ed952320336e",
+   "count": 11,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x4360ffff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x4360ffff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "0e2a67f792791edbe526cc12aa8a1c98efe30a951ca37296e18d748344219b24"
+  },
+  {
+   "content_sha256": "76d14a42e27193dc4c750c186b45a747f5df6ac166ff73c64c4616c24f0e759f",
+   "count": 11,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43610000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x43610000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "0ea53a2a4454e4d6fef93309f9c2a78d43ab295e6b5d33f21c74f45d96f3d30f"
+  },
+  {
+   "content_sha256": "7e7deec74776c1d7c14c0b52d9ae330f0cd3c97094026593bbd3c5911988099d",
+   "count": 11,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43610001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x43610001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "b0a0e2d0a9c7d42fb9b73f355eb9426ffdc6aec4ac926c25e2f91810502a98b0"
+  },
+  {
+   "content_sha256": "f27c649c2e3a1b6901f05c86c26799b71845e973d75fbf36e89f757a8a84ab4b",
+   "count": 11,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x439d7fff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x439d7fff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "3225d31bbd03a9bbee5954bf1754c96b385ba4ffed017c65b3ddddc459548878"
+  },
+  {
+   "content_sha256": "5dd373000a121230996fbe97ebe7aec6348d5d2c063bfc2d7d02f9c7a731ef7e",
+   "count": 11,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x439d8000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x439d8000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "65d46d4a6b73327b8b298d8bbe4fd36eff4c3fdce0d866cf2eb42e93dfc8c930"
+  },
+  {
+   "content_sha256": "93f793195ec429fd3b2739af14b8c7dd7715b5a3248bf84aabd6e816a5aa8579",
+   "count": 11,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x439d8001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x439d8001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "324e71c2c1a6fafb12d3652e74c2683ca9b82ed4bff700d4bdbb0b99d85673ed"
+  },
+  {
+   "content_sha256": "6870074e0d8a3a507ac8692399893cc6b28b33e6fd512aa6f5a896d7d91e6420",
+   "count": 23,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42140000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f800000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x42140000_alt0x420c0000_s0x3f800000_40x80_A0x41a00000",
+   "trace_sha256": "519e14d304b6023ace6af02e1b7a8cd88e17fee36fda01ac9b2fa31c4656dcd8"
+  },
+  {
+   "content_sha256": "b68b30768cf06f418a0d5d7557801d57431eba0f0744d925134c2c8f415571e8",
+   "count": 12,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42140000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x42140000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "50554d0e8ad37e10fa86ee15e84b433a3e617ed11884d82053f414251f16e4a7"
+  },
+  {
+   "content_sha256": "1154d0dbef790be81e615fc38b2ffb21ce7080a6625d8fecc8da59ca269dad59",
+   "count": 8,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42140000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3eaaaaab",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x42140000_alt0x420c0000_s0x3eaaaaab_40x80_A0x41a00000",
+   "trace_sha256": "7e162ae758d9a6100db2d185638a95655ca00c95e70e1c3e54caa28e4bc713ba"
+  },
+  {
+   "content_sha256": "bc1b65355316b5aa26254a1e15f77af66f91af612c7bb379b7981e8709d78030",
+   "count": 6,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42140000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3e800000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x42140000_alt0x420c0000_s0x3e800000_40x80_A0x41a00000",
+   "trace_sha256": "8580617eec639f1134708412a5b0fdd54bc4553e529d26af8ebc6b26ed29931c"
+  },
+  {
+   "content_sha256": "a5bd5da875761a4ef430fb2b33a7ed671356ca7fb0a2c4aa0dee0c94e50cbcbc",
+   "count": 10,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42140000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3ecccccd",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x42140000_alt0x420c0000_s0x3ecccccd_40x80_A0x41a00000",
+   "trace_sha256": "fd3de26cf2d70f2315bedd01148c6de6565a1e5adb8cc07ac10cb620d0dd20e3"
+  },
+  {
+   "content_sha256": "c43a14c59018f1d9fcd05ad874cf7960d89194b70c4e425ea08ad72aa2fef76c",
+   "count": 1,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42140000",
+     "0x429c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x3f000000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "svf_shadow_az0x42140000_alt0x429c0000_s0x3f000000_40x80_A0x3f000000",
+   "trace_sha256": "5f781b3d9637f92f4e06fc1123fffdcef5df70c92090da726a7259d91ecbdb13"
+  },
+  {
+   "content_sha256": "6a74248ec33959acc946d89eb3b39fc54e69667c54ea1db360ac2ed4f7c84c63",
+   "count": 40,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42140000",
+     "0x40c00000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "row_boundary",
+   "trace_id": "svf_shadow_az0x42140000_alt0x40c00000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "588cd9d16a007b537faef98c4826f6cb611ac171419156e6d80f108a4984a478"
+  },
+  {
+   "content_sha256": "cab7aee61e1abcea148682143d8d043c65ca547e8a5b364fbf944836844563bd",
+   "count": 40,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x00000000",
+     "0x42b40000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x49742400",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "row_boundary",
+   "trace_id": "svf_shadow_az0x00000000_alt0x42b40000_s0x3f000000_40x80_A0x49742400",
+   "trace_sha256": "14e9c164688f3e3a610b2364df9f73950bd836f10f335877750bc5cc841f43fa"
+  },
+  {
+   "content_sha256": "b2efd9b3317e4f060d62839324ffb985bd148d5eacdfc0091a2b9707af64777a",
+   "count": 26,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42c80000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x49742400",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 1000,
+    "logical_rows": 5,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "row_boundary",
+   "trace_id": "svf_shadow_az0x42c80000_alt0x420c0000_s0x3f000000_5x1000_A0x49742400",
+   "trace_sha256": "328756caed07a40667ee2b0f43c70b704e4e46f6a11745bf6d8b7f7a464d0c1d"
+  },
+  {
+   "content_sha256": "8ee97c254cad44d9503d3b8f84bd07b2d4c9126488c76f9cf0c9948a3f8bb21d",
+   "count": 5,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x41200000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x49742400",
+    "kernel_variant": "svf_shadow",
+    "logical_cols": 1000,
+    "logical_rows": 5,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "row_boundary",
+   "trace_id": "svf_shadow_az0x41200000_alt0x420c0000_s0x3f000000_5x1000_A0x49742400",
+   "trace_sha256": "2316c467d4d3b9064d4db6dedc04e79d94d1a9c0f7a548efe6b046657e6c6715"
+  },
+  {
+   "content_sha256": "2e4b1b77b08e799662a800e4c1e6b1125545174cc764730d91c29e62d31a80d1",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x80000001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x80000001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "b0e837fac97c2d35eefddb1af2c6aa9b73c2d29749e38c10785a71a665230ce4"
+  },
+  {
+   "content_sha256": "2e4b1b77b08e799662a800e4c1e6b1125545174cc764730d91c29e62d31a80d1",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x00000000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x00000000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "3e078ef3f9b8b1bf6cbe032ea44a66c7a44dc99b7bd71553d2e09bf3fe04c97d"
+  },
+  {
+   "content_sha256": "2e4b1b77b08e799662a800e4c1e6b1125545174cc764730d91c29e62d31a80d1",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x00000001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x00000001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "256a2d46d4e6a8cfaa14ef507da4919e04be378ca4be0605f86e377376f54001"
+  },
+  {
+   "content_sha256": "a7ca476e8eb39a87f2ea2045662ad65627e0439973736c02139ae6827ee2b06c",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42b3ffff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x42b3ffff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "81e6e94378943bc393b02eff3157778e3c8721e1055ad058bfc18b62801a423d"
+  },
+  {
+   "content_sha256": "a7ca476e8eb39a87f2ea2045662ad65627e0439973736c02139ae6827ee2b06c",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42b40000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x42b40000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "0c0614f0cbf7efd0dec3553f25be474dff939c5e5fbb52d67fa8678e582d52d6"
+  },
+  {
+   "content_sha256": "a7ca476e8eb39a87f2ea2045662ad65627e0439973736c02139ae6827ee2b06c",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42b40001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x42b40001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "9bef66b38a0f1d0e037faf9aa7a28b61bfcd5e7ce8144fe6d50ff8bf78adee13"
+  },
+  {
+   "content_sha256": "35ff8326c39349f074ce780e5e8ebe96c4dd39e5eecdbc26c29862e810e95b96",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x4333ffff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x4333ffff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "aee5d12e5614bf7714a40a863183b590a504164ec46aae1881095678b29ba0b7"
+  },
+  {
+   "content_sha256": "35ff8326c39349f074ce780e5e8ebe96c4dd39e5eecdbc26c29862e810e95b96",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43340000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x43340000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "0f47cd6ae74c85e0322f2619e2469836751a02b4ca379cbefb29c1b302fcf775"
+  },
+  {
+   "content_sha256": "35ff8326c39349f074ce780e5e8ebe96c4dd39e5eecdbc26c29862e810e95b96",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43340001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x43340001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "3a842735f5ede17299c7b83f875eea17fd0444bb3864c0533f175932e0e3164d"
+  },
+  {
+   "content_sha256": "fccac0965b99bcc2f8491570dfdbcb69826548adf4a1ff9e2456a382c01bcaee",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x4386ffff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x4386ffff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "ad709b7765e46c440f6cac6179a2e19e89e7130200eb0730089157e5a54629fa"
+  },
+  {
+   "content_sha256": "fccac0965b99bcc2f8491570dfdbcb69826548adf4a1ff9e2456a382c01bcaee",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43870000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x43870000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "fe6a4ceabe58fff004af733521e662a2d4623c8b8c9fbcb4baf35097aa35baaf"
+  },
+  {
+   "content_sha256": "fccac0965b99bcc2f8491570dfdbcb69826548adf4a1ff9e2456a382c01bcaee",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43870001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x43870001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "7b2b933803162274d2773eeed59215b28fe3d268f2fd705c1ccf0cbd2dacd431"
+  },
+  {
+   "content_sha256": "2e4b1b77b08e799662a800e4c1e6b1125545174cc764730d91c29e62d31a80d1",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43b3ffff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x43b3ffff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "62a8bc051cfea5c74bf1b8ef1e027e89550d33b4c572ff499b42e94259effaa0"
+  },
+  {
+   "content_sha256": "2e4b1b77b08e799662a800e4c1e6b1125545174cc764730d91c29e62d31a80d1",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43b40000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x43b40000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "c4e2e7ba489720e76f27f7777b7682566b407bed20e66799d054c8d6b92e8099"
+  },
+  {
+   "content_sha256": "2e4b1b77b08e799662a800e4c1e6b1125545174cc764730d91c29e62d31a80d1",
+   "count": 16,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43b40001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x43b40001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "0b215c36eadf97b348c59fe81be93dc45a794b612a5af46f3c77d022ce1601e8"
+  },
+  {
+   "content_sha256": "d40407bd68d1d7117e037f0e2a6156e414ef258ecc36123588d6908800820324",
+   "count": 12,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x4233ffff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x4233ffff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "d4239bc2ad61e6fedeadaa07363766d9ff36d19207540a5938846c764a87fe8b"
+  },
+  {
+   "content_sha256": "c956886b4f18be60b6363ebfbd0464906f1df8a53a8475bf851ea252c8684689",
+   "count": 12,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42340000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x42340000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "68eb7b686ae00c8e7084edeeabf4e31c8a448f0479bfa6582a418fd6c445c86d"
+  },
+  {
+   "content_sha256": "d40407bd68d1d7117e037f0e2a6156e414ef258ecc36123588d6908800820324",
+   "count": 12,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42340001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x42340001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "b710dc97e20b0c0675ad0e575923d64cfddf5780866f0fb43c6d91f2ca5ee36c"
+  },
+  {
+   "content_sha256": "5f009e48310da7a47c6da406d6ed8b4a782e5f44c6132dfc880816ca09671abf",
+   "count": 12,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x4306ffff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x4306ffff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "e332915ac52ed30f7e4d524cd488c6f96a46505cb39f1abffe386411f1b4edbc"
+  },
+  {
+   "content_sha256": "4c7d6c44e931332d7bd91b8526f98c742f793d6019b391a4874fe70b1a84adb2",
+   "count": 12,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43070000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x43070000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "ae15404352e43f9c7e7ff536030ee3272eaecd21074e2ac12fa310428329dad2"
+  },
+  {
+   "content_sha256": "5f009e48310da7a47c6da406d6ed8b4a782e5f44c6132dfc880816ca09671abf",
+   "count": 12,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43070001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x43070001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "7acd47512cf233e4b4e83eae5e64f7c9e873087dbc0e1a4c40724de4bc354216"
+  },
+  {
+   "content_sha256": "6698051010f3105e5534630df7503e581904e44f0f86e3013b7ac1f2188cf586",
+   "count": 12,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x4360ffff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x4360ffff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "489e9f78175a59cb47b5640ea24cf3e27fd9e4404e7adb19444bae4d0e869fbd"
+  },
+  {
+   "content_sha256": "fd149e764b6af08d763ff94501535428d4ea0a6c3281f53432cce471e64ca5bf",
+   "count": 12,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43610000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x43610000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "d66113b8d22c365a0d86b790a3bf2065a653a34cffac3e73af8c73a29cd225b4"
+  },
+  {
+   "content_sha256": "bf609bd6c1b1abc69b78dc90100c7aae08ad547f8ad92d14b553d8592140b569",
+   "count": 12,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x43610001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x43610001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "a5ebd125d60f89153f2428f3886d3c2ef2d62ee4adfaaa14e5b8972c28b2c1d8"
+  },
+  {
+   "content_sha256": "c2cbae07c0c9b25f8ff4db7ea0c498add65fd24c43d189b545c8bd289828b9ac",
+   "count": 12,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x439d7fff",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x439d7fff_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "e7c23a603a13381dae21428518623db87152c342821138a81c11b971a2b4c68a"
+  },
+  {
+   "content_sha256": "9ebe990f97b580cbad19e2871328bc93bf1dc5ac37def2ff4ef623d4abbaac88",
+   "count": 12,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x439d8000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x439d8000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "4e1c36a52747b7fb8eaa4e226692d02768dc72f6a8c5c1f384cf47dc2f584dbf"
+  },
+  {
+   "content_sha256": "0e517a01b7c2d55ea74194693d5327bc48007218f3f3391e2ed97401b63e57bf",
+   "count": 12,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x439d8001",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x439d8001_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "865ba5862d0a3fbfd9b3466fefae9b7c9df5d9a2c8950d21b0cb5ef2e4d78292"
+  },
+  {
+   "content_sha256": "4eaa564acbf46a50c052442189b366b18dd5eef50f02e777fb24ca31e5bfb699",
+   "count": 24,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42140000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f800000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x42140000_alt0x420c0000_s0x3f800000_40x80_A0x41a00000",
+   "trace_sha256": "647c08476413fc880f85eb1263c90d40608070282ed512aa8d8cff4563e790d7"
+  },
+  {
+   "content_sha256": "de34c17333c7fec123fbdb6e764f6a6c17bdb0800f3db77cc2de663471ca5a98",
+   "count": 13,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42140000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x42140000_alt0x420c0000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "2bcb173b5f3b27e50a1be680cd5a99e066c4ad55bff5fdfabb0ed2ff0f8b087a"
+  },
+  {
+   "content_sha256": "27c5ebaf130cb7591c58681d6cf082a37772f6fd46891fe98445eb3cf021f5d5",
+   "count": 9,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42140000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3eaaaaab",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x42140000_alt0x420c0000_s0x3eaaaaab_40x80_A0x41a00000",
+   "trace_sha256": "356c34cf845d75b428ee82841d84559c511fdeaa4c075e5369ff6a3c1ea413b1"
+  },
+  {
+   "content_sha256": "810870aeb6e9289df8826acc040f92a23e1940eaecad051f8f62d46206f0f9f8",
+   "count": 7,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42140000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3e800000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x42140000_alt0x420c0000_s0x3e800000_40x80_A0x41a00000",
+   "trace_sha256": "d78d23119a75a13803cbac9978bed8e0fa23a4d085514cfcdc998fb1b62120e1"
+  },
+  {
+   "content_sha256": "91fe6b5c8ed20ac8dcf321c1403869c3440302e25db7b13d49668589d06979e7",
+   "count": 11,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42140000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3ecccccd",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x42140000_alt0x420c0000_s0x3ecccccd_40x80_A0x41a00000",
+   "trace_sha256": "1ba9e626907d9cb385cd08deabd36009e3fe0d707250278e9581a80e23f2cd87"
+  },
+  {
+   "content_sha256": "fc86cc8cb088154d09cb269a99b8aab22a40612e8dacdde1689029112017c56f",
+   "count": 2,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42140000",
+     "0x429c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x3f000000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "amplitude",
+   "trace_id": "wallheight_23_az0x42140000_alt0x429c0000_s0x3f000000_40x80_A0x3f000000",
+   "trace_sha256": "b9addec7b2a689d0690378a588c0dd65b97fad5dd085489434c44192bede22a1"
+  },
+  {
+   "content_sha256": "cc0d50d3e2663c11365db2304101dbba5ccac488e7f0a83a9fba944387dc8c36",
+   "count": 41,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42140000",
+     "0x40c00000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x41a00000",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "row_boundary",
+   "trace_id": "wallheight_23_az0x42140000_alt0x40c00000_s0x3f000000_40x80_A0x41a00000",
+   "trace_sha256": "aaaf2799152ebeec6dc9b8cbc07cd744f68ff180fed6a3bce06d3f15ca41806a"
+  },
+  {
+   "content_sha256": "d0dd693281e6b2b671fa938034fdf23cc273bd10539626fd8944c83e65429962",
+   "count": 41,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x00000000",
+     "0x42b40000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x49742400",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 80,
+    "logical_rows": 40,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "row_boundary",
+   "trace_id": "wallheight_23_az0x00000000_alt0x42b40000_s0x3f000000_40x80_A0x49742400",
+   "trace_sha256": "bec51d902752a9dedd4d867f979e2bf9cca78df9f9f40abbe9d998adc7621b10"
+  },
+  {
+   "content_sha256": "ecb6bad6ddc7b9041ef8f1623c70859ca04a86e86e25cab0ce9fa129300164c4",
+   "count": 27,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x42c80000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x49742400",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 1000,
+    "logical_rows": 5,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "row_boundary",
+   "trace_id": "wallheight_23_az0x42c80000_alt0x420c0000_s0x3f000000_5x1000_A0x49742400",
+   "trace_sha256": "931d1c2c44ac3b7b9df044d42583538eadde539dd4ddfac6e35e9365ae0daeec"
+  },
+  {
+   "content_sha256": "470bddb9ca5d0a53acdc75c01be1a99019aaba3785deeff504c2f107a8c90951",
+   "count": 6,
+   "key": {
+    "amplitude_policy_id": "synthetic_probe",
+    "angle_input_bits": [
+     "0x41200000",
+     "0x420c0000"
+    ],
+    "boundary_policy_id": "shadow_shift_window_v1",
+    "executed_amplitude_bits": "0x49742400",
+    "kernel_variant": "wallheight_23",
+    "logical_cols": 1000,
+    "logical_rows": 5,
+    "scale_bits": "0x3f000000",
+    "semantics_profile": "canonical_cpu_v1",
+    "source_geometry_hash": "7283d87f450e3a7885b21a533ef696bd5800b01eae3b3790e1473a2d2b14d2a5"
+   },
+   "stop_reason": "row_boundary",
+   "trace_id": "wallheight_23_az0x41200000_alt0x420c0000_s0x3f000000_5x1000_A0x49742400",
+   "trace_sha256": "803429b4e46de06d03d9ca1a51edbbbeb560d9ba0adf9f2022126be0eb7766e1"
+  }
+ ],
+ "generator": "tests/ultrafast/trace_exporter.py",
+ "schema_version": 1,
+ "trace_count": 74
+}

@@ -1,0 +1,212 @@
+{
+  "record_type": "p9-reliability-load",
+  "date": "2026-09-02",
+  "fixture": {
+    "site_id": "tiny",
+    "grid": "128x128@2m",
+    "source": "tests/test_incremental_worker.py::_make_tiny_site",
+    "solver": "default make_exact_worker_solver (ExactWorker)",
+    "met_hours": 3
+  },
+  "calibration": {
+    "baseline_full_solve_s": 3.452,
+    "incremental_edit_s": 3.442,
+    "spec_ratio_arrival_over_service": 4.8,
+    "steady_interval_s": 16.524
+  },
+  "load": {
+    "scenarios": 10,
+    "steady_edits_planned": 14,
+    "steady_edits": 9,
+    "burst_edits": 10,
+    "bursts": {
+      "count": 2,
+      "edits_per_burst": 5,
+      "span_s": 2.0
+    },
+    "edits_accepted": 19
+  },
+  "results": {
+    "job_status_counts": {
+      "complete": 11,
+      "superseded": 8
+    },
+    "per_job": [
+      {
+        "scenario": "scn_d1f95bda7f65",
+        "job_id": "job_6290aa8a2af4",
+        "status": "complete",
+        "t_submit_s": 1.023,
+        "queue_wait_s": 0.503,
+        "total_s": 3.433
+      },
+      {
+        "scenario": "scn_3a5da3933814",
+        "job_id": "job_6c2c2985eb3e",
+        "status": "complete",
+        "t_submit_s": 17.578,
+        "queue_wait_s": 0.502,
+        "total_s": 3.548
+      },
+      {
+        "scenario": "scn_39ad24d7aa5b",
+        "job_id": "job_8d6cfc41f946",
+        "status": "complete",
+        "t_submit_s": 34.072,
+        "queue_wait_s": 0.506,
+        "total_s": 3.402
+      },
+      {
+        "scenario": "scn_e17ca37386b4",
+        "job_id": "job_0c712f0c9832",
+        "status": "complete",
+        "t_submit_s": 50.595,
+        "queue_wait_s": 0.507,
+        "total_s": 3.459
+      },
+      {
+        "scenario": "scn_524bb02d980f",
+        "job_id": "job_7fb3aca653a5",
+        "status": "complete",
+        "t_submit_s": 67.125,
+        "queue_wait_s": 0.506,
+        "total_s": 4.062
+      },
+      {
+        "scenario": "scn_fbd3def19e3b",
+        "job_id": "job_305b95bcfa8e",
+        "status": "complete",
+        "t_submit_s": 83.644,
+        "queue_wait_s": 0.502,
+        "total_s": 3.624
+      },
+      {
+        "scenario": "scn_2c0e429734b2",
+        "job_id": "job_a0e7ee4f9ac9",
+        "status": "superseded",
+        "t_submit_s": 84.014,
+        "queue_wait_s": null,
+        "total_s": 0.549
+      },
+      {
+        "scenario": "scn_2c0e429734b2",
+        "job_id": "job_9701b6a2a350",
+        "status": "superseded",
+        "t_submit_s": 84.57,
+        "queue_wait_s": null,
+        "total_s": 0.413
+      },
+      {
+        "scenario": "scn_2c0e429734b2",
+        "job_id": "job_0a729a44950c",
+        "status": "superseded",
+        "t_submit_s": 84.978,
+        "queue_wait_s": null,
+        "total_s": 0.407
+      },
+      {
+        "scenario": "scn_2c0e429734b2",
+        "job_id": "job_0e95c06d8730",
+        "status": "superseded",
+        "t_submit_s": 85.384,
+        "queue_wait_s": null,
+        "total_s": 0.409
+      },
+      {
+        "scenario": "scn_2c0e429734b2",
+        "job_id": "job_cdc3fc45983e",
+        "status": "complete",
+        "t_submit_s": 85.794,
+        "queue_wait_s": 3.988,
+        "total_s": 7.202
+      },
+      {
+        "scenario": "scn_3a5da3933814",
+        "job_id": "job_466334be63e6",
+        "status": "complete",
+        "t_submit_s": 102.746,
+        "queue_wait_s": 0.504,
+        "total_s": 4.299
+      },
+      {
+        "scenario": "scn_39ad24d7aa5b",
+        "job_id": "job_7f7d68270a1a",
+        "status": "complete",
+        "t_submit_s": 119.279,
+        "queue_wait_s": 0.501,
+        "total_s": 3.849
+      },
+      {
+        "scenario": "scn_e17ca37386b4",
+        "job_id": "job_2dbb58f1642e",
+        "status": "complete",
+        "t_submit_s": 135.795,
+        "queue_wait_s": 0.503,
+        "total_s": 3.961
+      },
+      {
+        "scenario": "scn_321f495aa1b9",
+        "job_id": "job_b46a31fbe132",
+        "status": "superseded",
+        "t_submit_s": 180.013,
+        "queue_wait_s": null,
+        "total_s": 0.407
+      },
+      {
+        "scenario": "scn_321f495aa1b9",
+        "job_id": "job_674881d46a11",
+        "status": "superseded",
+        "t_submit_s": 180.418,
+        "queue_wait_s": null,
+        "total_s": 0.405
+      },
+      {
+        "scenario": "scn_321f495aa1b9",
+        "job_id": "job_31092fd97099",
+        "status": "superseded",
+        "t_submit_s": 180.824,
+        "queue_wait_s": null,
+        "total_s": 0.405
+      },
+      {
+        "scenario": "scn_321f495aa1b9",
+        "job_id": "job_b0820a3877ad",
+        "status": "superseded",
+        "t_submit_s": 181.228,
+        "queue_wait_s": null,
+        "total_s": 0.408
+      },
+      {
+        "scenario": "scn_321f495aa1b9",
+        "job_id": "job_c2b02a1097cf",
+        "status": "complete",
+        "t_submit_s": 181.639,
+        "queue_wait_s": 0.89,
+        "total_s": 4.319
+      }
+    ],
+    "queue_wait_p50_s": 0.504,
+    "queue_wait_p95_s": 3.988,
+    "max_queue_depth": 2,
+    "max_nonterminal_depth": 2,
+    "drain_seconds": 4.11,
+    "final_nonterminal_jobs": 0,
+    "stranded_scenarios": [],
+    "worker_rss_mb": {
+      "min": 120.8,
+      "max": 282.4,
+      "final": 246.7
+    },
+    "steady_job_count": 19
+  },
+  "gate_REL_002": true,
+  "criteria": {
+    "no_dropped_edits": true,
+    "queue_drains": true,
+    "all_scenarios_exact": true,
+    "bursts_coalesce": true,
+    "steady_p95_wait_within_2x_service": true
+  },
+  "wall_clock_s": 186.2,
+  "note": "Real-time run (no time compression) with the real ExactWorker on the tests' synthetic tiny site; arrival interval derived from the measured service time to keep the spec's arrival/service ratio (~4.8). Superseded jobs are burst coalescing, not dropped edits: every accepted edit's target scene version is covered by the latest completed job."
+}

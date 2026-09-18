@@ -1,0 +1,41 @@
+{
+  "record_type": "p3_packing_gate_evidence",
+  "recorded_at": "2026-09-01",
+  "phase": "P3",
+  "gates": ["PACK-001", "PACK-002", "PACK-003"],
+  "fixture_id": "site_500 (Input_subset SVF cache, 500x500x153)",
+  "environment": "same as 2026-09-01-full-domain-baseline.json",
+  "pack_001_bytes_per_pixel": {
+    "theory": "ceil(153/8) = 20 bytes/pixel/stack",
+    "measured": "each packed stack 5,000,128 bytes = 500*500*20 + 128-byte npy header",
+    "total_packed_bytes": 15000384,
+    "dense_float32_equivalent_bytes": 459000000,
+    "compression_ratio_vs_dense": 30.6
+  },
+  "pack_002_weighted_reductions": {
+    "real_cache_check": "random float64 weights (seed 42), all three stacks",
+    "shadowmat_max_abs_err": 5.684e-14,
+    "vegshadowmat_max_abs_err": 6.395e-14,
+    "vbshmat_max_abs_err": 5.684e-14,
+    "verdict": "PASS (float64 exact to ~6e-14; unit tests also cover SVF-style, directional-window, and randomized reductions)",
+    "revalidation_after_svf_cache_correction": {
+      "recorded_at": "2026-09-01 (post-P4)",
+      "context": "packed dir regenerated from the corrected shadowmats_0_0.npz (stale-foreign cache replaced; see 2026-09-01-full-domain-baseline.json svf_cache_correction)",
+      "shadowmat_max_abs_err": 5.684e-14,
+      "vegshadowmat_max_abs_err": 6.395e-14,
+      "vbshmat_max_abs_err": 7.105e-14
+    }
+  },
+  "pack_003_status": {
+    "packed_caches_available": "python -m solweig_gpu.incremental.pack_svf converts shadowmats_<tile>.npz -> 3 packed .npy + manifest.json (checksum-validated warm load)",
+    "conversion_run": {
+      "command": ".venv/bin/python -m solweig_gpu.incremental.pack_svf --npz Input_subset/processed_inputs/SVF/shadowmats_0_0.npz --out-dir Input_subset/processed_inputs/SVF/packed_0_0",
+      "wall_seconds": 0.93,
+      "peak_rss_bytes": 737215448
+    },
+    "diffsh_note": "The dense diffsh allocation inside run_utci_window (146 MiB) is eliminated by streaming per-patch planes from packed stacks during the P5 worker (design verified: every kernel use is a per-patch scalar-weighted accumulation, so streaming in identical loop order preserves bitwise results). Deliberately deferred to P5 to land it together with the windowed SVF consumption path and its differential proof.",
+    "verdict": "PARTIAL-BY-DESIGN: packed caches + iterators + verified reductions landed; dense-plane elimination in the exact worker completes in P5 (gate closes with SCI differential)"
+  },
+  "polarity": "verified from svf_calculator (svf = sum(weight*sh)) and from the real cache (unique values exactly {0,1} on all three stacks): 1 = sky visible, 0 = occluded; documented in bitmask.SHADOW_STACK_POLARITY",
+  "tests": "tests/test_incremental_packing.py: 18 passed (budget, block iterator coverage/alignment, zero-copy window view, weighted reductions incl. SVF-style + directional, 25 random patch mutations, conversion round trip/determinism/binary rejection/missing-stack rejection/validate-only/checksum tamper, single-patch extraction vs dense)"
+}

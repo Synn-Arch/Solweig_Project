@@ -1,0 +1,114 @@
+{
+  "record_type": "full_domain_oracle_baseline",
+  "recorded_at": "2026-09-01",
+  "phase": "P0",
+  "gates": ["BASE-001", "BASE-002", "BASE-003"],
+  "fixture_id": "site_500",
+  "fixture_generator": "solweig_gpu/incremental/fixtures.py",
+  "fixture_manifest": "fixtures/site_500/manifest.json",
+  "fixture_states": ["baseline", "add", "move", "resize", "delete"],
+  "fixture_invariants": {
+    "delete_equals_baseline": true,
+    "add_changes_cells": true,
+    "move_changes_cells": true,
+    "resize_changes_cells": true
+  },
+  "grid": {
+    "rows": 500,
+    "cols": 500,
+    "pixel_size_m": 2.0,
+    "crs": "EPSG:32614",
+    "origin_x_m": 621734.7066,
+    "origin_y_m": 3354614.3479
+  },
+  "forcing": {
+    "file": "ownmet_Forcing_data.txt",
+    "day_of_year": 223,
+    "year": 2009,
+    "selected_date_str": "2020-08-13",
+    "time_steps": 24,
+    "timezone": "America/Chicago (UTC-5)"
+  },
+  "environment": {
+    "machine_cpu": "Apple M1 Pro",
+    "logical_cpu_count": 10,
+    "memory_total_bytes": 17179869184,
+    "os": "macOS Darwin 25.5.0",
+    "python_version": "3.14.7",
+    "numpy_version": "2.5.2",
+    "torch_version": "2.13.0",
+    "gdal_version": "3.13.3",
+    "rasterio_version": "1.5.1",
+    "numba_version": "0.67.0",
+    "thread_env": "defaults (no OMP/MKL pinning)",
+    "cache_state": "warm (SVF precomputed)"
+  },
+  "command": "/usr/bin/time -l .venv/bin/python run_test.py",
+  "runs": [
+    {
+      "run": 1,
+      "status": "SUPERSEDED (stale-foreign SVF cache; see svf_cache_correction)",
+      "wall_seconds": 100.64,
+      "tile_compute_seconds": 80.73,
+      "peak_rss_bytes": 1412087808,
+      "output_sha256": {
+        "UTCI_0_0.tif": "351e18ade151d67ca29380193cda08c8df1a5376e76a1516c18f23416a6db1d1",
+        "TMRT_0_0.tif": "04d91548504e428c8724987d7f74af97027e2c251902c39d2f40101ff5aa5f71",
+        "Shadow_0_0.tif": "925ee0f70a6442eb34cd48ab8febe134db5d030d091d6d95fd44814a26194970"
+      }
+    },
+    {
+      "run": 2,
+      "status": "SUPERSEDED (stale-foreign SVF cache; see svf_cache_correction)",
+      "wall_seconds": null,
+      "wall_seconds_note": "not captured (output pipe truncated); timing is not gate-relevant, see run 1",
+      "peak_rss_bytes": 1443743736,
+      "determinism": "bitwise identical sha256 for UTCI/TMRT/Shadow vs run 1"
+    }
+  ],
+  "svf_cache_correction": {
+    "recorded_at": "2026-09-01 (post-P4)",
+    "finding": "The staged SVF cache (SkyViewFactor_0_0.tif, svfs_0_0.zip, shadowmats_0_0.npz) carried origin (622396.71, 3356864.35) while the staged DSM/DEM/Trees tile carries (621734.71, 3354614.35). The SVF cache is keyed by tile filename only, so an earlier run over a different window of the source mosaic was silently reused after re-staging. Fresh SVF recomputation from the staged scene disagrees with the staged cache on 26.9% (shadowmat), 31.9% (vegshadowmat), 8.3% (vbshmat) of cells; svf mean abs diff 0.149.",
+    "causal_confirmation": "Shadow_0_0.tif hash is UNCHANGED by the correction (SVF feeds radiation only, not the per-timestep building shadow mask); UTCI/TMRT hashes changed as expected.",
+    "remediation": [
+      "staged SVF cache replaced with fresh svf_calculator output (wrapper-identical derivation, 68.4 s); stale files preserved at /tmp/svf_stale_foreign_evidence/",
+      "utci_process._svf_cache_exists now requires cache raster extent (size + geotransform within 1e-6) to match the Building_DSM tile; load_cached_svf_outputs raises on mismatch",
+      "oracle re-run twice: bitwise identical across runs (determinism preserved)"
+    ],
+    "corrected_runs": [
+      {
+        "run": 1,
+        "wall_seconds": 93.32,
+        "tile_compute_seconds": 77.41,
+        "output_sha256": {
+          "UTCI_0_0.tif": "af54933d4efd3136f36ede945cbb0880aed1c379513e8582b764a7e1c1234331",
+          "TMRT_0_0.tif": "adb6ca268f60c509c839a9c115fd490aee3d8f7efc78bab8ef331fea07fb83e4",
+          "Shadow_0_0.tif": "925ee0f70a6442eb34cd48ab8febe134db5d030d091d6d95fd44814a26194970"
+        }
+      },
+      {
+        "run": 2,
+        "tile_compute_seconds": 80.72,
+        "determinism": "bitwise identical sha256 for UTCI/TMRT/Shadow vs corrected run 1"
+      }
+    ],
+    "downstream_revalidation": {
+      "win_002_windowed_vs_oracle": "re-run on corrected outputs: array_equal_nan True for UTCI/TMRT/Shadow (harness /tmp/win003_measure.py utci,tmrt,shadow)",
+      "pack_002_real_cache": "packed dir regenerated from corrected npz; weighted reductions float64 max_abs_err 5.7e-14/6.4e-14/7.1e-14",
+      "p2_site_cache": "cache_builder now passes geotransform validation; cache built at Input_subset/processed_inputs/incremental_cache_0_0 (458 MiB, 24 steps, 153 patches)"
+    }
+  },
+  "determinism_verdict": "PASS - oracle is bitwise deterministic across fresh process invocations on this environment",
+  "independent_reproduction": {
+    "source": "baseline-benchmarker subagent, /tmp/solweig_baseline_recon/baseline_measurements.json",
+    "fixture": "solweig_austin_500x500_2m (independent crop of Input_rasters, 6-timestep met subset)",
+    "cold_full_run": {"wall_s": 101.17, "peak_rss_bytes": 1310572544},
+    "warm_rerun": {"wall_s": 38.58, "peak_rss_bytes": 1327841280, "tile_loop_s": 24.06},
+    "determinism": "run2 bit-identical to run1 (independent confirmation)"
+  },
+  "notes": [
+    "numba was an undeclared runtime dependency (module-level import via calculate_wbgt.py); declared in requirements.txt and setup.py during P0",
+    "SVF cache load time is included in warm wall time; cold run incurs SVF computation once",
+    "site rasters are gitignored local data; fixture manifest records source hashes for verification"
+  ]
+}

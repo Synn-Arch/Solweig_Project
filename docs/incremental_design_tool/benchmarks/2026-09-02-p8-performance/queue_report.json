@@ -1,0 +1,25 @@
+{
+  "compression": "20x (30 min -> 90 s)",
+  "solve_seconds": 1.25,
+  "scenarios": 20,
+  "edits_submitted": 27,
+  "job_status_counts": {
+    "complete": 15,
+    "superseded": 12
+  },
+  "final_nonterminal_jobs": 0,
+  "all_scenarios_exact": true,
+  "stranded_scenarios": [],
+  "max_queued_depth": 1,
+  "max_nonterminal_depth": 1,
+  "final_sample": {
+    "t": 90.07,
+    "nonterminal": 0,
+    "queued": 0,
+    "running": 0,
+    "complete": 15,
+    "superseded": 12
+  },
+  "gate_QUEUE_001": true,
+  "note": "coalescing observed via superseded jobs during bursts; bounded backlog = queue drains to zero nonterminal"
+}

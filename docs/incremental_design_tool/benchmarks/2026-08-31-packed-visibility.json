@@ -1,0 +1,24 @@
+{
+  "benchmark": "packed_visibility_primitives",
+  "date": "2026-08-31",
+  "environment": {
+    "platform": "Linux 6.18.35 x86_64",
+    "cpu": "AMD EPYC 9V74",
+    "available_vcpus": 5,
+    "memory_gib": 5.8,
+    "python": "3.13.5",
+    "numpy": "2.3.5"
+  },
+  "command": "PYTHONPATH=. python examples/incremental_design_tool/tools/benchmark_primitives.py",
+  "shape": [500, 500, 153],
+  "dense_uint8_bytes": 38250000,
+  "dense_float32_equivalent_bytes": 153000000,
+  "packed_bytes": 5000000,
+  "float32_to_packed_ratio": 30.6,
+  "pack_seconds": 0.1996029560000352,
+  "packed_weighted_sum_seconds": 0.029358183999647736,
+  "dense_weighted_sum_seconds": 0.5814450380003109,
+  "maximum_absolute_error": 0.000026702880859375,
+  "process_wall_seconds": 1.69,
+  "maximum_resident_set_kib": 437168
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-09-07",
+  "note": "Exact commands executed for every T00 baseline number. PY = /Users/alansynn/Workspace/solweig/.venv/bin/python. H = /Users/alansynn/Workspace/solweig/benchmarks/ultrafast/harness_solve.py. A = /Users/alansynn/Workspace/solweig_ultrafast_artifacts. Timing clock: time.perf_counter (monotonic).",
+  "commands": {
+    "oracle_full_domain_solve": "cd /Users/alansynn/Workspace/solweig_oracle_e0d19fc && PY H --mode full --cache-dir /Users/alansynn/Workspace/solweig_oracle_e0d19fc/site-cache/site_500 --site-dir /Users/alansynn/Workspace/solweig_oracle_e0d19fc/Input_subset/processed_inputs --results-root A/oracle_full/results --out-dir A/oracle_full --record-out A/raw_records.jsonl --run-id oracle_full_e0d19fc_r0",
+    "incremental_E1_repeat1_cold": "cd /Users/alansynn/Workspace/solweig && PY H --mode edit --case E1 --cache-dir /Users/alansynn/Workspace/solweig/site-cache/site_500 --site-dir /Users/alansynn/Workspace/solweig/Input_subset/processed_inputs --results-root A/e1_r1/results --out-dir A/e1_r1 --record-out A/raw_records.jsonl --run-id e1_cold_rep1",
+    "incremental_E1_repeat2_cold": "same with --run-id e1_cold_rep2 --out-dir A/e1_r2 --results-root A/e1_r2/results",
+    "incremental_E1_warm": "cd /Users/alansynn/Workspace/solweig && PY H --mode edit --case E1 --warmup 5 --samples 2 [same cache/site/results args] --run-id e1_warm_w5_s2",
+    "incremental_E2_cold": "same as E1 repeat pattern with --case E2 --run-id e2_cold_rep0",
+    "incremental_E3_cold": "same with --case E3 --run-id e3_cold_rep0",
+    "incremental_E4_cold": "same with --case E4 --run-id e4_cold_rep0",
+    "bitwise_repeat_comparison": "PY /Users/alansynn/Workspace/solweig/benchmarks/ultrafast/compare_repeats.py --left A/e1_r1/sample0 --right A/e1_r2/sample0 --out A/parity_repeat_e1.json",
+    "manifests": "PY /Users/alansynn/Workspace/solweig/benchmarks/ultrafast/build_manifests.py --repo-root /Users/alansynn/Workspace/solweig",
+    "synthetic_fixture_generators_T01": "PY /Users/alansynn/Workspace/solweig/benchmarks/ultrafast/make_synth_fixtures.py --out-root A/synth --shape 40 80 | --shape 32 48 --pixel-size 4.0 --one-step"
+  },
+  "cold_warm_definition": "cold = fresh OS process (imports + cache load paid); warm = same process after --warmup prior solves of the identical edit batch",
+  "thread_policy": "torch defaults recorded (threads=8, interop=10 on this host); not pinned to the acceptance 4-core budget - see limitations"
+}

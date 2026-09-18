@@ -1,0 +1,46 @@
+{
+  "recorded_at_utc": "2026-09-07T21:51:24.887733+00:00",
+  "grid_reference": {
+    "rows": 500,
+    "cols": 500,
+    "pixel_size_m": 2.0,
+    "date": "2009-08-11",
+    "timesteps": 24,
+    "requested_variables": [
+      "utci",
+      "tmrt",
+      "shadow"
+    ]
+  },
+  "cases": {
+    "representative_tree_edit": {
+      "description": "single 10 m tree (r=4) at open cell S01 (row 166, col 102), site_500, selected_date 2009-08-11",
+      "base": "site-cache/site_500 cold cache (no warm-start state)",
+      "cell": [
+        166,
+        102
+      ],
+      "height_m": 10.0,
+      "canopy_radius_m": 4.0
+    },
+    "E1": "add t1 h10 r4 at (166,102)",
+    "E2": "add t1 at (166,102) then move to (166,127) \u2014 50 m east; pending batch carries add+move",
+    "E3": "add t1 h10 r4 at (166,102) then height replace to 15.0 m",
+    "E4": "add t1 at (166,102) and t2 (h10 r4) at (166,407) \u2014 610 m east (305 px * 2 m)",
+    "synthetic_nonsquare_40x80": {
+      "generator": "benchmarks/ultrafast/make_synth_fixtures.py --shape 40 80",
+      "description": "40x80 non-square synthetic scene (rows=40, cols=80), flat DEM + one building block + one tree; arrays land in the artifact root, never the repo tree",
+      "status": "GENERATOR_DEFINED_TRACES_PENDING_T01"
+    },
+    "synthetic_one_step_4m": {
+      "generator": "benchmarks/ultrafast/make_synth_fixtures.py --shape 32 48 --pixel-size 4.0 --one-step",
+      "description": "4 m pixel one-time-step witness fixture for single-step march trace capture",
+      "status": "GENERATOR_DEFINED_TRACES_PENDING_T01"
+    },
+    "met_warm_start_sequence": {
+      "description": "one met warm-start sequence (E5-class time-prefix recompute)",
+      "status": "NOT_RUN_T00_DEFERRED",
+      "note": "E5 was not in the T00 E1-E4 run set; deferred to T01 harness work"
+    }
+  }
+}

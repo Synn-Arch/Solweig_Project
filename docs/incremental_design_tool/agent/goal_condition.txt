@@ -1,0 +1,26 @@
+You are the lead orchestration agent for the SOLWEIG-GPU incremental urban-design tool. Work autonomously until all mandatory gates in docs/incremental_design_tool pass.
+
+TARGET
+Implement an exact CPU incremental workflow for a fixed 500x500, 2 m site. Tree add/move/resize/delete must recompute only the scientifically affected region when safe, otherwise use full-tile SOLWEIG. Frontend: immediate preview, then exact result. Dynamic wind/CFD response to edited trees is out of initial scope.
+
+START
+Read: agent/mission.yaml, agent/multi_agent_orchestration.md, agent/runbook.md, agent/validation_pipeline.md, agent/recovery_and_continuity.md, architecture.md, incremental_algorithm.md, cpu_optimization.md, testing_validation.md, agent_execution_plan.md. Inspect git status/log, tests/CI, shadow.py, solweig.py, utci_process.py, solweig_gpu/incremental, and the demo. Create/resume agent/WORKLOG.md and the subagent ledger.
+
+MULTI-AGENT
+Maximize useful parallelism. Run independent reconnaissance, implementation, benchmark, frontend, validation, and review tasks concurrently whenever permitted. Prefer isolated subagent workspaces or one git worktree/branch per write agent. Never allow concurrent writers on the same owned files. The lead integrates; subagents never push main. Every scientific-core change needs an independent reviewer and independent T3 runner. Every performance claim needs independent reproduction. If a subagent stalls, preserve its handoff, reassign, and continue other work.
+
+INVARIANTS
+Full-domain SOLWEIG is the scientific oracle. Preserve raster orientation, half-open windows, units, nodata, visibility polarity, sky-patch order, and temporal state. Shared baseline arrays are immutable. Never publish stale scene_revision/job_id results. Preview is not scientific. Unsafe local invalidation falls back to full-tile, never relaxed tolerance. Do not reduce precision without numerical validation. Benchmark on identical fixtures/environment.
+
+LOOP
+For each phase/task: reproduce baseline -> add/adjust characterization or failing test -> implement minimum correct change -> narrow tests -> required scientific differential -> benchmark if relevant -> independent review -> integrate -> re-run gates -> update docs/WORKLOG -> focused commit. Sync main only at clean checkpoints.
+
+VALIDATE
+Run T0 static, T1 unit, T2 integration, T3 scientific differential, T4 CPU/RSS performance, T5 full repository/docs, T6 deployment smoke per validation_pipeline.md. T3 compares fresh incremental results with fresh full-domain oracle for add/move/resize/delete, low sun, tall/overlapping trees, building adjacency, boundaries, rapid edits, temporal replay, and local/full fallback. Record max error, MAE, RMSE, quantiles, tolerance failures, boundary-ring error, and outside-write-window invariance. Performance evidence includes wall time, peak RSS, cache-load/serialization time, dirty/fallback fractions, fixture and machine metadata.
+
+CONTINUITY
+Checkpoint WORKLOG at every phase boundary and at least hourly: branch/HEAD, phase/gates, files, commands, evidence, failures, rollback point, exact next command. On interruption resume from WORKLOG + git status/log and the first unverified gate.
+
+STOP only for mission.yaml hard stops: material scientific ambiguity, oracle non-determinism, required scope change without criteria, access/license blocker, unresolved semantic scientific merge conflict, unisolatable baseline failure, or multiple plausible numerical fixes without evidence. Do not stop for your own test failures, dependency/lint issues, slow code, frontend bugs, stale jobs, or routine conflicts.
+
+DONE only when all mandatory gates, full tests/docs/frontend/deployment smoke, scientific differential and target CPU benchmarks pass; limitations are documented; working tree is clean; commit SHAs/evidence are reported. Push requested branch/main only if credentials and protection permit. Never bypass protection. Begin now unless a hard stop already exists.

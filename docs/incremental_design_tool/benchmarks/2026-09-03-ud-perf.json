@@ -1,0 +1,2035 @@
+{
+  "benchmark": "U-D3 executor-path latency and peak RSS per edit family + UEDIT-007 view-only proof",
+  "date": "2026-09-03",
+  "runner": "u-d3-perf (measurement agent, CPU chain)",
+  "objective": "UEDIT-008: measure PlanExecutor end-to-end CPU latency (submit EditCommand -> ExecutedPlan published) and peak RSS per edit family on the real 500x500@2m Austin tile, with scientific-solve time split out of total; UEDIT-007: prove a view-only batch enqueues zero scientific jobs.",
+  "gates": {
+    "UEDIT-008": "target CPU latency and peak RSS are measured per edit family",
+    "UEDIT-007": "view-only operations enqueue zero scientific jobs"
+  },
+  "code_state": {
+    "pinned_hot_file_state": "sha256[:12] of 14 hot-path files under solweig_gpu/incremental/ (executor 794c3743bc8a, worker 9600bad39a97, solver e90fbc6ebe94, planner a27a004f9c2f, regenerate 79ad140c90d5, store 4d9c507ea3a1, result cfee49f56ae0, cache 3643c49a1c80, trees dd9ad7734459, vegetation 10e9bc2e87b5, met_time 350c59ec1ba6, landcover 43ac78ae24d3, building 8450e55cad97, model_parameters 3487fcde09bf)",
+    "head_during_building_runs_1_5": "ccabc8e",
+    "head_during_building_runs_1_5_subject": "docs(agent): ledger row U-D2b merged, round-2 dispatched",
+    "head_during_all_other_final_runs": "2191e341da17556a8432bd5242dab9967778641a",
+    "head_equivalence_note": "2191e34 is one frontend-only commit past ccabc8e (examples/incremental_design_tool/app.mjs + a ledger doc; git diff --stat ccabc8e..2191e34 -- solweig_gpu/ tests/ is empty). The per-run hot-file fingerprint is IDENTICAL across every run of every family in this file (verified at assembly time), so all final measurements share one pinned code state",
+    "dispatched_base": "68e612fbdc9371f5661fd08f1a1b8d54787469d8",
+    "dispatch_drift_note": "the shared main checkout advanced past the dispatched base while parallel agents merged work (a9de3c8 fix(incremental), U-D2b frontend merge, ledger commits) and uncommitted intermediate states existed mid-sweep. Protocol per coordinator: all final-pass families were re-measured at ONE pinned state (fingerprint-verified per run); the first pass on intermediate states is preserved separately as a comparison",
+    "solweig_gpu_dirty_at_measurement": false,
+    "tests_dirty_at_measurement": false,
+    "cleanliness_method": "worktree-isolated agent cannot run git against the shared checkout; cleanliness verified by hashing all tracked files under solweig_gpu/ and tests/ against the committed tree of HEAD (0 modified, 0 deleted, 0 untracked)",
+    "python": "3.14.7",
+    "numpy": "2.5.2",
+    "psutil": "7.2.2",
+    "two_phase_protocol": "phase 1 (first pass) measured families as the code state drifted; phase 2 (final pass, this file's stats) re-measured every family at the pinned state with quiet gates plus mid-run load tracking"
+  },
+  "site": {
+    "tile": "0_0",
+    "grid": "500x500 @ 2.0 m",
+    "date": "2009-08-11",
+    "repo_cache": "/Users/alansynn/Workspace/solweig/Input_subset/processed_inputs/incremental_cache_0_0",
+    "lr_site": {
+      "cache": "/tmp/uc/caches/lr",
+      "site_dir": "/tmp/uc/sites/lr/processed_inputs",
+      "note": "U-C T3 derived real-landcover site (real tile + real Input_rasters/Landcover.tif crop), reused verbatim from T3; the repo cache carries no landcover array (T3 anomaly UC-T3-A1)"
+    }
+  },
+  "payload_provenance": "every edit payload is built by the U-C T3 harness code (/tmp/uc/harness.py builders, imported unmodified) \u2014 vegetation t1@(166,102) h6 r3, met air_temperature t=12 -> 38.0, paint [201,245)x[228,272) 5->1, building 'uc-block' rows [243,255) cols [242,258) h=14 (footprint recomputed by the identical finder), params albedo_b 0.2 -> 0.35, mixed = veg+met+paint in one plan",
+  "measurement_method": {
+    "latency": "time.perf_counter() around PlanExecutor.execute(edits) \u2014 the same span the T3 evidence timed; fresh executor, layer, store and results root per run (revision 0 -> 1), exactly one batch per run",
+    "scientific_solve_wall": "instance-attribute timing wrappers on ExactWorker.run and PlanExecutor._regenerate_building_chain (runtime-only, no source edits), cross-checked against the worker's own elapsed_seconds diagnostic",
+    "solver_kernel": "module-attribute timing wrappers on solver.solve_window and solver.run_full_tile (+ their worker-module references)",
+    "peak_rss": "psutil sampler thread, 50 ms cadence, peak of process RSS self (+children) during the timed span; ru_maxrss (bytes on macOS) recorded per family process as cross-check",
+    "overhead": "total_s - solve_path_s (planner, transaction staging, family seams, store publication)",
+    "void_runs": "a run is void if status != published, wall < 5 s sanity floor, store gained no entries, or no patch files exist; void runs are excluded from stats",
+    "load_discipline": "coordinator protocol under parallel-agent pytest pollution: before each run, wait for load1 <= 9.0 and no foreign process > 120% CPU (session-constant claude CLI exempt, 20 s sustained); during each run (final pass) the sampler tracks load1 max and foreign busy max; final stats pool only quiet_valid runs"
+  },
+  "families": {
+    "vegetation": {
+      "payload": "tree add t1 @ (row 166, col 102), h=6.0 m, r=3.0 m (T3 U1)",
+      "routing": {
+        "mode": [
+          "local"
+        ],
+        "planner_force_full": [
+          false
+        ],
+        "worker_dirty_fraction": [
+          0.16
+        ],
+        "plan_scopes": [
+          "radiation:WINDOWS",
+          "relative_geometry:WINDOWS",
+          "surface_thermal_state:WINDOWS",
+          "svf:WINDOWS",
+          "time_shadow:WINDOWS",
+          "tmrt:WINDOWS",
+          "utci:WINDOWS",
+          "vegetation_visibility:WINDOWS"
+        ],
+        "why": "planner scopes vegetation WINDOWS (adapter directional_windows); no FULL node impact -> executor keeps worker routing; worker dirty fraction 0.16 < full_recompute_fraction 0.30 -> LOCAL (executor-local windowed path)"
+      },
+      "measurement_protocol": {
+        "timed_span": "executor.execute(edits) \u2014 EditCommand submit through ExecutedPlan published (identical to the T3 harness span)",
+        "runs_recorded": 8,
+        "runs_valid": 8,
+        "runs_quiet_valid": 5,
+        "quiet_selection": "final stats pool = quiet_valid runs: quiet gate passed before the run (load1 <= 9.0, no foreign process > 120% CPU, 20 s sustained, session-constant claude CLI exempt) AND no mid-run pollution (load1_during_max <= 9.0, foreign_busy_during_max <= 120%)",
+        "code_state_fingerprints_in_runs": [
+          "{\"building.py\": \"8450e55cad97\", \"cache.py\": \"3643c49a1c80\", \"executor.py\": \"794c3743bc8a\", \"landcover.py\": \"43ac78ae24d3\", \"met_time.py\": \"350c59ec1ba6\", \"model_parameters.py\": \"3487fcde09bf\", \"planner.py\": \"a27a004f9c2f\", \"regenerate.py\": \"79ad140c90d5\", \"result.py\": \"cfee49f56ae0\", \"solver.py\": \"e90fbc6ebe94\", \"store.py\": \"4d9c507ea3a1\", \"trees.py\": \"dd9ad7734459\", \"vegetation.py\": \"10e9bc2e87b5\", \"worker.py\": \"9600bad39a97\"}"
+        ]
+      },
+      "runs": [
+        {
+          "run": 1,
+          "total_s": 57.008053,
+          "plan_s": 0.00187,
+          "solve_path_s": 56.998585,
+          "overhead_s": 0.009468,
+          "solver_kernel_s": 56.474731,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 743.7,
+          "load_before_1min": 6.84,
+          "load_after_1min": 5.53,
+          "load1_during_max": 6.84,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 2,
+          "total_s": 56.403986,
+          "plan_s": 0.00072,
+          "solve_path_s": 56.396387,
+          "overhead_s": 0.007599,
+          "solver_kernel_s": 55.954116,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 746.0,
+          "load_before_1min": 5.29,
+          "load_after_1min": 4.5,
+          "load1_during_max": 5.29,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 3,
+          "total_s": 57.471905,
+          "plan_s": 0.000452,
+          "solve_path_s": 57.464252,
+          "overhead_s": 0.007652,
+          "solver_kernel_s": 57.011886,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 743.3,
+          "load_before_1min": 3.96,
+          "load_after_1min": 5.19,
+          "load1_during_max": 5.47,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 4,
+          "total_s": 60.815199,
+          "plan_s": 0.000564,
+          "solve_path_s": 60.808348,
+          "overhead_s": 0.00685,
+          "solver_kernel_s": 60.360692,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 711.9,
+          "load_before_1min": 5.65,
+          "load_after_1min": 7.16,
+          "load1_during_max": 8.16,
+          "foreign_busy_during_max": 168.5,
+          "quiet": true,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 5,
+          "total_s": 57.770431,
+          "plan_s": 0.001083,
+          "solve_path_s": 57.762846,
+          "overhead_s": 0.007585,
+          "solver_kernel_s": 57.27704,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 600.1,
+          "load_before_1min": 7.22,
+          "load_after_1min": 6.89,
+          "load1_during_max": 8.44,
+          "foreign_busy_during_max": 183.9,
+          "quiet": true,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 6,
+          "total_s": 56.251235,
+          "plan_s": 0.000507,
+          "solve_path_s": 56.243526,
+          "overhead_s": 0.007709,
+          "solver_kernel_s": 55.778505,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 841.8,
+          "load_before_1min": 4.01,
+          "load_after_1min": 4.67,
+          "load1_during_max": 5.04,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 7,
+          "total_s": 56.82007,
+          "plan_s": 0.002391,
+          "solve_path_s": 56.810225,
+          "overhead_s": 0.009844,
+          "solver_kernel_s": 56.326103,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 698.7,
+          "load_before_1min": 4.06,
+          "load_after_1min": 4.8,
+          "load1_during_max": 5.69,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 8,
+          "total_s": 56.289742,
+          "plan_s": 0.001158,
+          "solve_path_s": 56.281891,
+          "overhead_s": 0.007851,
+          "solver_kernel_s": 55.807437,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 780.8,
+          "load_before_1min": 4.95,
+          "load_after_1min": 4.72,
+          "load1_during_max": 4.95,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        }
+      ],
+      "latency_stats_quiet_s": {
+        "n": 5,
+        "min": 56.251235,
+        "p50": 56.403986,
+        "p95": 57.471905,
+        "max": 57.471905,
+        "mean": 56.685
+      },
+      "scientific_solve_stats_quiet_s": {
+        "n": 5,
+        "min": 56.243526,
+        "p50": 56.396387,
+        "p95": 57.464252,
+        "max": 57.464252,
+        "mean": 56.6769
+      },
+      "plan_stage_overhead_stats_quiet_s": {
+        "n": 5,
+        "min": 0.007599,
+        "p50": 0.007709,
+        "p95": 0.009468,
+        "max": 0.009468,
+        "mean": 0.0081
+      },
+      "solver_kernel_stats_quiet_s": {
+        "n": 5,
+        "min": 55.778505,
+        "p50": 55.954116,
+        "p95": 57.011886,
+        "max": 57.011886,
+        "mean": 56.2053
+      },
+      "peak_rss_mb_stats_quiet": {
+        "n": 5,
+        "min": 743.3,
+        "p50": 746.0,
+        "p95": 841.8,
+        "max": 841.8,
+        "mean": 771.12
+      },
+      "budget_reference": {
+        "PERF-001": "p50 < 75 s production one-tree exact job (P8 measured p50 54.21 s same machine class)",
+        "PERF-002": "p95 < 60 s tree-local path (P8 measured 59.14 s, borderline)",
+        "MEM-001": "peak RSS < 3.0 GB"
+      }
+    },
+    "meteorology": {
+      "payload": "air_temperature t=12: 34.34 -> 38.0 (T3 U2)",
+      "routing": {
+        "mode": [
+          "full"
+        ],
+        "planner_force_full": [
+          true
+        ],
+        "worker_dirty_fraction": [
+          1.0
+        ],
+        "plan_scopes": [
+          "radiation:FULL",
+          "solar_atmospheric_state:FULL",
+          "surface_thermal_state:FULL",
+          "time_shadow:FULL",
+          "tmrt:FULL",
+          "utci:FULL"
+        ],
+        "why": "planner scopes downstream FULL (meteorological_forcing is full_downstream_only); executor force_full AND worker forcing_pending -> full tile (executor-full)"
+      },
+      "measurement_protocol": {
+        "timed_span": "executor.execute(edits) \u2014 EditCommand submit through ExecutedPlan published (identical to the T3 harness span)",
+        "runs_recorded": 13,
+        "runs_valid": 13,
+        "runs_quiet_valid": 5,
+        "quiet_selection": "final stats pool = quiet_valid runs: quiet gate passed before the run (load1 <= 9.0, no foreign process > 120% CPU, 20 s sustained, session-constant claude CLI exempt) AND no mid-run pollution (load1_during_max <= 9.0, foreign_busy_during_max <= 120%)",
+        "code_state_fingerprints_in_runs": [
+          "{\"building.py\": \"8450e55cad97\", \"cache.py\": \"3643c49a1c80\", \"executor.py\": \"794c3743bc8a\", \"landcover.py\": \"43ac78ae24d3\", \"met_time.py\": \"350c59ec1ba6\", \"model_parameters.py\": \"3487fcde09bf\", \"planner.py\": \"a27a004f9c2f\", \"regenerate.py\": \"79ad140c90d5\", \"result.py\": \"cfee49f56ae0\", \"solver.py\": \"e90fbc6ebe94\", \"store.py\": \"4d9c507ea3a1\", \"trees.py\": \"dd9ad7734459\", \"vegetation.py\": \"10e9bc2e87b5\", \"worker.py\": \"9600bad39a97\"}"
+        ]
+      },
+      "runs": [
+        {
+          "run": 1,
+          "total_s": 155.346051,
+          "plan_s": 0.000308,
+          "solve_path_s": 154.852527,
+          "overhead_s": 0.493524,
+          "solver_kernel_s": 154.375761,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1130.4,
+          "load_before_1min": 6.29,
+          "load_after_1min": 12.03,
+          "load1_during_max": 12.03,
+          "foreign_busy_during_max": 194.9,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 2,
+          "total_s": 139.97001,
+          "plan_s": 0.000613,
+          "solve_path_s": 139.5687,
+          "overhead_s": 0.40131,
+          "solver_kernel_s": 139.094283,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1155.9,
+          "load_before_1min": 8.27,
+          "load_after_1min": 6.41,
+          "load1_during_max": 8.27,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 3,
+          "total_s": 142.288743,
+          "plan_s": 0.00052,
+          "solve_path_s": 141.879948,
+          "overhead_s": 0.408795,
+          "solver_kernel_s": 141.412445,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1060.4,
+          "load_before_1min": 8.24,
+          "load_after_1min": 7.47,
+          "load1_during_max": 10.51,
+          "foreign_busy_during_max": 141.2,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 4,
+          "total_s": 161.099915,
+          "plan_s": 0.000244,
+          "solve_path_s": 160.701995,
+          "overhead_s": 0.39792,
+          "solver_kernel_s": 160.234911,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1058.6,
+          "load_before_1min": 6.33,
+          "load_after_1min": 7.24,
+          "load1_during_max": 7.7,
+          "foreign_busy_during_max": 168.5,
+          "quiet": true,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 5,
+          "total_s": 186.460246,
+          "plan_s": 0.000266,
+          "solve_path_s": 186.02584,
+          "overhead_s": 0.434406,
+          "solver_kernel_s": 185.584995,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1031.5,
+          "load_before_1min": 6.06,
+          "load_after_1min": 21.55,
+          "load1_during_max": 35.72,
+          "foreign_busy_during_max": 184.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 6,
+          "total_s": 150.059283,
+          "plan_s": 0.000715,
+          "solve_path_s": 149.580631,
+          "overhead_s": 0.478653,
+          "solver_kernel_s": 149.124041,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1134.8,
+          "load_before_1min": 6.49,
+          "load_after_1min": 15.09,
+          "load1_during_max": 20.72,
+          "foreign_busy_during_max": 125.5,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 7,
+          "total_s": 150.017677,
+          "plan_s": 0.001045,
+          "solve_path_s": 149.49161,
+          "overhead_s": 0.526067,
+          "solver_kernel_s": 149.026273,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1137.4,
+          "load_before_1min": 8.74,
+          "load_after_1min": 15.1,
+          "load1_during_max": 15.28,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 8,
+          "total_s": 150.367075,
+          "plan_s": 0.001203,
+          "solve_path_s": 149.88816,
+          "overhead_s": 0.478915,
+          "solver_kernel_s": 149.435368,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1142.2,
+          "load_before_1min": 7.69,
+          "load_after_1min": 7.52,
+          "load1_during_max": 7.91,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 9,
+          "total_s": 151.003599,
+          "plan_s": 0.001069,
+          "solve_path_s": 150.537732,
+          "overhead_s": 0.465868,
+          "solver_kernel_s": 150.084578,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1139.5,
+          "load_before_1min": 6.3,
+          "load_after_1min": 8.49,
+          "load1_during_max": 8.49,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 10,
+          "total_s": 194.540852,
+          "plan_s": 0.000832,
+          "solve_path_s": 194.070248,
+          "overhead_s": 0.470604,
+          "solver_kernel_s": 193.585429,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1116.0,
+          "load_before_1min": 8.17,
+          "load_after_1min": 13.68,
+          "load1_during_max": 13.85,
+          "foreign_busy_during_max": 196.9,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 11,
+          "total_s": 146.993231,
+          "plan_s": 0.000824,
+          "solve_path_s": 146.536163,
+          "overhead_s": 0.457069,
+          "solver_kernel_s": 146.089297,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1150.5,
+          "load_before_1min": 6.51,
+          "load_after_1min": 7.52,
+          "load1_during_max": 8.61,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 12,
+          "total_s": 145.077962,
+          "plan_s": 0.000494,
+          "solve_path_s": 144.599227,
+          "overhead_s": 0.478735,
+          "solver_kernel_s": 144.158909,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1137.2,
+          "load_before_1min": 6.67,
+          "load_after_1min": 12.66,
+          "load1_during_max": 14.27,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 13,
+          "total_s": 145.247914,
+          "plan_s": 0.001444,
+          "solve_path_s": 144.776846,
+          "overhead_s": 0.471067,
+          "solver_kernel_s": 144.33299,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1140.7,
+          "load_before_1min": 7.25,
+          "load_after_1min": 7.31,
+          "load1_during_max": 8.2,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        }
+      ],
+      "latency_stats_quiet_s": {
+        "n": 5,
+        "min": 139.97001,
+        "p50": 146.993231,
+        "p95": 151.003599,
+        "max": 151.003599,
+        "mean": 146.7164
+      },
+      "scientific_solve_stats_quiet_s": {
+        "n": 5,
+        "min": 139.5687,
+        "p50": 146.536163,
+        "p95": 150.537732,
+        "max": 150.537732,
+        "mean": 146.2615
+      },
+      "plan_stage_overhead_stats_quiet_s": {
+        "n": 5,
+        "min": 0.40131,
+        "p50": 0.465868,
+        "p95": 0.478915,
+        "max": 0.478915,
+        "mean": 0.4548
+      },
+      "solver_kernel_stats_quiet_s": {
+        "n": 5,
+        "min": 139.094283,
+        "p50": 146.089297,
+        "p95": 150.084578,
+        "max": 150.084578,
+        "mean": 145.8073
+      },
+      "peak_rss_mb_stats_quiet": {
+        "n": 5,
+        "min": 1139.5,
+        "p50": 1142.2,
+        "p95": 1155.9,
+        "max": 1155.9,
+        "mean": 1145.76
+      },
+      "budget_reference": {
+        "PERF-003": "full-tile fallback < 300 s",
+        "MEM-001": "peak RSS < 3.0 GB"
+      }
+    },
+    "landcover": {
+      "payload": "paint window [201,245)x[228,272) class 5 -> 1 (T3 U3, lr site)",
+      "routing": {
+        "mode": [
+          "local"
+        ],
+        "planner_force_full": [
+          false
+        ],
+        "worker_dirty_fraction": [
+          0.018496
+        ],
+        "plan_scopes": [
+          "radiation:WINDOWS",
+          "surface_thermal_state:WINDOWS",
+          "tmrt:WINDOWS",
+          "utci:WINDOWS"
+        ],
+        "why": "planner scopes landcover WINDOWS (adapter windows); no FULL impact; worker dirty fraction ~0.019 < 0.30 -> LOCAL (executor-local windowed path)"
+      },
+      "measurement_protocol": {
+        "timed_span": "executor.execute(edits) \u2014 EditCommand submit through ExecutedPlan published (identical to the T3 harness span)",
+        "runs_recorded": 7,
+        "runs_valid": 7,
+        "runs_quiet_valid": 5,
+        "quiet_selection": "final stats pool = quiet_valid runs: quiet gate passed before the run (load1 <= 9.0, no foreign process > 120% CPU, 20 s sustained, session-constant claude CLI exempt) AND no mid-run pollution (load1_during_max <= 9.0, foreign_busy_during_max <= 120%)",
+        "code_state_fingerprints_in_runs": [
+          "{\"building.py\": \"8450e55cad97\", \"cache.py\": \"3643c49a1c80\", \"executor.py\": \"794c3743bc8a\", \"landcover.py\": \"43ac78ae24d3\", \"met_time.py\": \"350c59ec1ba6\", \"model_parameters.py\": \"3487fcde09bf\", \"planner.py\": \"a27a004f9c2f\", \"regenerate.py\": \"79ad140c90d5\", \"result.py\": \"cfee49f56ae0\", \"solver.py\": \"e90fbc6ebe94\", \"store.py\": \"4d9c507ea3a1\", \"trees.py\": \"dd9ad7734459\", \"vegetation.py\": \"10e9bc2e87b5\", \"worker.py\": \"9600bad39a97\"}"
+        ]
+      },
+      "runs": [
+        {
+          "run": 1,
+          "total_s": 43.73036,
+          "plan_s": 0.000682,
+          "solve_path_s": 43.68274,
+          "overhead_s": 0.04762,
+          "solver_kernel_s": 43.243309,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 724.0,
+          "load_before_1min": 5.32,
+          "load_after_1min": 5.98,
+          "load1_during_max": 5.98,
+          "foreign_busy_during_max": 185.1,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 2,
+          "total_s": 38.230391,
+          "plan_s": 0.000648,
+          "solve_path_s": 38.190662,
+          "overhead_s": 0.039729,
+          "solver_kernel_s": 37.793453,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 741.3,
+          "load_before_1min": 5.27,
+          "load_after_1min": 5.66,
+          "load1_during_max": 6.24,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 3,
+          "total_s": 38.282341,
+          "plan_s": 0.000843,
+          "solve_path_s": 38.237648,
+          "overhead_s": 0.044693,
+          "solver_kernel_s": 37.841472,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 763.0,
+          "load_before_1min": 5.95,
+          "load_after_1min": 6.92,
+          "load1_during_max": 7.25,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 4,
+          "total_s": 38.209878,
+          "plan_s": 0.000346,
+          "solve_path_s": 38.174516,
+          "overhead_s": 0.035362,
+          "solver_kernel_s": 37.780923,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 796.3,
+          "load_before_1min": 7.08,
+          "load_after_1min": 5.99,
+          "load1_during_max": 7.23,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 5,
+          "total_s": 38.555554,
+          "plan_s": 0.000669,
+          "solve_path_s": 38.510674,
+          "overhead_s": 0.04488,
+          "solver_kernel_s": 38.116437,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 763.4,
+          "load_before_1min": 6.73,
+          "load_after_1min": 11.3,
+          "load1_during_max": 11.52,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 6,
+          "total_s": 40.033134,
+          "plan_s": 0.000454,
+          "solve_path_s": 39.99431,
+          "overhead_s": 0.038824,
+          "solver_kernel_s": 39.560143,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 753.8,
+          "load_before_1min": 4.59,
+          "load_after_1min": 6.71,
+          "load1_during_max": 6.71,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 7,
+          "total_s": 38.815589,
+          "plan_s": 0.000783,
+          "solve_path_s": 38.768795,
+          "overhead_s": 0.046795,
+          "solver_kernel_s": 38.314654,
+          "mode": "local",
+          "status": "published",
+          "peak_rss_mb": 790.8,
+          "load_before_1min": 5.65,
+          "load_after_1min": 6.02,
+          "load1_during_max": 6.57,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        }
+      ],
+      "latency_stats_quiet_s": {
+        "n": 5,
+        "min": 38.209878,
+        "p50": 38.282341,
+        "p95": 40.033134,
+        "max": 40.033134,
+        "mean": 38.7143
+      },
+      "scientific_solve_stats_quiet_s": {
+        "n": 5,
+        "min": 38.174516,
+        "p50": 38.237648,
+        "p95": 39.99431,
+        "max": 39.99431,
+        "mean": 38.6732
+      },
+      "plan_stage_overhead_stats_quiet_s": {
+        "n": 5,
+        "min": 0.035362,
+        "p50": 0.039729,
+        "p95": 0.046795,
+        "max": 0.046795,
+        "mean": 0.0411
+      },
+      "solver_kernel_stats_quiet_s": {
+        "n": 5,
+        "min": 37.780923,
+        "p50": 37.841472,
+        "p95": 39.560143,
+        "max": 39.560143,
+        "mean": 38.2581
+      },
+      "peak_rss_mb_stats_quiet": {
+        "n": 5,
+        "min": 741.3,
+        "p50": 763.0,
+        "p95": 796.3,
+        "max": 796.3,
+        "mean": 769.04
+      },
+      "budget_reference": {
+        "MEM-001": "peak RSS < 3.0 GB"
+      }
+    },
+    "building_dsm": {
+      "payload": "building add 'uc-block' 12x16 px footprint @ rows [243,255) cols [242,258), h=14 m (T3 U5)",
+      "routing": {
+        "mode": [
+          "full"
+        ],
+        "planner_force_full": [
+          true
+        ],
+        "worker_dirty_fraction": [
+          1.0
+        ],
+        "plan_scopes": [
+          "building_visibility:FULL",
+          "radiation:FULL",
+          "relative_geometry:FULL",
+          "surface_thermal_state:FULL",
+          "svf:FULL",
+          "time_shadow:FULL",
+          "tmrt:FULL",
+          "utci:FULL",
+          "vegetation_visibility:FULL",
+          "wall_aspect:FULL",
+          "walls:FULL"
+        ],
+        "why": "building_geometry is FULL_ONLY_INITIALLY -> planner marks FULL; the batch routes through the regeneration chain (scenario site + DSM + walls/aspect + SVF + cache rebuild + full-tile solve), not ExactWorker.run (executor-full)"
+      },
+      "measurement_protocol": {
+        "timed_span": "executor.execute(edits) \u2014 EditCommand submit through ExecutedPlan published (identical to the T3 harness span)",
+        "runs_recorded": 14,
+        "runs_valid": 14,
+        "runs_quiet_valid": 5,
+        "quiet_selection": "final stats pool = quiet_valid runs: quiet gate passed before the run (load1 <= 9.0, no foreign process > 120% CPU, 20 s sustained, session-constant claude CLI exempt) AND no mid-run pollution (load1_during_max <= 9.0, foreign_busy_during_max <= 120%); building runs 1-5 predate during-run tracking \u2014 conservative proxy quiet_valid = gate quiet AND load1-after <= 7.5",
+        "code_state_fingerprints_in_runs": [
+          "null",
+          "{\"building.py\": \"8450e55cad97\", \"cache.py\": \"3643c49a1c80\", \"executor.py\": \"794c3743bc8a\", \"landcover.py\": \"43ac78ae24d3\", \"met_time.py\": \"350c59ec1ba6\", \"model_parameters.py\": \"3487fcde09bf\", \"planner.py\": \"a27a004f9c2f\", \"regenerate.py\": \"79ad140c90d5\", \"result.py\": \"cfee49f56ae0\", \"solver.py\": \"e90fbc6ebe94\", \"store.py\": \"4d9c507ea3a1\", \"trees.py\": \"dd9ad7734459\", \"vegetation.py\": \"10e9bc2e87b5\", \"worker.py\": \"9600bad39a97\"}"
+        ]
+      },
+      "runs": [
+        {
+          "run": 1,
+          "total_s": 241.647552,
+          "plan_s": 0.000391,
+          "solve_path_s": 241.641246,
+          "overhead_s": 0.006306,
+          "solver_kernel_s": 148.340137,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1142.2,
+          "load_before_1min": 5.53,
+          "load_after_1min": 5.88,
+          "load1_during_max": null,
+          "foreign_busy_during_max": null,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 2,
+          "total_s": 255.931446,
+          "plan_s": 0.000382,
+          "solve_path_s": 255.924643,
+          "overhead_s": 0.006803,
+          "solver_kernel_s": 172.451656,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1140.2,
+          "load_before_1min": 4.49,
+          "load_after_1min": 6.71,
+          "load1_during_max": null,
+          "foreign_busy_during_max": null,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 3,
+          "total_s": 276.23794,
+          "plan_s": 0.000301,
+          "solve_path_s": 276.231565,
+          "overhead_s": 0.006375,
+          "solver_kernel_s": 181.512927,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1143.7,
+          "load_before_1min": 5.01,
+          "load_after_1min": 8.65,
+          "load1_during_max": null,
+          "foreign_busy_during_max": null,
+          "quiet": true,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 4,
+          "total_s": 283.11259,
+          "plan_s": 0.000338,
+          "solve_path_s": 283.105969,
+          "overhead_s": 0.006621,
+          "solver_kernel_s": 183.895862,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1141.4,
+          "load_before_1min": 7.26,
+          "load_after_1min": 11.14,
+          "load1_during_max": null,
+          "foreign_busy_during_max": null,
+          "quiet": true,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 5,
+          "total_s": 288.299224,
+          "plan_s": 0.009397,
+          "solve_path_s": 288.277446,
+          "overhead_s": 0.021778,
+          "solver_kernel_s": 189.129348,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1033.1,
+          "load_before_1min": 8.51,
+          "load_after_1min": 11.86,
+          "load1_during_max": null,
+          "foreign_busy_during_max": null,
+          "quiet": true,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 6,
+          "total_s": 293.30938,
+          "plan_s": 0.005857,
+          "solve_path_s": 293.29026,
+          "overhead_s": 0.01912,
+          "solver_kernel_s": 199.863358,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 998.4,
+          "load_before_1min": 7.0,
+          "load_after_1min": 16.16,
+          "load1_during_max": 9.23,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 7,
+          "total_s": 259.381921,
+          "plan_s": 0.012465,
+          "solve_path_s": 259.359483,
+          "overhead_s": 0.022438,
+          "solver_kernel_s": 155.814751,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 130.3,
+          "load_before_1min": 7.1,
+          "load_after_1min": 17.81,
+          "load1_during_max": 7.1,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 8,
+          "total_s": 273.398835,
+          "plan_s": 0.001514,
+          "solve_path_s": 273.389794,
+          "overhead_s": 0.009041,
+          "solver_kernel_s": 186.578544,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1082.0,
+          "load_before_1min": 6.16,
+          "load_after_1min": 5.02,
+          "load1_during_max": 6.92,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 9,
+          "total_s": 222.184156,
+          "plan_s": 0.001252,
+          "solve_path_s": 222.175338,
+          "overhead_s": 0.008818,
+          "solver_kernel_s": 139.731056,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1164.4,
+          "load_before_1min": 3.01,
+          "load_after_1min": 9.38,
+          "load1_during_max": 10.53,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 10,
+          "total_s": 230.377827,
+          "plan_s": 0.001283,
+          "solve_path_s": 230.369119,
+          "overhead_s": 0.008708,
+          "solver_kernel_s": 143.08005,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1096.9,
+          "load_before_1min": 7.0,
+          "load_after_1min": 9.56,
+          "load1_during_max": 13.67,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 11,
+          "total_s": 233.858948,
+          "plan_s": 0.002745,
+          "solve_path_s": 233.849108,
+          "overhead_s": 0.00984,
+          "solver_kernel_s": 150.457768,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1137.1,
+          "load_before_1min": 8.89,
+          "load_after_1min": 16.13,
+          "load1_during_max": 16.13,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 12,
+          "total_s": 229.505973,
+          "plan_s": 0.001847,
+          "solve_path_s": 229.496538,
+          "overhead_s": 0.009435,
+          "solver_kernel_s": 144.745336,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1136.9,
+          "load_before_1min": 6.73,
+          "load_after_1min": 8.52,
+          "load1_during_max": 10.37,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 13,
+          "total_s": 227.664311,
+          "plan_s": 0.000545,
+          "solve_path_s": 227.656571,
+          "overhead_s": 0.007741,
+          "solver_kernel_s": 144.127226,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1141.7,
+          "load_before_1min": 6.59,
+          "load_after_1min": 6.53,
+          "load1_during_max": 8.54,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 14,
+          "total_s": 228.517532,
+          "plan_s": 0.000957,
+          "solve_path_s": 228.509454,
+          "overhead_s": 0.008078,
+          "solver_kernel_s": 144.514566,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1136.5,
+          "load_before_1min": 7.09,
+          "load_after_1min": 7.02,
+          "load1_during_max": 8.28,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        }
+      ],
+      "latency_stats_quiet_s": {
+        "n": 5,
+        "min": 227.664311,
+        "p50": 241.647552,
+        "p95": 273.398835,
+        "max": 273.398835,
+        "mean": 245.4319
+      },
+      "scientific_solve_stats_quiet_s": {
+        "n": 5,
+        "min": 227.656571,
+        "p50": 241.641246,
+        "p95": 273.389794,
+        "max": 273.389794,
+        "mean": 245.4243
+      },
+      "plan_stage_overhead_stats_quiet_s": {
+        "n": 5,
+        "min": 0.006306,
+        "p50": 0.007741,
+        "p95": 0.009041,
+        "max": 0.009041,
+        "mean": 0.0076
+      },
+      "solver_kernel_stats_quiet_s": {
+        "n": 5,
+        "min": 144.127226,
+        "p50": 148.340137,
+        "p95": 186.578544,
+        "max": 186.578544,
+        "mean": 159.2024
+      },
+      "peak_rss_mb_stats_quiet": {
+        "n": 5,
+        "min": 1082.0,
+        "p50": 1140.2,
+        "p95": 1142.2,
+        "max": 1142.2,
+        "mean": 1128.52
+      },
+      "budget_reference": {
+        "PERF-003": "full-tile fallback < 300 s",
+        "MEM-001": "peak RSS < 3.0 GB"
+      }
+    },
+    "model_parameters": {
+      "payload": "albedo_b 0.2 -> 0.35 (T3 U4)",
+      "routing": {
+        "mode": [
+          "full"
+        ],
+        "planner_force_full": [
+          true
+        ],
+        "worker_dirty_fraction": [
+          1.0
+        ],
+        "plan_scopes": [
+          "radiation:FULL",
+          "surface_thermal_state:FULL",
+          "tmrt:FULL",
+          "utci:FULL"
+        ],
+        "why": "model_receptor_parameters is full_downstream_stage_specific -> planner scopes FULL; worker model_parameters_pending -> full tile (executor-full)"
+      },
+      "measurement_protocol": {
+        "timed_span": "executor.execute(edits) \u2014 EditCommand submit through ExecutedPlan published (identical to the T3 harness span)",
+        "runs_recorded": 14,
+        "runs_valid": 14,
+        "runs_quiet_valid": 5,
+        "quiet_selection": "final stats pool = quiet_valid runs: quiet gate passed before the run (load1 <= 9.0, no foreign process > 120% CPU, 20 s sustained, session-constant claude CLI exempt) AND no mid-run pollution (load1_during_max <= 9.0, foreign_busy_during_max <= 120%)",
+        "code_state_fingerprints_in_runs": [
+          "{\"building.py\": \"8450e55cad97\", \"cache.py\": \"3643c49a1c80\", \"executor.py\": \"794c3743bc8a\", \"landcover.py\": \"43ac78ae24d3\", \"met_time.py\": \"350c59ec1ba6\", \"model_parameters.py\": \"3487fcde09bf\", \"planner.py\": \"a27a004f9c2f\", \"regenerate.py\": \"79ad140c90d5\", \"result.py\": \"cfee49f56ae0\", \"solver.py\": \"e90fbc6ebe94\", \"store.py\": \"4d9c507ea3a1\", \"trees.py\": \"dd9ad7734459\", \"vegetation.py\": \"10e9bc2e87b5\", \"worker.py\": \"9600bad39a97\"}"
+        ]
+      },
+      "runs": [
+        {
+          "run": 1,
+          "total_s": 142.82436,
+          "plan_s": 0.000566,
+          "solve_path_s": 142.816308,
+          "overhead_s": 0.008052,
+          "solver_kernel_s": 142.264928,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 981.0,
+          "load_before_1min": 4.69,
+          "load_after_1min": 8.89,
+          "load1_during_max": 9.71,
+          "foreign_busy_during_max": 200.6,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 2,
+          "total_s": 144.429658,
+          "plan_s": 0.000514,
+          "solve_path_s": 144.421489,
+          "overhead_s": 0.008169,
+          "solver_kernel_s": 143.941022,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 899.5,
+          "load_before_1min": 7.16,
+          "load_after_1min": 14.34,
+          "load1_during_max": 21.48,
+          "foreign_busy_during_max": 206.5,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 3,
+          "total_s": 136.589503,
+          "plan_s": 0.000269,
+          "solve_path_s": 136.583114,
+          "overhead_s": 0.006389,
+          "solver_kernel_s": 136.04722,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 886.8,
+          "load_before_1min": 7.84,
+          "load_after_1min": 4.77,
+          "load1_during_max": 7.84,
+          "foreign_busy_during_max": 312.2,
+          "quiet": true,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 4,
+          "total_s": 139.35845,
+          "plan_s": 0.000297,
+          "solve_path_s": 139.351695,
+          "overhead_s": 0.006755,
+          "solver_kernel_s": 138.862528,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 876.7,
+          "load_before_1min": 3.54,
+          "load_after_1min": 9.33,
+          "load1_during_max": 12.55,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 5,
+          "total_s": 145.697323,
+          "plan_s": 0.000817,
+          "solve_path_s": 145.68924,
+          "overhead_s": 0.008083,
+          "solver_kernel_s": 145.199006,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 884.8,
+          "load_before_1min": 7.66,
+          "load_after_1min": 7.98,
+          "load1_during_max": 8.51,
+          "foreign_busy_during_max": 201.4,
+          "quiet": true,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 6,
+          "total_s": 138.785716,
+          "plan_s": 0.000413,
+          "solve_path_s": 138.777895,
+          "overhead_s": 0.007821,
+          "solver_kernel_s": 138.226568,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 970.2,
+          "load_before_1min": 5.92,
+          "load_after_1min": 8.12,
+          "load1_during_max": 8.61,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 7,
+          "total_s": 138.648559,
+          "plan_s": 0.000622,
+          "solve_path_s": 138.639969,
+          "overhead_s": 0.00859,
+          "solver_kernel_s": 138.086343,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 958.0,
+          "load_before_1min": 8.09,
+          "load_after_1min": 6.68,
+          "load1_during_max": 8.09,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 8,
+          "total_s": 137.803361,
+          "plan_s": 0.000453,
+          "solve_path_s": 137.795619,
+          "overhead_s": 0.007742,
+          "solver_kernel_s": 137.222061,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 973.8,
+          "load_before_1min": 6.58,
+          "load_after_1min": 10.14,
+          "load1_during_max": 10.58,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 9,
+          "total_s": 139.581808,
+          "plan_s": 0.001825,
+          "solve_path_s": 139.571989,
+          "overhead_s": 0.009819,
+          "solver_kernel_s": 139.012454,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 950.0,
+          "load_before_1min": 7.2,
+          "load_after_1min": 11.47,
+          "load1_during_max": 12.65,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 10,
+          "total_s": 139.801909,
+          "plan_s": 0.002825,
+          "solve_path_s": 139.790689,
+          "overhead_s": 0.01122,
+          "solver_kernel_s": 139.227947,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 932.3,
+          "load_before_1min": 6.15,
+          "load_after_1min": 6.19,
+          "load1_during_max": 7.94,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 11,
+          "total_s": 139.790383,
+          "plan_s": 0.000426,
+          "solve_path_s": 139.782684,
+          "overhead_s": 0.007699,
+          "solver_kernel_s": 139.189858,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 984.1,
+          "load_before_1min": 5.78,
+          "load_after_1min": 7.75,
+          "load1_during_max": 8.4,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 12,
+          "total_s": 138.640223,
+          "plan_s": 0.000476,
+          "solve_path_s": 138.632478,
+          "overhead_s": 0.007746,
+          "solver_kernel_s": 138.087125,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 984.3,
+          "load_before_1min": 6.55,
+          "load_after_1min": 9.87,
+          "load1_during_max": 10.29,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 13,
+          "total_s": 137.208184,
+          "plan_s": 0.001219,
+          "solve_path_s": 137.198859,
+          "overhead_s": 0.009326,
+          "solver_kernel_s": 136.631054,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 992.6,
+          "load_before_1min": 6.71,
+          "load_after_1min": 10.02,
+          "load1_during_max": 10.38,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 14,
+          "total_s": 140.689411,
+          "plan_s": 0.000304,
+          "solve_path_s": 140.682846,
+          "overhead_s": 0.006565,
+          "solver_kernel_s": 140.06614,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 992.4,
+          "load_before_1min": 4.58,
+          "load_after_1min": 8.53,
+          "load1_during_max": 8.54,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        }
+      ],
+      "latency_stats_quiet_s": {
+        "n": 5,
+        "min": 138.648559,
+        "p50": 139.790383,
+        "p95": 140.689411,
+        "max": 140.689411,
+        "mean": 139.5432
+      },
+      "scientific_solve_stats_quiet_s": {
+        "n": 5,
+        "min": 138.639969,
+        "p50": 139.782684,
+        "p95": 140.682846,
+        "max": 140.682846,
+        "mean": 139.5348
+      },
+      "plan_stage_overhead_stats_quiet_s": {
+        "n": 5,
+        "min": 0.006565,
+        "p50": 0.007821,
+        "p95": 0.01122,
+        "max": 0.01122,
+        "mean": 0.0084
+      },
+      "solver_kernel_stats_quiet_s": {
+        "n": 5,
+        "min": 138.086343,
+        "p50": 139.189858,
+        "p95": 140.06614,
+        "max": 140.06614,
+        "mean": 138.9594
+      },
+      "peak_rss_mb_stats_quiet": {
+        "n": 5,
+        "min": 932.3,
+        "p50": 970.2,
+        "p95": 992.4,
+        "max": 992.4,
+        "mean": 967.4
+      },
+      "budget_reference": {
+        "PERF-003": "full-tile fallback < 300 s",
+        "MEM-001": "peak RSS < 3.0 GB"
+      }
+    },
+    "mixed_batch": {
+      "payload": "veg t1(166,102) h6 r3 + met air_temperature t=12->38.0 + paint [201,245)x[228,272) 5->1, one plan (T3 U6, lr site)",
+      "routing": {
+        "mode": [
+          "full"
+        ],
+        "planner_force_full": [
+          true
+        ],
+        "worker_dirty_fraction": [
+          1.0
+        ],
+        "plan_scopes": [
+          "radiation:FULL",
+          "relative_geometry:WINDOWS",
+          "solar_atmospheric_state:FULL",
+          "surface_thermal_state:FULL",
+          "svf:WINDOWS",
+          "time_shadow:FULL",
+          "tmrt:FULL",
+          "utci:FULL",
+          "vegetation_visibility:WINDOWS"
+        ],
+        "why": "mixed batch contains meteorology (full_downstream_only) -> plan marks FULL nodes; worker forcing closure routes full tile (executor-full)"
+      },
+      "measurement_protocol": {
+        "timed_span": "executor.execute(edits) \u2014 EditCommand submit through ExecutedPlan published (identical to the T3 harness span)",
+        "runs_recorded": 10,
+        "runs_valid": 10,
+        "runs_quiet_valid": 5,
+        "quiet_selection": "final stats pool = quiet_valid runs: quiet gate passed before the run (load1 <= 9.0, no foreign process > 120% CPU, 20 s sustained, session-constant claude CLI exempt) AND no mid-run pollution (load1_during_max <= 9.0, foreign_busy_during_max <= 120%)",
+        "code_state_fingerprints_in_runs": [
+          "{\"building.py\": \"8450e55cad97\", \"cache.py\": \"3643c49a1c80\", \"executor.py\": \"794c3743bc8a\", \"landcover.py\": \"43ac78ae24d3\", \"met_time.py\": \"350c59ec1ba6\", \"model_parameters.py\": \"3487fcde09bf\", \"planner.py\": \"a27a004f9c2f\", \"regenerate.py\": \"79ad140c90d5\", \"result.py\": \"cfee49f56ae0\", \"solver.py\": \"e90fbc6ebe94\", \"store.py\": \"4d9c507ea3a1\", \"trees.py\": \"dd9ad7734459\", \"vegetation.py\": \"10e9bc2e87b5\", \"worker.py\": \"9600bad39a97\"}"
+        ]
+      },
+      "runs": [
+        {
+          "run": 1,
+          "total_s": 141.202947,
+          "plan_s": 0.00103,
+          "solve_path_s": 140.721498,
+          "overhead_s": 0.481448,
+          "solver_kernel_s": 140.280724,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1175.2,
+          "load_before_1min": 3.09,
+          "load_after_1min": 6.72,
+          "load1_during_max": 7.23,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 2,
+          "total_s": 139.859997,
+          "plan_s": 0.001204,
+          "solve_path_s": 139.439945,
+          "overhead_s": 0.420052,
+          "solver_kernel_s": 139.007592,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1138.1,
+          "load_before_1min": 7.71,
+          "load_after_1min": 9.45,
+          "load1_during_max": 9.89,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 3,
+          "total_s": 138.403116,
+          "plan_s": 0.00056,
+          "solve_path_s": 137.999107,
+          "overhead_s": 0.404009,
+          "solver_kernel_s": 137.556166,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1144.2,
+          "load_before_1min": 6.38,
+          "load_after_1min": 6.26,
+          "load1_during_max": 6.72,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 4,
+          "total_s": 140.332685,
+          "plan_s": 0.000746,
+          "solve_path_s": 139.910754,
+          "overhead_s": 0.42193,
+          "solver_kernel_s": 139.483147,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1170.8,
+          "load_before_1min": 6.32,
+          "load_after_1min": 6.4,
+          "load1_during_max": 6.81,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 5,
+          "total_s": 159.241642,
+          "plan_s": 0.000761,
+          "solve_path_s": 158.818146,
+          "overhead_s": 0.423496,
+          "solver_kernel_s": 158.358536,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1180.2,
+          "load_before_1min": 4.74,
+          "load_after_1min": 10.69,
+          "load1_during_max": 10.69,
+          "foreign_busy_during_max": 207.2,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 6,
+          "total_s": 144.316228,
+          "plan_s": 0.000954,
+          "solve_path_s": 143.848317,
+          "overhead_s": 0.46791,
+          "solver_kernel_s": 143.385988,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1139.5,
+          "load_before_1min": 4.98,
+          "load_after_1min": 8.36,
+          "load1_during_max": 9.17,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 7,
+          "total_s": 144.766415,
+          "plan_s": 0.000954,
+          "solve_path_s": 144.286173,
+          "overhead_s": 0.480242,
+          "solver_kernel_s": 143.821973,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1139.2,
+          "load_before_1min": 8.64,
+          "load_after_1min": 7.53,
+          "load1_during_max": 9.02,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 8,
+          "total_s": 143.959693,
+          "plan_s": 0.001206,
+          "solve_path_s": 143.447532,
+          "overhead_s": 0.512161,
+          "solver_kernel_s": 142.994962,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1136.8,
+          "load_before_1min": 5.38,
+          "load_after_1min": 7.8,
+          "load1_during_max": 7.96,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 9,
+          "total_s": 154.398268,
+          "plan_s": 0.001314,
+          "solve_path_s": 153.92756,
+          "overhead_s": 0.470708,
+          "solver_kernel_s": 153.476899,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1177.5,
+          "load_before_1min": 6.6,
+          "load_after_1min": 7.35,
+          "load1_during_max": 9.04,
+          "foreign_busy_during_max": 0.0,
+          "quiet": false,
+          "quiet_valid": false,
+          "void": false,
+          "void_reasons": []
+        },
+        {
+          "run": 10,
+          "total_s": 141.850549,
+          "plan_s": 0.001215,
+          "solve_path_s": 141.375351,
+          "overhead_s": 0.475198,
+          "solver_kernel_s": 140.932913,
+          "mode": "full",
+          "status": "published",
+          "peak_rss_mb": 1179.4,
+          "load_before_1min": 5.99,
+          "load_after_1min": 7.53,
+          "load1_during_max": 7.53,
+          "foreign_busy_during_max": 0.0,
+          "quiet": true,
+          "quiet_valid": true,
+          "void": false,
+          "void_reasons": []
+        }
+      ],
+      "latency_stats_quiet_s": {
+        "n": 5,
+        "min": 138.403116,
+        "p50": 141.202947,
+        "p95": 143.959693,
+        "max": 143.959693,
+        "mean": 141.1498
+      },
+      "scientific_solve_stats_quiet_s": {
+        "n": 5,
+        "min": 137.999107,
+        "p50": 140.721498,
+        "p95": 143.447532,
+        "max": 143.447532,
+        "mean": 140.6908
+      },
+      "plan_stage_overhead_stats_quiet_s": {
+        "n": 5,
+        "min": 0.404009,
+        "p50": 0.475198,
+        "p95": 0.512161,
+        "max": 0.512161,
+        "mean": 0.4589
+      },
+      "solver_kernel_stats_quiet_s": {
+        "n": 5,
+        "min": 137.556166,
+        "p50": 140.280724,
+        "p95": 142.994962,
+        "max": 142.994962,
+        "mean": 140.2496
+      },
+      "peak_rss_mb_stats_quiet": {
+        "n": 5,
+        "min": 1136.8,
+        "p50": 1170.8,
+        "p95": 1179.4,
+        "max": 1179.4,
+        "mean": 1161.28
+      },
+      "budget_reference": {
+        "MEM-001": "peak RSS < 3.0 GB"
+      }
+    }
+  },
+  "routing_disclosure_post_building_edit": {
+    "added": "2026-09-03 (u-d4c), after the measurements above were pinned",
+    "statement": "the routing rows above were measured on FRESH scenarios carrying no published building edits, and they remain exact for every such scenario. Once a scenario has PUBLISHED a building edit, the executor accumulates the massing fold (PlanExecutor._applied_massing_edits, u-d4c) and EVERY later batch of ANY family routes through the building regeneration chain full tile with the full fold — the baseline-bound ExactWorker path would silently revert the published buildings (pre-existing engine defect since the u-c5/u-c6 chain seam, exposed user-facing by the u-d4 universal transport, fixed by the fold)",
+    "effective_rule": "building fold non-empty -> regeneration chain (full tile); fold empty (no published building edit since scenario creation/reset) -> the measured per-family routing rows apply unchanged",
+    "cost_consequence": "a post-building batch in a family that measured windowed/local above (e.g. vegetation ~56 s local, landcover ~local) instead pays the chain's cost class (building_dsm quiet totals 227.7-273.4 s, p50 241.6 s) until the scenario resets; correctness-mandated, not hidden",
+    "diagnostics": "chain-routed batches disclose routing in the executed plan's diagnostics: building_batch true, building_fold_size <int>, chain_carries_new_edits <bool> (false when the batch itself added no building edit but the accumulated fold routed it)",
+    "fold_semantics": "per-building-id last-write-wins vs the baseline anchor; deletes stay deletes (a deleted baseline building keeps before=baseline spec, after=null; a deleted session-added building keeps a tombstone anchored at the deleted session spec); the fold persists in scenario-state schema v3 and rides executor restarts",
+    "overlap_order_disclosure": "added 2026-09-03 (u-d4c remediation F1), after the measurements above were pinned: the fold applies to the chain in dict FIRST-INSERTION order (each building id's position is fixed by its FIRST appearance in the session, not by the session order of its latest edit), and the rasterizer replays that tuple sequentially — a delete's before-footprint reset is UNCONDITIONAL (it erases bystander paint at overlaps) while after-paints combine by fmax (taller wins). Overlapping DISTINCT building ids therefore resolve by application order and can diverge from a session-order sequential replay: add A (footprint FA), add B (FB overlapping FA), delete A folds to [A_tombstone(reset FA), B(paint FB)] and keeps B INTACT at FA∩FB, whereas a sequential replay [A, B, A_delete] would TRUNCATE B there (its reset lands last); deleting the LATER-inserted id instead ([A, B_tombstone]) truncates A at the overlap in BOTH orderings, so the divergence is asymmetric. It is bounded to the overlap cells of distinct building ids (the adapter carries no building inventory, so per-id last-write-wins cannot express cross-id occlusion; the fold semantics is unchanged and remains the mission-endorsed choice — this entry is a disclosure, not a behavior change)"
+  },
+  "view_only_proof": {
+    "veg_plus_view_control": {
+      "payload": "vegetation add + view-only selection in one batch (view rides, adds no job)",
+      "mode": "local",
+      "status": "published",
+      "jobs": {
+        "worker_run_calls": 1,
+        "building_chain_calls": 0,
+        "job_ids_minted": 1,
+        "store_publish_calls": 1
+      },
+      "total_s": 56.609043,
+      "statement": "a view edit riding a vegetation batch adds zero jobs: job counts identical to the vegetation-only runs (1 worker.run, 1 job id, 1 store publish), plan scopes identical to vegetation-only",
+      "plan_changed_sources": [
+        {
+          "node": "output_selection",
+          "graph_kind": "VIEW"
+        },
+        {
+          "node": "vegetation_dsm",
+          "graph_kind": "SOURCE"
+        }
+      ]
+    },
+    "construction": "view-only EditCommand (adapter_id=output_view, operation=select_layer, utci -> tmrt) with an OutputSelectionDelta \u2014 the same ValidatedEdit construction as the packet's own executor test test_view_only_batch_is_accepted_noop (no concrete output_view adapter exists yet; the registry declares it VIEW_ONLY). Driven through executor.execute() \u2014 the full planner/executor path.",
+    "counts": {
+      "before": {
+        "worker_job_submissions": 0,
+        "job_ids_minted": 0,
+        "solve_window_calls": 0,
+        "run_full_tile_calls": 0,
+        "store_publish_calls": 0,
+        "patch_dirs": 0,
+        "scene_revision": 0,
+        "store_entries": 0
+      },
+      "after": {
+        "worker_job_submissions": 0,
+        "job_ids_minted": 0,
+        "solve_window_calls": 0,
+        "run_full_tile_calls": 0,
+        "store_publish_calls": 0,
+        "patch_dirs": 0,
+        "scene_revision": 0,
+        "store_entries": 0
+      },
+      "scientific_jobs_enqueued": 0,
+      "scientific_jobs_executed": 0
+    },
+    "plan_shape": {
+      "changed_sources": [
+        {
+          "node": "output_selection",
+          "graph_kind": "VIEW"
+        }
+      ],
+      "node_impacts": [],
+      "estimated_work_units": 0.0,
+      "executor_reason": "zero scientific stages (view-only or coalesced no-op batch): nothing to execute"
+    },
+    "status": "no-op",
+    "latency_ms_stats": {
+      "n": 5,
+      "min": 23.372,
+      "p50": 29.565,
+      "p95": 33.507,
+      "max": 33.507,
+      "mean": 27.982
+    },
+    "runs": 5,
+    "verdict": "PASS"
+  },
+  "anomalies": [
+    {
+      "id": "UD3-A1",
+      "title": "parallel-agent pytest pollution waves",
+      "detail": "two sibling agents (u-d0-residuals, u-d1-capability) ran pytest suites on this same machine throughout the sweep; load1 spiked from a ~5-8 baseline to 11-36 and foreign processes hit 141-312% CPU mid-run. Response per coordinator protocol: quiet gate before every run, mid-run load1/foreign tracking in the final pass, non-quiet runs kept in the record but excluded from stats, and families topped up until 5 quiet_valid runs existed. Runs discarded from final stats for load: {'vegetation': 3, 'meteorology': 8, 'landcover': 2, 'building_dsm': 9, 'model_parameters': 9, 'mixed_batch': 5}."
+    },
+    {
+      "id": "UD3-A2",
+      "title": "code-state drift mid-sweep (two-phase protocol)",
+      "detail": "dispatch pinned 68e612f but the shared checkout advanced and carried uncommitted intermediate states during the first pass (hot-file mtimes 18:38-20:35), so first-pass families measured different code. Final pass re-measured everything at one fingerprint-pinned state (see code_state). Quiet p50 moved between passes: vegetation ~61.2 -> ~57 s, landcover ~42.6 -> ~38.3 s, meteorology ~156-161 -> ~140 s, model_parameters ~142-172 -> ~140 s, mixed ~145-167 -> ~140 s. Direction is consistently faster at the pinned state; attribution between the solver scratch-staging optimization and run-to-run variance is not separable from this data \u2014 reported as observed."
+    },
+    {
+      "id": "UD3-A3",
+      "title": "loaded building runs measured FASTER than quiet runs",
+      "detail": "building_dsm runs 9-10 started behind a passing quiet gate but foreign waves arrived mid-run (load1 10.5/13.7); they measured 222.2 s and 230.4 s \u2014 faster than every quiet_valid building run (241.6-273.4 s). Plausible mechanism: higher ambient load keeps CPU clusters boosted instead of idling down between solver bursts. Consequence: the reported quiet-only stats are the CONSERVATIVE numbers for this family."
+    },
+    {
+      "id": "UD3-A4",
+      "title": "building_dsm upward drift across sequential runs",
+      "detail": "quiet-gated building runs climbed monotonically within the first sweep (241.6, 255.9, 276.2, 283.1, 288.3 s) while RSS stayed flat (~1140 MB) and later runs under load came in lower again; even the clean pool spans 241.6-273.4 s (~13%). Not diagnosed further (read-only mandate); spread is reported in the stats."
+    },
+    {
+      "id": "UD3-A5",
+      "title": "sampler thread death in building run 7 (fixed)",
+      "detail": "the RSS/load sampler thread died at its first foreign-busy tick (KeyError indexing a dict as tuple) so run 7 has 0 RSS samples; the run was excluded from stats anyway by the load_after=17.8 invalidation. Harness fixed for all later runs; no source code was touched."
+    },
+    {
+      "id": "UD3-A6",
+      "title": "solver internal print inflates under contention",
+      "detail": "solver.py's own 'Time taken to execute tile 0_0' print reported 573.5 s during a first-pass run the external perf_counter span timed at 194.1 s (thread-time accumulation under load). All latencies in this file are external perf_counter spans; the worker's elapsed_seconds diagnostic agrees with them to ~1 ms."
+    },
+    {
+      "id": "UD3-A7",
+      "title": "first-pass landcover 93.7 s outlier",
+      "detail": "the original 93.7 s landcover reading that triggered the load protocol was taken during a sibling pytest wave; quiet landcover runs measure 38.2-38.6 s at the pinned state. The outlier is retained in the archived first-pass record."
+    },
+    {
+      "id": "UD3-A8",
+      "title": "PERF-002 reference is borderline",
+      "detail": "vegetation p95 at the pinned state is near the 60 s tree-local budget (P8 measured 59.14 s on the same machine class); see the family block for the exact value. Reported as reference, not forced."
+    }
+  ],
+  "overall": {
+    "UEDIT-008": {
+      "verdict": "MEASURED",
+      "statement": "all six edit families carry >= 5 quiet-machine runs at one pinned code state with p50/p95/min/max/mean latency (executor.execute submit -> ExecutedPlan published), scientific-solve wall time split out of total, executor-local vs executor-full routing with the planner's reason, and peak RSS per run (psutil sampler, documented method)",
+      "families_with_5_quiet_runs": {
+        "vegetation": 5,
+        "meteorology": 5,
+        "landcover": 5,
+        "building_dsm": 5,
+        "model_parameters": 5,
+        "mixed_batch": 5
+      },
+      "budget_reference_outcomes": {
+        "vegetation": {
+          "PERF-001_p50_lt_75s": "56.403986 s -> PASS (reference)",
+          "PERF-002_p95_lt_60s": "57.471905 s -> PASS (reference, borderline headroom)",
+          "MEM-001_peak_lt_3GB": "841.8 MB -> PASS"
+        },
+        "meteorology": {
+          "PERF-003_p95_lt_300s": "151.003599 s -> PASS (reference)",
+          "MEM-001_peak_lt_3GB": "1155.9 MB -> PASS"
+        },
+        "landcover": {
+          "MEM-001_peak_lt_3GB": "796.3 MB -> PASS"
+        },
+        "building_dsm": {
+          "PERF-003_p95_lt_300s": "273.398835 s -> PASS (reference)",
+          "MEM-001_peak_lt_3GB": "1142.2 MB -> PASS"
+        },
+        "model_parameters": {
+          "PERF-003_p95_lt_300s": "140.689411 s -> PASS (reference)",
+          "MEM-001_peak_lt_3GB": "992.4 MB -> PASS"
+        },
+        "mixed_batch": {
+          "MEM-001_peak_lt_3GB": "1179.4 MB -> PASS"
+        }
+      }
+    },
+    "UEDIT-007": {
+      "verdict": "PASS",
+      "statement": "a view-only batch (output_view / OutputSelectionDelta, utci -> tmrt) driven through the full planner/executor path returns ExecutedPlan(status='no-op') BEFORE any staging or dispatch: zero worker job submissions, zero job ids minted, zero solve_window/run_full_tile calls, zero store publishes, zero patches, scene_revision unchanged at 0, plan node_impacts empty and estimated_work_units 0; the executor's own diagnostic reason is 'zero scientific stages (view-only or coalesced no-op batch): nothing to execute'. Control: a view edit riding a vegetation batch leaves job counts identical to the vegetation-only runs (1 worker.run, 1 job id, 1 store publish)."
+    }
+  },
+  "first_pass_comparison": {
+    "vegetation": {
+      "quiet_runs": 5,
+      "total_s": {
+        "n": 5,
+        "min": 59.447715,
+        "p50": 61.169515,
+        "p95": 61.760736,
+        "max": 61.760736,
+        "mean": 60.8339
+      },
+      "note": "first pass ran on intermediate uncommitted states (hot-file mtimes 18:38-20:35 on 2026-09-02; solver/worker/store/executor/trees written mid-sweep); kept only as the two-phase comparison against the pinned final state"
+    },
+    "meteorology": {
+      "quiet_runs": 5,
+      "total_s": {
+        "n": 5,
+        "min": 149.102852,
+        "p50": 156.449403,
+        "p95": 164.629495,
+        "max": 164.629495,
+        "mean": 156.7478
+      },
+      "note": "first pass ran on intermediate uncommitted states (hot-file mtimes 18:38-20:35 on 2026-09-02; solver/worker/store/executor/trees written mid-sweep); kept only as the two-phase comparison against the pinned final state"
+    },
+    "landcover": {
+      "quiet_runs": 5,
+      "total_s": {
+        "n": 5,
+        "min": 39.899619,
+        "p50": 42.569906,
+        "p95": 48.00467,
+        "max": 48.00467,
+        "mean": 43.7926
+      },
+      "note": "first pass ran on intermediate uncommitted states (hot-file mtimes 18:38-20:35 on 2026-09-02; solver/worker/store/executor/trees written mid-sweep); kept only as the two-phase comparison against the pinned final state"
+    },
+    "building_dsm": {
+      "quiet_runs": 2,
+      "total_s": {
+        "n": 2,
+        "min": 241.647552,
+        "p50": 241.647552,
+        "p95": 255.931446,
+        "max": 255.931446,
+        "mean": 248.7895
+      },
+      "note": "building: the archived first-pass file holds runs 1-2 which were ALREADY measured at the pinned state C (before the drift was discovered) and are the same records as final runs 1-2 \u2014 no separate comparison exists for this family"
+    },
+    "model_parameters": {
+      "quiet_runs": 5,
+      "total_s": {
+        "n": 5,
+        "min": 141.975311,
+        "p50": 150.351261,
+        "p95": 172.43363,
+        "max": 172.43363,
+        "mean": 155.7736
+      },
+      "note": "first pass ran on intermediate uncommitted states (hot-file mtimes 18:38-20:35 on 2026-09-02; solver/worker/store/executor/trees written mid-sweep); kept only as the two-phase comparison against the pinned final state"
+    },
+    "mixed_batch": {
+      "quiet_runs": 4,
+      "total_s": {
+        "n": 4,
+        "min": 144.949769,
+        "p50": 161.519509,
+        "p95": 167.014001,
+        "max": 167.014001,
+        "mean": 156.8077
+      },
+      "note": "first pass ran on intermediate uncommitted states (hot-file mtimes 18:38-20:35 on 2026-09-02; solver/worker/store/executor/trees written mid-sweep); kept only as the two-phase comparison against the pinned final state"
+    },
+    "view_only": {
+      "quiet_runs": 3,
+      "total_s": {
+        "n": 3,
+        "min": 0.00858,
+        "p50": 0.012174,
+        "p95": 0.012718,
+        "max": 0.012718,
+        "mean": 0.0112
+      },
+      "note": "first pass ran on intermediate uncommitted states (hot-file mtimes 18:38-20:35 on 2026-09-02; solver/worker/store/executor/trees written mid-sweep); kept only as the two-phase comparison against the pinned final state"
+    }
+  }
+}

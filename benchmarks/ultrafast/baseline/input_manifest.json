@@ -1,0 +1,302 @@
+{
+  "policy": "read-only private data; digests recorded in-repo, rasters stay outside version control at their original paths",
+  "origin_rasters_Input_subset": {
+    "Building_DSM.tif": {
+      "path": "/Users/alansynn/Workspace/solweig/Input_subset/Building_DSM.tif",
+      "size_bytes": 1003360,
+      "sha256": "402cd876e3efc1f8241735e6fcb6bf49f8dea3afc46f604116920cba6d57bdd5"
+    },
+    "DEM.tif": {
+      "path": "/Users/alansynn/Workspace/solweig/Input_subset/DEM.tif",
+      "size_bytes": 1003360,
+      "sha256": "ace37d6b67b0408eb774349cfb0131145d8d6e8ae4617a848f3529ba893704a1"
+    },
+    "Trees.tif": {
+      "path": "/Users/alansynn/Workspace/solweig/Input_subset/Trees.tif",
+      "size_bytes": 1003372,
+      "sha256": "c8d76033ae26d5313e6fd407c2e9060903b17f0c06abadb7d9baf4e4f39112ca"
+    }
+  },
+  "site_cache": {
+    "path": "/Users/alansynn/Workspace/solweig/site-cache/site_500",
+    "manifest_sha256": "42aaa08c68f1490813a3b7e93d18d7944d1b950302b467a7db88e4dcaf394506",
+    "arrays": {
+      "building_dsm": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "static/building_dsm.f32.npy",
+        "sha256": "df6041e73a10e5067d428f7511f9aa04c3dd3d15a0ed5b4191403622e06c1ecb",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "dem": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "static/dem.f32.npy",
+        "sha256": "d1ffc7599c78cadc97a3e3ea171272479437a1c919e9ad08f5004e2a0c94778e",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "met": {
+        "dtype": "float32",
+        "nbytes": 2304,
+        "path": "forcing/meteorology.f32.npy",
+        "sha256": "a333216450199049407eddce84da6796f38570c281cb24f2c2532b044e9fee7a",
+        "shape": [
+          24,
+          24
+        ]
+      },
+      "shadowmat": {
+        "dtype": "float32",
+        "nbytes": 153000000,
+        "path": "svf/shadowmat.f32.npy",
+        "sha256": "2f5078df3f9ba7069fa9f233317b472a1be621261d9ed9f574f1e8d5361fdcc7",
+        "shape": [
+          500,
+          500,
+          153
+        ]
+      },
+      "solar": {
+        "dtype": "float32",
+        "nbytes": 672,
+        "path": "forcing/solar_geometry.f32.npy",
+        "sha256": "49da240afb0587fb0009d2b68125c4802b7d6c9b71979b3488057726dfc30d4a",
+        "shape": [
+          24,
+          7
+        ]
+      },
+      "svf": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svf.f32.npy",
+        "sha256": "0532b8909ab2ba8ac2c6e749ea7751851bed5cc021ec79333ba9007e722fe0fa",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svfE": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svfE.f32.npy",
+        "sha256": "5d49db646d523bb6a88c225ea498071f8b7fbd59d86a0c3c74aa9e22bcd9f3c5",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svfEaveg": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svfEaveg.f32.npy",
+        "sha256": "c2c317f781984fb4c84578b2efc48faec1916606be452715d055efb77dbb2bef",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svfEveg": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svfEveg.f32.npy",
+        "sha256": "4af5b8f9892b660a12c452f923d6a28c15c4f56ca2e043e359313424c5d494af",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svfN": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svfN.f32.npy",
+        "sha256": "3b3fa32fb0d8a7d7238ebc9b89d1910a8af2aff0fcb260c27e762347fec95966",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svfNaveg": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svfNaveg.f32.npy",
+        "sha256": "0db5444650484c5b3e0f953174cdb05b08f6f23d220d9f92efb082adec708ece",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svfNveg": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svfNveg.f32.npy",
+        "sha256": "a2a158a38cac8475f72e21cc014ed06e09a780c5e2c70af2c48695ad66d9d324",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svfS": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svfS.f32.npy",
+        "sha256": "807ed1eda7dbf558855f961d134bc64f084ade656eab331ca80fcf8c29a7b08f",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svfSaveg": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svfSaveg.f32.npy",
+        "sha256": "882563a6cce036b0837c364fdaf8d4609f28229a080c529a01cffc17915e746a",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svfSveg": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svfSveg.f32.npy",
+        "sha256": "0de759435cba3cb63ed7caeac3cb5a25a9e945206e58936e2e81da9935fe6ef3",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svfW": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svfW.f32.npy",
+        "sha256": "39111c64f035033551cd2d000f361a01a97eb356b06f363b1eff17d9dd980ee5",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svfWaveg": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svfWaveg.f32.npy",
+        "sha256": "cf949ee94d50ef498539cf3d3f9744f3c71499516e1363a760d07b491668e37d",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svfWveg": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svfWveg.f32.npy",
+        "sha256": "69a351c7a01e2170ecfc02b199578227a8ad712071b052edcc740785cdc55488",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svfaveg": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svfaveg.f32.npy",
+        "sha256": "71562cfe02a33caa0de69d5fe58a532e78c20d147e0ac4b65c203cd5c346b378",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svftotal": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svftotal.f32.npy",
+        "sha256": "ee7ee7501be9a3e4b6234961bd445709de9d5c5da33ce1d40c6fc2b15c76c03a",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "svfveg": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "svf/svfveg.f32.npy",
+        "sha256": "74a99c28b9b68f37a4e54fa38868e9b6098757148ba034898fa4e912b1491cc9",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "tree_base": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "static/tree_base.f32.npy",
+        "sha256": "b4336cba02c3cbdae2ac70e95c4a1ab0b6b6e7353d193174070bc3046beee469",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "vbshmat": {
+        "dtype": "float32",
+        "nbytes": 153000000,
+        "path": "svf/vbshmat.f32.npy",
+        "sha256": "286fa1406bc9334dd1b84a7a5f23fb191d017197c8422753893086498409b875",
+        "shape": [
+          500,
+          500,
+          153
+        ]
+      },
+      "vegshadowmat": {
+        "dtype": "float32",
+        "nbytes": 153000000,
+        "path": "svf/vegshadowmat.f32.npy",
+        "sha256": "33910cf69a562b46b29a924a5f093d7f82b94d4beff48abdbcb3403ed0279642",
+        "shape": [
+          500,
+          500,
+          153
+        ]
+      },
+      "wall_aspect": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "static/wall_aspect.f32.npy",
+        "sha256": "6b8c15eedbf4eecba8b0013a5b86ed2f358af3dbad969a3de704fc4e30a3da51",
+        "shape": [
+          500,
+          500
+        ]
+      },
+      "walls": {
+        "dtype": "float32",
+        "nbytes": 1000000,
+        "path": "static/walls.f32.npy",
+        "sha256": "b98569c2ed49e7f7806d3f9eb881b0a5a94e15347d6e0b3e34f21026f69f0f40",
+        "shape": [
+          500,
+          500
+        ]
+      }
+    },
+    "component_bytes": {
+      "baseline_results": 48000404,
+      "forcing": 3232,
+      "metfiles": 4072,
+      "static": 5000640,
+      "svf": 475002432
+    }
+  },
+  "oracle_worktree_inputs": {
+    "root": "/Users/alansynn/Workspace/solweig_oracle_e0d19fc",
+    "pinned_commit": "e0d19fc98220a333ea312efe4604780803bbdd17",
+    "site_cache_manifest_sha256": "42aaa08c68f1490813a3b7e93d18d7944d1b950302b467a7db88e4dcaf394506",
+    "venv": "symlink -> /Users/alansynn/Workspace/solweig/.venv (editable install of main tree; import origin pinned by harness sys.path.insert of cwd)"
+  }
+}

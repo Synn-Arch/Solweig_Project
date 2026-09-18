@@ -1,0 +1,216 @@
+{
+  "record_type": "p9_reliability_gate_evidence",
+  "date": "2026-09-02",
+  "title": "P9 reliability gates: worker crash recovery (REL-001), classroom queue load test (REL-002), deployment security controls (REL-003)",
+  "overall_verdict": "PASS",
+  "gates": {
+    "REL-001_worker_recovers_from_crash": {
+      "verdict": "PASS",
+      "statement": "REAL process death (SIGKILL mid-solve) followed by restart on the same SQLite store: the interrupted job re-queued and completed, no stuck 'running' rows remained, no orphan result versions were published, idempotency keys were honored after restart, and store migrations were idempotent across double reopen.",
+      "command": "PATH=\"$VENV/bin:$PATH\" $VENV/bin/python -m pytest -q tests/test_server_recovery.py",
+      "result": {
+        "passed": 1,
+        "failed": 0,
+        "duration_s": 10.97,
+        "marked": ["slow"]
+      },
+      "method": "Child process (subprocess with the worktree on PYTHONPATH) boots the real create_app + JobRunner with a SleepingSolver that sleeps 30 s mid-solve. The parent polls the SQLite store read-only (file: URI mode=ro) until the job row is 'running', then SIGKILLs the child. The frozen 'running' row is asserted on disk, the store is reopened twice (migration idempotence, schema_version == LATEST_SCHEMA_VERSION both times), the app is restarted in-process on the SAME state_root with a fast solver, and the recovery invariants are asserted end to end.",
+      "invariants_verified": [
+        "interrupted job re-queued by JobRunner.start() start-up recovery and completed after restart (exactly one solver call in the restarted process)",
+        "nonterminal_jobs() == [] after recovery — no stuck 'running'/'queued' rows",
+        "scene_version == exact_result_version == 1; result_versions == [0, 1] with checksums matching the published manifests — no orphan versions",
+        "idempotency replay: same Idempotency-Key + same body returns 202 with the same job_id; same key + different body returns 409 idempotency_key_reused",
+        "store migrations idempotent across two reopens (schema_version stable)"
+      ],
+      "recovery_hole_found": "none — the existing JobRunner.start() start-up requeue of nonterminal durable jobs already covers hard crash; no production code fix was required for recovery",
+      "artifacts": [
+        "tests/test_server_recovery.py"
+      ]
+    },
+    "REL-002_classroom_queue_load": {
+      "verdict": "PASS",
+      "statement": "Real-time classroom-shaped load test with the REAL solver (default ExactWorker) on the tests' synthetic tiny site: every accepted edit reached a terminal status (none silently dropped), the queue fully drained, every scenario ended exact at its latest scene version, bursts coalesced (superseded > 0), and steady-state queue-wait p95 stayed within 2x service time. Wall clock 186.2 s, under the 600 s mission budget.",
+      "command": "PATH=\"$VENV/bin:$PATH\" $VENV/bin/python docs/incremental_design_tool/benchmarks/2026-09-02-p9-reliability/measure_load.py",
+      "result": {
+        "gate_REL_002": true,
+        "fixture": {
+          "site_id": "tiny",
+          "grid": "128x128@2m",
+          "source": "tests/test_incremental_worker.py::_make_tiny_site (reused — no second fixture system)",
+          "solver": "default make_exact_worker_solver (ExactWorker), real physics, no fake latency",
+          "met_hours": 3,
+          "worker_count": 1
+        },
+        "calibration": {
+          "baseline_full_solve_s": 3.452,
+          "incremental_edit_s": 3.442,
+          "spec_ratio_arrival_over_service": 4.8,
+          "steady_interval_s": 16.524,
+          "basis": "testing_validation.md 'Queue load test' (20 scenarios, 1 edit/120 s, bursts of 5 in 10 s, 1 worker) scaled to the mission's <10 min wall budget by keeping the ARRIVAL/SERVICE RATIO at the spec's ~4.8 (measured 120/25 s from P8) and compressing the service time via the tiny fixture; 10 scenarios instead of 20 keeps >= 8 required by the mission"
+        },
+        "load": {
+          "scenarios": 10,
+          "steady_edits_planned": 14,
+          "steady_edits_submitted": 9,
+          "burst_edits_submitted": 10,
+          "bursts": {
+            "count": 2,
+            "edits_per_burst": 5,
+            "span_s": 2.0
+          },
+          "edits_accepted": 19
+        },
+        "results": {
+          "job_status_counts": {
+            "complete": 11,
+            "superseded": 8,
+            "failed": 0,
+            "cancelled": 0
+          },
+          "queue_wait_p50_s": 0.504,
+          "queue_wait_p95_s": 3.988,
+          "max_queue_depth": 2,
+          "max_nonterminal_depth": 2,
+          "drain_seconds": 4.11,
+          "final_nonterminal_jobs": 0,
+          "stranded_scenarios": [],
+          "worker_rss_mb": {
+            "min": 120.8,
+            "max": 282.4,
+            "final": 246.7
+          }
+        },
+        "criteria": {
+          "no_dropped_edits": true,
+          "queue_drains": true,
+          "all_scenarios_exact": true,
+          "bursts_coalesce": true,
+          "steady_p95_wait_within_2x_service": true
+        },
+        "wall_clock_s": 186.2,
+        "budget_s": 600
+      },
+      "note": "Superseded jobs are burst coalescing, not dropped edits: each burst of 5 within ~2 s coalesced to one completing job (4 superseded + 1 complete per burst) and every scenario's final scene version has an exact published result. Steady p95 wait 3.988 s vs 2x measured service 6.884 s.",
+      "artifacts": [
+        "docs/incremental_design_tool/benchmarks/2026-09-02-p9-reliability/measure_load.py",
+        "docs/incremental_design_tool/benchmarks/2026-09-02-p9-reliability/load_report.json",
+        "docs/incremental_design_tool/benchmarks/2026-09-02-p9-reliability/load_samples.json"
+      ]
+    },
+    "REL-003_security_controls": {
+      "verdict": "PASS",
+      "statement": "Deployment security controls implemented in-app with stdlib/FastAPI only (no new dependencies), all default-ON and configurable via create_app parameters: request body limit (413), per-IP sliding-window rate limit plus per-scenario edit budget (429 + Retry-After), tree count/property bounds enforcement (403/422), and the reverse-proxy TLS termination model (uvicorn --proxy-headers) proven over real HTTP.",
+      "command": "PATH=\"$VENV/bin:$PATH\" $VENV/bin/python -m pytest -q tests/test_server_security.py tests/test_deployment_smoke.py",
+      "result": {
+        "test_server_security": {
+          "passed": 24
+        },
+        "test_deployment_smoke": {
+          "passed": 2,
+          "marked": ["deployment", "integration"]
+        }
+      },
+      "controls": {
+        "request_body_limit": {
+          "default": 1048576,
+          "default_human": "1 MiB",
+          "parameter": "max_request_body_bytes",
+          "status": 413,
+          "error_code": "payload_too_large",
+          "behavior": "Content-Length precheck before reading the body, then actual-size check after read (chunked bodies covered); responses/exports never throttled",
+          "disable": "None"
+        },
+        "per_ip_rate_limit": {
+          "default": 30,
+          "unit": "requests_per_minute_per_ip",
+          "status": 429,
+          "error_code": "rate_limited",
+          "retry_after_header": true,
+          "ops_exempt": ["/health/live", "/health/ready", "/health/worker", "/metrics"],
+          "caveat": "in-process sliding window; multi-process/public deployments need a proxy-level limiter (documented with the reverse-proxy snippets)",
+          "disable": "None"
+        },
+        "per_scenario_edit_budget": {
+          "default": 20,
+          "unit": "edits_per_minute_per_scenario",
+          "status": 429,
+          "disable": "None"
+        },
+        "tree_bounds": {
+          "max_trees_per_scenario_default": 200,
+          "status_count": 403,
+          "error_code_count": "site_limit_exceeded",
+          "property_bounds": {
+            "height_m": [3.0, 40.0],
+            "canopy_diameter_m": [1.0, 30.0],
+            "u": [0.0, 1.0],
+            "v": [0.0, 1.0],
+            "trunk_ratio": "[0.0, 1.0)",
+            "transmissivity": [0.0, 1.0]
+          },
+          "status_property": 422,
+          "error_code_property": "invalid_tree_geometry",
+          "single_source": "solweig_gpu/incremental/trees.py TREE_HEIGHT_RANGE_M / TREE_CANOPY_DIAMETER_RANGE_M and TreeSpec validation; the server routes call the same validator so server and library can never disagree"
+        },
+        "worker_liveness": {
+          "worker_heartbeat_timeout_s_default": 60.0,
+          "surface": ["/health/live", "/health/ready", "/health/worker"]
+        },
+        "tls_termination": {
+          "in_app": false,
+          "model": "reverse proxy terminates TLS; uvicorn --proxy-headers + --forwarded-allow-ips lets the app rate-limit by the real client from X-Forwarded-For",
+          "proof": "tests/test_deployment_smoke.py boots uvicorn with proxy_headers=True and shows distinct X-Forwarded-For clients get distinct rate budgets while the direct client exhausts its own",
+          "snippets": "docs/incremental_design_tool/benchmarks/2026-09-02-p9-reliability/reverse_proxy_tls.md (Caddy + nginx incl. SSE proxy_buffering off / X-Accel-Buffering)"
+        }
+      },
+      "notes_for_doc_reconciliation": [
+        "create_app default max_trees_per_scenario=200 predates this phase; deployment_operations.md suggests SOLWEIG_MAX_TREES_PER_SCENARIO=100. The code default is unchanged here (no scientific basis claimed to move it); deployments should set it explicitly to the documented 100 if that is the intended classroom cap.",
+        "deployment_operations.md 'Security controls' list (request body limit, per-IP/per-scenario rate limits, tree bounds, HTTPS) is now fully implemented server-side; the doc's prose needs no change but can cite these parameters.",
+        "models.py documents trunk_ratio as [0, 1) (library-authoritative); data_model.md still says [0, 1] — flagged for the lead, unchanged here."
+      ],
+      "artifacts": [
+        "tests/test_server_security.py",
+        "tests/test_deployment_smoke.py",
+        "docs/incremental_design_tool/benchmarks/2026-09-02-p9-reliability/reverse_proxy_tls.md"
+      ]
+    }
+  },
+  "T6_deployment_smoke": {
+    "statement": "Boots the FastAPI app under a REAL uvicorn server on an ephemeral port (temp store + synthetic cache with real .npy bytes, gated fake solver) and drives the full deployment-critical path over HTTP: /health/live, /health/ready (store/sites/worker/result_fs checks), /health/worker diagnostics, create scenario, post edit with Idempotency-Key, SSE event stream (job-progress + result-ready), result manifest, binary payload with BOTH Accept encodings (zstd + identity) with per-encoding checksum/ETag verification and 304 conditional GET, patch_codec decodability of both encodings, and scenario reset. Second test runs a tight security profile + proxy headers.",
+    "command": "PATH=\"$VENV/bin:$PATH\" $VENV/bin/python -m pytest -m deployment tests/test_deployment_smoke.py",
+    "result": {
+      "passed": 2
+    },
+    "skip_condition": "pytest.importorskip on fastapi/uvicorn/httpx/zstandard (server extra)"
+  },
+  "test_runs": {
+    "mandated": {
+      "command": "PATH=\"$VENV/bin:$PATH\" $VENV/bin/python -m pytest -q tests/test_server_api.py tests/test_patch_codec.py tests/test_server_security.py tests/test_server_recovery.py tests/test_deployment_smoke.py tests/test_incremental_trees.py",
+      "result": "125 passed, 0 failed (107.28 s)",
+      "per_file": {
+        "tests/test_server_api.py": 68,
+        "tests/test_patch_codec.py": 16,
+        "tests/test_server_security.py": 24,
+        "tests/test_server_recovery.py": 1,
+        "tests/test_deployment_smoke.py": 2,
+        "tests/test_incremental_trees.py": 14
+      }
+    },
+    "full_suite": {
+      "command": "PATH=\"$VENV/bin:$PATH\" $VENV/bin/python -m pytest -q",
+      "result": "357 passed, 1 failed, 4 skipped (555.47 s)",
+      "known_failure": {
+        "test": "tests/test_create_inputs_austin.py::test_create_inputs_austin_smoke",
+        "error": "TypeError: 'module' object is not callable",
+        "pre_existing": true,
+        "scope": "unrelated to this phase — the test calls solweig_gpu.create_inputs(...) as a function while the package ships a create_inputs MODULE exposing run_create_inputs; none of the files changed in this phase (solweig_gpu/server/**, server tests, smoke harness) are involved"
+      }
+    }
+  },
+  "environment": {
+    "python": "3.14.7",
+    "platform": "macOS arm64 (Darwin 25.5.0)",
+    "venv": "/Users/alansynn/Workspace/solweig/.venv",
+    "code_under_test": "worktree .claude/worktrees/agent-aed15a62938de73ab, branch worktree-agent-aed15a62938de73ab, base HEAD 987b9e2; all test and load runs executed against exactly this phase's changes, committed as 91df635 (server code + server tests), 9ed2574 (incremental review follow-ups), cd809b0 (this evidence)"
+  }
+}

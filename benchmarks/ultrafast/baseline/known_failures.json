@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-09-07",
+  "open_items": [
+    {
+      "id": "INCIDENT-3",
+      "status": "OPEN (fix agent in flight at T00 time)",
+      "title": "mixed-plane object (legacy /edits add + native move) wedges exact lane at coalesce",
+      "failure_sites_main_tree": [
+        "solweig_gpu/incremental/edit_types.py:861-882 (_coalesce_object_changes raises SourceDeltaError 'non-contiguous change chain' when a legacy-plane before-state does not match the native chain's preceding after-state)",
+        "solweig_gpu/server/executor_bridge.py:596-614 (legacy-list seeding contract; 'replay chain ... not contiguous' wedge documented at :610)",
+        "solweig_gpu/server/executor_bridge.py:746-757 (pre-gate legacy trees riding pinned baseline; add_tree duplicate-check skip)",
+        "solweig_gpu/server/executor_bridge.py:1123-1135 (r2a-fix BLOCKING-1a consumed-chain re-fold from pinned revision-0 bootstrap)"
+      ],
+      "t00_action": "failure sites verified present at e0d19fc source (read-only grep evidence); NOT reproduced live per instruction (no server interaction)"
+    },
+    {
+      "id": "GPU-ABSENCE",
+      "status": "BLOCKED",
+      "title": "host has no CUDA device",
+      "detail": "torch.cuda.is_available()=false; all legacy_cuda_v1 / cuda_canonical_v1 gates policy-BLOCKED, not FAIL"
+    },
+    {
+      "id": "HOST-MISMATCH",
+      "status": "LIMITATION",
+      "title": "baseline host is not the acceptance reference host",
+      "detail": "Apple M1 Pro 10-core, torch threads=8 default vs acceptance fixed_reference_host_four_physical_core_budget; numbers are self-consistent within T00 only - no cross-host speedup claims"
+    },
+    {
+      "id": "HOST-CONTENTION",
+      "status": "LIMITATION",
+      "title": "shared workstation was externally loaded during measurement",
+      "detail": "load averages at audit close: 28.2 / 67.2 / 71.9 (1/5/15-min) on a 10-core host with other user processes (WindowServer, Chrome, Outlook, other agents' python). All timing numbers are therefore upper bounds; the E1 rep1 (161.5s) vs rep2 (58.9s) split is dominated by cold page cache over the 453 MB site-cache SVF dir plus contention. Bitwise repeat parity is load-independent and unaffected (0 mismatches)."
+    },
+    {
+      "id": "COLD-WARM-DEFINITION",
+      "status": "FINDING",
+      "title": "process warmth matters less than page-cache warmth",
+      "detail": "E1 cold-process/warm-page-cache rep2 = 58.9s equals the warm-process mean 60.9s (5 warmups + 2 samples, spread 59.0-62.9s); true cold (fresh process + cold page cache) = 161.5s. Record cold as fresh-process AND note page-cache state separately, as DESIGN 16.3 requires (cold process / warm process+cold cache / warm cache)."
+    },
+    {
+      "id": "STAGE-GRANULARITY",
+      "status": "LIMITATION",
+      "title": "in-solver stage telemetry is coarse at this HEAD",
+      "detail": "solve_window stage_timings exposes svf_seconds + time_loop_seconds only; admission/compose/read-window timed at harness boundary; radiation/thermal/UTCI/pack sub-breakdown inside the time loop is NOT instrumented in source and T00 may not edit solweig source - finer stages deferred to the T01+ harness seams"
+    }
+  ]
+}

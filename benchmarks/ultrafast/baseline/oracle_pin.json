@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-09-07T23:34:04.342364+00:00",
+  "oracle_commit": "e0d19fc98220a333ea312efe4604780803bbdd17",
+  "origin_root": "/Users/alansynn/Workspace/solweig_oracle_e0d19fc",
+  "source_sha256": {
+    "shadow.py": "51551ca7ba44612d85849edb1333054868d020b70105874932083c478f0cd98e",
+    "solweig.py": "c11ac4d916da42987fd9303330754dc8e81751818aef4e6e10f3761b2df6bf6f",
+    "utci_process.py": "0c01e35c32d087d23b14e66900b61b294e36d216826c4d8dbbab72d35988cd48",
+    "incremental/solver.py": "9da7967ceb0d09575e333d53644bce6597d3aeb279cc53c67780965ad3873c24",
+    "incremental/veg_svf_state.py": "1b14af7f51e90f4321ce730db577f1cb559374b25e125fd3548426e9318572b7"
+  },
+  "note": "Frozen pin of the oracle worktree at e0d19fc (design review SHA). The main tree advances independently from T02 onward (solver.py seam); main-vs-oracle hash identity is explicitly NOT a contract anymore. This pin is the self-standing drift detector for the oracle side: tests/ultrafast/test_profile.py certifies the live oracle worktree against these hashes + origin root + commit id."
+}

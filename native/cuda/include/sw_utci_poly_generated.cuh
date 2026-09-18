@@ -1,0 +1,234 @@
+// GENERATED FILE — DO NOT EDIT.
+// Produced by native/cuda/tools/gen_utci_cuda.py from
+// solweig_core/numba_cpu/utci.py POLY_EXPRESSION_SOURCE (T09 oracle-AST
+// statement block, the CPU canonical UTCI polynomial). Regenerate with:
+//   python native/cuda/tools/gen_utci_cuda.py
+// tests/ultrafast/test_cuda_utci.py asserts byte equality with a fresh
+// regeneration, so this file cannot drift from the CPU source.
+#ifndef SW_UTCI_POLY_GENERATED_CUH_
+#define SW_UTCI_POLY_GENERATED_CUH_
+
+#include "sw_strict_math.cuh"
+
+// The 211-statement left-associated accumulation chain. Statement order,
+// operand order and every rounding site mirror POLY_EXPRESSION_SOURCE
+// exactly; only the primitive names and literal spellings differ.
+__device__ __forceinline__ float sw_utci_poly_element(
+        float dtm, float ta, float va, float pa, bool use_libm) {
+
+    float acc = ta;
+    acc = sw_nadd(acc, 0x1.3712600000000p-1f);
+    acc = sw_nadd(acc, sw_nmul((-0x1.75157a0000000p-6f), ta));
+    acc = sw_nadd(acc, sw_nmul(0x1.a6d29a0000000p-11f, sw_nmul(ta, ta)));
+    acc = sw_nadd(acc, sw_nmul((-0x1.4387d00000000p-13f), sw_nmul(sw_nmul(ta, ta), ta)));
+    acc = sw_nadd(acc, sw_nmul((-0x1.b3bd7c0000000p-19f), sw_torch_pow_scalar(ta, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(0x1.3aa68a0000000p-24f, sw_torch_pow_scalar(ta, 0x1.4000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(0x1.75b8b20000000p-30f, sw_torch_pow_scalar(ta, 0x1.8000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul((-0x1.21121c0000000p+1f), va));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.6894e00000000p-4f, ta), va));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.1c38ec0000000p-9f, sw_nmul(ta, ta)), va));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.0146120000000p-16f), sw_nmul(sw_nmul(ta, ta), ta)), va));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.339e480000000p-21f), sw_torch_pow_scalar(ta, 0x1.0000000000000p+2f, use_libm)), va));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.5e97de0000000p-29f), sw_torch_pow_scalar(ta, 0x1.4000000000000p+2f, use_libm)), va));
+    acc = sw_nadd(acc, sw_nmul((-0x1.80a6660000000p-1f), sw_nmul(va, va)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.0b9dce0000000p-8f), ta), sw_nmul(va, va)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.b59bec0000000p-15f), sw_nmul(ta, ta)), sw_nmul(va, va)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.051d0a0000000p-19f, sw_nmul(sw_nmul(ta, ta), ta)), sw_nmul(va, va)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.880b020000000p-27f, sw_torch_pow_scalar(ta, 0x1.0000000000000p+2f, use_libm)), sw_nmul(va, va)));
+    acc = sw_nadd(acc, sw_nmul(0x1.43dd780000000p-3f, sw_nmul(sw_nmul(va, va), va)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.13ad180000000p-14f), ta), sw_nmul(sw_nmul(va, va), va)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.de3d420000000p-23f, sw_nmul(ta, ta)), sw_nmul(sw_nmul(va, va), va)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.65711a0000000p-25f), sw_nmul(sw_nmul(ta, ta), ta)), sw_nmul(sw_nmul(va, va), va)));
+    acc = sw_nadd(acc, sw_nmul((-0x1.a2a72a0000000p-7f), sw_torch_pow_scalar(va, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.446f620000000p-17f, ta), sw_torch_pow_scalar(va, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.5b6d1e0000000p-29f, sw_nmul(ta, ta)), sw_torch_pow_scalar(va, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(0x1.de78e40000000p-12f, sw_torch_pow_scalar(va, 0x1.4000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.7618dc0000000p-23f), ta), sw_torch_pow_scalar(va, 0x1.4000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul((-0x1.8cf16e0000000p-18f), sw_torch_pow_scalar(va, 0x1.8000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(0x1.97ef5c0000000p-2f, dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.81c2e40000000p-13f, ta), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.6c63be0000000p-13f), sw_nmul(ta, ta)), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.9870f80000000p-21f), sw_nmul(sw_nmul(ta, ta), ta)), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.448dc20000000p-25f, sw_torch_pow_scalar(ta, 0x1.0000000000000p+2f, use_libm)), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.2a8fac0000000p-31f, sw_torch_pow_scalar(ta, 0x1.4000000000000p+2f, use_libm)), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.4887760000000p-6f), va), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.d41d9e0000000p-11f, ta), va), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.cfa1e40000000p-19f, sw_nmul(ta, ta)), va), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.95cb720000000p-22f), sw_nmul(sw_nmul(ta, ta), ta)), va), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.d277520000000p-30f), sw_torch_pow_scalar(ta, 0x1.0000000000000p+2f, use_libm)), va), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.647ffc0000000p-13f, sw_nmul(va, va)), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.a2c3500000000p-15f), ta), sw_nmul(va, va)), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.09a9840000000p-22f, sw_nmul(ta, ta)), sw_nmul(va, va)), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.71b2da0000000p-27f, sw_nmul(sw_nmul(ta, ta), ta)), sw_nmul(va, va)), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.6432c40000000p-14f, sw_nmul(sw_nmul(va, va), va)), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.6ae6c60000000p-20f, ta), sw_nmul(sw_nmul(va, va), va)), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.ab1cf00000000p-28f), sw_nmul(ta, ta)), sw_nmul(sw_nmul(va, va), va)), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.4f260a0000000p-18f), sw_torch_pow_scalar(va, 0x1.0000000000000p+2f, use_libm)), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.458a420000000p-26f), ta), sw_torch_pow_scalar(va, 0x1.0000000000000p+2f, use_libm)), dtm));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.5e2b320000000p-24f, sw_torch_pow_scalar(va, 0x1.4000000000000p+2f, use_libm)), dtm));
+    acc = sw_nadd(acc, sw_nmul(0x1.8bdc2c0000000p-11f, sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.da09460000000p-15f), ta), sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.e5829a0000000p-22f), sw_nmul(ta, ta)), sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.a7ceea0000000p-26f, sw_nmul(sw_nmul(ta, ta), ta)), sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.0ad2c20000000p-32f, sw_torch_pow_scalar(ta, 0x1.0000000000000p+2f, use_libm)), sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.441bec0000000p-13f, va), sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.5fb9940000000p-18f, ta), va), sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.782f7a0000000p-24f), sw_nmul(ta, ta)), va), sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.9e5c000000000p-30f), sw_nmul(sw_nmul(ta, ta), ta)), va), sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.061efc0000000p-16f), sw_nmul(va, va)), sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.1f89e40000000p-23f), ta), sw_nmul(va, va)), sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.5732d60000000p-29f, sw_nmul(ta, ta)), sw_nmul(va, va)), sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.5de2940000000p-21f, sw_nmul(sw_nmul(va, va), va)), sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.0bf3780000000p-29f, ta), sw_nmul(sw_nmul(va, va), va)), sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.58d6920000000p-27f), sw_torch_pow_scalar(va, 0x1.0000000000000p+2f, use_libm)), sw_nmul(dtm, dtm)));
+    acc = sw_nadd(acc, sw_nmul((-0x1.96b3be0000000p-17f), sw_nmul(sw_nmul(dtm, dtm), dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.d496bc0000000p-23f), ta), sw_nmul(sw_nmul(dtm, dtm), dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.02225c0000000p-27f, sw_nmul(ta, ta)), sw_nmul(sw_nmul(dtm, dtm), dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.ae98ca0000000p-34f, sw_nmul(sw_nmul(ta, ta), ta)), sw_nmul(sw_nmul(dtm, dtm), dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.4f8ffa0000000p-20f, va), sw_nmul(sw_nmul(dtm, dtm), dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.f322e60000000p-30f), ta), va), sw_nmul(sw_nmul(dtm, dtm), dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.833ed40000000p-32f), sw_nmul(ta, ta)), va), sw_nmul(sw_nmul(dtm, dtm), dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.21105a0000000p-25f), sw_nmul(va, va)), sw_nmul(sw_nmul(dtm, dtm), dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.2add9a0000000p-33f, ta), sw_nmul(va, va)), sw_nmul(sw_nmul(dtm, dtm), dtm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.ca88400000000p-32f, sw_nmul(sw_nmul(va, va), va)), sw_nmul(sw_nmul(dtm, dtm), dtm)));
+    acc = sw_nadd(acc, sw_nmul((-0x1.665b0c0000000p-30f), sw_torch_pow_scalar(dtm, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.c718e00000000p-32f, ta), sw_torch_pow_scalar(dtm, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.44a1200000000p-37f, sw_nmul(ta, ta)), sw_torch_pow_scalar(dtm, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.5d3f140000000p-28f), va), sw_torch_pow_scalar(dtm, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.8b59d40000000p-36f), ta), va), sw_torch_pow_scalar(dtm, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.0197780000000p-33f, sw_nmul(va, va)), sw_torch_pow_scalar(dtm, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(0x1.6c06040000000p-31f, sw_torch_pow_scalar(dtm, 0x1.4000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.c6b5a80000000p-42f, ta), sw_torch_pow_scalar(dtm, 0x1.4000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.128f920000000p-39f, va), sw_torch_pow_scalar(dtm, 0x1.4000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul((-0x1.4d44a20000000p-38f), sw_torch_pow_scalar(dtm, 0x1.8000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(0x1.4826420000000p+2f, pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.404ba60000000p-2f), ta), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.4246be0000000p-6f), sw_nmul(ta, ta)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.06101e0000000p-10f, sw_nmul(sw_nmul(ta, ta), ta)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.3f59b80000000p-17f, sw_torch_pow_scalar(ta, 0x1.0000000000000p+2f, use_libm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.f4d24c0000000p-22f), sw_torch_pow_scalar(ta, 0x1.4000000000000p+2f, use_libm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.189a160000000p-1f, va), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.b143200000000p-9f), ta), va), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.ae3ab20000000p-10f), sw_nmul(ta, ta)), va), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.5abb5a0000000p-18f), sw_nmul(sw_nmul(ta, ta), ta)), va), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.ff790e0000000p-21f, sw_torch_pow_scalar(ta, 0x1.0000000000000p+2f, use_libm)), va), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.5f9eb80000000p-5f), sw_nmul(va, va)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.483bf60000000p-8f, ta), sw_nmul(va, va)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.0e0ca80000000p-20f, sw_nmul(ta, ta)), sw_nmul(va, va)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.e7e0b80000000p-20f), sw_nmul(sw_nmul(ta, ta), ta)), sw_nmul(va, va)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.49d0040000000p-10f), sw_nmul(sw_nmul(va, va), va)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.7815460000000p-13f), ta), sw_nmul(sw_nmul(va, va), va)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.3b677a0000000p-19f, sw_nmul(ta, ta)), sw_nmul(sw_nmul(va, va), va)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.1013620000000p-13f, sw_torch_pow_scalar(va, 0x1.0000000000000p+2f, use_libm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.5a74b40000000p-20f, ta), sw_torch_pow_scalar(va, 0x1.0000000000000p+2f, use_libm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.32c42a0000000p-19f), sw_torch_pow_scalar(va, 0x1.4000000000000p+2f, use_libm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.2eacce0000000p-5f), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.a986ae0000000p-10f, ta), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.07a30c0000000p-15f), sw_nmul(ta, ta)), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.5cbed20000000p-19f, sw_nmul(sw_nmul(ta, ta), ta)), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.99db6e0000000p-25f), sw_torch_pow_scalar(ta, 0x1.0000000000000p+2f, use_libm)), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.1b2ea20000000p-7f, va), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul((-0x1.6865f60000000p-11f), ta), va), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul((-0x1.32a4500000000p-17f), sw_nmul(ta, ta)), va), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul(0x1.14fb100000000p-21f, sw_nmul(sw_nmul(ta, ta), ta)), va), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.2d555e0000000p-15f), sw_nmul(va, va)), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul(0x1.13bb0a0000000p-15f, ta), sw_nmul(va, va)), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul((-0x1.7d78360000000p-21f), sw_nmul(ta, ta)), sw_nmul(va, va)), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.a15b960000000p-17f), sw_nmul(sw_nmul(va, va), va)), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul((-0x1.fb8d240000000p-28f), ta), sw_nmul(sw_nmul(va, va), va)), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.d9c13e0000000p-23f, sw_torch_pow_scalar(va, 0x1.0000000000000p+2f, use_libm)), dtm), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.80065a0000000p-11f), sw_nmul(dtm, dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.3a5ff00000000p-16f), ta), sw_nmul(dtm, dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.42be540000000p-18f, sw_nmul(ta, ta)), sw_nmul(dtm, dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.78055e0000000p-24f), sw_nmul(sw_nmul(ta, ta), ta)), sw_nmul(dtm, dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.d22d380000000p-16f, va), sw_nmul(dtm, dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul((-0x1.5392ee0000000p-18f), ta), va), sw_nmul(dtm, dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul(0x1.eb06120000000p-24f, sw_nmul(ta, ta)), va), sw_nmul(dtm, dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.5397e20000000p-19f, sw_nmul(va, va)), sw_nmul(dtm, dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul((-0x1.28f7540000000p-26f), ta), sw_nmul(va, va)), sw_nmul(dtm, dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.535ee00000000p-25f), sw_nmul(sw_nmul(va, va), va)), sw_nmul(dtm, dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.81eabe0000000p-22f), sw_nmul(sw_nmul(dtm, dtm), dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.7a2a5c0000000p-21f, ta), sw_nmul(sw_nmul(dtm, dtm), dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.453b0e0000000p-26f), sw_nmul(ta, ta)), sw_nmul(sw_nmul(dtm, dtm), dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.0192ea0000000p-21f), va), sw_nmul(sw_nmul(dtm, dtm), dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul(0x1.1187f00000000p-27f, ta), va), sw_nmul(sw_nmul(dtm, dtm), dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.bfc49e0000000p-30f, sw_nmul(va, va)), sw_nmul(sw_nmul(dtm, dtm), dtm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.52c25e0000000p-25f, sw_torch_pow_scalar(dtm, 0x1.0000000000000p+2f, use_libm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.45e9940000000p-30f), ta), sw_torch_pow_scalar(dtm, 0x1.0000000000000p+2f, use_libm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.6ffb7e0000000p-32f, va), sw_torch_pow_scalar(dtm, 0x1.0000000000000p+2f, use_libm)), pa));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.fc714a0000000p-34f), sw_torch_pow_scalar(dtm, 0x1.4000000000000p+2f, use_libm)), pa));
+    acc = sw_nadd(acc, sw_nmul((-0x1.6733aa0000000p+1f), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.18f0d80000000p-1f, ta), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.05c4f80000000p-8f), sw_nmul(ta, ta)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.f42cf20000000p-11f), sw_nmul(sw_nmul(ta, ta), ta)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.43f3f20000000p-16f, sw_torch_pow_scalar(ta, 0x1.0000000000000p+2f, use_libm)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.3c37bc0000000p-2f), va), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.7f3ac00000000p-7f, ta), va), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.03aa460000000p-11f, sw_nmul(ta, ta)), va), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.3ff5b40000000p-16f), sw_nmul(sw_nmul(ta, ta), ta)), va), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.1448a20000000p-9f, sw_nmul(va, va)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.6e2fcc0000000p-11f), ta), sw_nmul(va, va)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.820f180000000p-16f, sw_nmul(ta, ta)), sw_nmul(va, va)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.b627860000000p-12f, sw_nmul(sw_nmul(va, va), va)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.aa49da0000000p-17f), ta), sw_nmul(sw_nmul(va, va), va)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.98dacc0000000p-19f), sw_torch_pow_scalar(va, 0x1.0000000000000p+2f, use_libm)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.a57c060000000p-5f, dtm), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.1b734e0000000p-8f), ta), dtm), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.792f940000000p-14f, sw_nmul(ta, ta)), dtm), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.7faeaa0000000p-21f), sw_nmul(sw_nmul(ta, ta), ta)), dtm), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.16f0360000000p-12f), va), dtm), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul(0x1.149a7a0000000p-12f, ta), va), dtm), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul((-0x1.d691120000000p-18f), sw_nmul(ta, ta)), va), dtm), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.c00ca60000000p-14f), sw_nmul(va, va)), dtm), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul(0x1.e4fbde0000000p-19f, ta), sw_nmul(va, va)), dtm), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.ed61d40000000p-23f, sw_nmul(sw_nmul(va, va), va)), dtm), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.3f98260000000p-12f, sw_nmul(dtm, dtm)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.0d4dd40000000p-14f), ta), sw_nmul(dtm, dtm)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.3813de0000000p-20f, sw_nmul(ta, ta)), sw_nmul(dtm, dtm)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.01b4b40000000p-17f, va), sw_nmul(dtm, dtm)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul((-0x1.25e8880000000p-21f), ta), va), sw_nmul(dtm, dtm)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.352f2e0000000p-25f), sw_nmul(va, va)), sw_nmul(dtm, dtm)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.24edbc0000000p-18f), sw_nmul(sw_nmul(dtm, dtm), dtm)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.6a5cae0000000p-23f, ta), sw_nmul(sw_nmul(dtm, dtm), dtm)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.cb8b060000000p-26f, va), sw_nmul(sw_nmul(dtm, dtm), dtm)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.bd33a60000000p-29f, sw_torch_pow_scalar(dtm, 0x1.0000000000000p+2f, use_libm)), sw_nmul(pa, pa)));
+    acc = sw_nadd(acc, sw_nmul((-0x1.21e4c80000000p-5f), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.c505220000000p-3f), ta), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.fc51260000000p-7f, sw_nmul(ta, ta)), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.14bcc20000000p-12f), sw_nmul(sw_nmul(ta, ta), ta)), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.7373e40000000p-5f, va), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.1bbbee0000000p-8f), ta), va), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.30e7920000000p-13f, sw_nmul(ta, ta)), va), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.c8260c0000000p-13f, sw_nmul(va, va)), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.17a5060000000p-14f), ta), sw_nmul(va, va)), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.1785d60000000p-15f, sw_nmul(sw_nmul(va, va), va)), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.296e420000000p-9f), dtm), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.8ebbcc0000000p-12f, ta), dtm), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.76bcb60000000p-28f), sw_nmul(ta, ta)), dtm), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.a185040000000p-11f), va), dtm), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(sw_nmul(0x1.a93b660000000p-16f, ta), va), dtm), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.a79b660000000p-18f), sw_nmul(va, va)), dtm), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.3ccc440000000p-12f, sw_nmul(dtm, dtm)), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.40614e0000000p-18f), ta), sw_nmul(dtm, dtm)), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul(0x1.d29c200000000p-20f, va), sw_nmul(dtm, dtm)), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.b7413a0000000p-22f), sw_nmul(sw_nmul(dtm, dtm), dtm)), sw_nmul(sw_nmul(pa, pa), pa)));
+    acc = sw_nadd(acc, sw_nmul(0x1.3a72920000000p-1f, sw_torch_pow_scalar(pa, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.f93f180000000p-5f), ta), sw_torch_pow_scalar(pa, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.5da2580000000p-10f, sw_nmul(ta, ta)), sw_torch_pow_scalar(pa, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.d1cc320000000p-9f, va), sw_torch_pow_scalar(pa, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.0cf96e0000000p-11f), ta), va), sw_torch_pow_scalar(pa, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.adb4960000000p-14f, sw_nmul(va, va)), sw_torch_pow_scalar(pa, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.855a640000000p-10f), dtm), sw_torch_pow_scalar(pa, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.592a560000000p-15f), ta), dtm), sw_torch_pow_scalar(pa, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(sw_nmul((-0x1.c8a1be0000000p-18f), va), dtm), sw_torch_pow_scalar(pa, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.480db80000000p-17f), sw_nmul(dtm, dtm)), sw_torch_pow_scalar(pa, 0x1.0000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(0x1.6995780000000p-4f, sw_torch_pow_scalar(pa, 0x1.4000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul((-0x1.8ba72c0000000p-9f), ta), sw_torch_pow_scalar(pa, 0x1.4000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.11d1360000000p-10f, va), sw_torch_pow_scalar(pa, 0x1.4000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(sw_nmul(0x1.0317dc0000000p-12f, dtm), sw_torch_pow_scalar(pa, 0x1.4000000000000p+2f, use_libm)));
+    acc = sw_nadd(acc, sw_nmul(0x1.84e2b40000000p-10f, sw_torch_pow_scalar(pa, 0x1.8000000000000p+2f, use_libm)));
+    return acc;
+}
+
+#endif  // SW_UTCI_POLY_GENERATED_CUH_
+

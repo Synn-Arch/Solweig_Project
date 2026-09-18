@@ -1,0 +1,66 @@
+schema_version: 1
+project: solweig_universal_interactive_editing
+mission: >-
+  Build a generic adapter-driven SOLWEIG-GPU editing engine. Tree editing is one
+  reference adapter, not the product boundary. Resolve each validated source
+  change through a versioned dependency graph and execute only required exact
+  stages with conservative full-tile fallback.
+scientific_oracle: current_full_domain_solweig
+fixed_domain:
+  nominal_grid: [500, 500]
+  nominal_resolution_m: 2.0
+multi_agent:
+  required: true
+  policy: maximize_useful_parallelism
+  preferred_concurrency: 4-8
+  isolated_write_agents: true
+  one_writer_per_file: true
+  scientific_change_requires_non_author_review: true
+  performance_claim_requires_independent_reproduction: true
+source_families:
+  - building_dsm
+  - vegetation_dsm
+  - dem
+  - landcover
+  - meteorology
+  - selected_date_time
+  - wind_coefficients
+  - model_parameters
+  - output_selection
+invariants:
+  - full_domain_solver_is_oracle
+  - dependency_graph_is_versioned
+  - immutable_baseline_cache
+  - half_open_raster_windows
+  - preserve_units_nodata_polarity_patch_order_and_temporal_state
+  - never_publish_stale_scene_revision
+  - preview_is_not_exact
+  - unsafe_locality_falls_back_to_full_tile
+  - dynamic_wind_from_geometry_requires_separate_scientific_validation
+validation_tiers:
+  T0: static
+  T1: unit
+  T2: dependency_and_integration
+  T3: scientific_differential
+  T4: cpu_memory_performance
+  T5: full_repository_and_docs
+  T6: deployment_and_ui_smoke
+mandatory_gates:
+  - UEDIT-001
+  - UEDIT-002
+  - UEDIT-003
+  - UEDIT-004
+  - UEDIT-005
+  - UEDIT-006
+  - UEDIT-007
+  - UEDIT-008
+  - UEDIT-009
+  - UEDIT-010
+hard_stops:
+  - material_scientific_semantics_ambiguous
+  - oracle_nondeterministic_after_controls
+  - scope_change_without_acceptance_criteria
+  - access_or_license_blocker
+  - unresolved_semantic_scientific_conflict
+  - unisolatable_baseline_failure
+  - multiple_plausible_numerical_fixes_without_evidence

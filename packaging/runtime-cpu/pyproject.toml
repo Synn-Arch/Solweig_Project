@@ -1,0 +1,44 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# The TORCH-FREE RUNTIME distribution (ultrafast bitwise plan, T14 /
+# DESIGN.ko.md 5.4). Build from the repo root:
+#
+#   .venv/bin/python -m pip wheel packaging/runtime-cpu -w dist-runtime
+#
+# or install the source tree directly:
+#
+#   pip install packaging/runtime-cpu
+#
+# What ships: solweig_core + solweig_core.numba_cpu ONLY — the numba CPU
+# kernels, the capture loaders/recompute lanes, the fallback router, the
+# general step-table producer (R3) and the runtime facade. What NEVER
+# ships: torch (oracle kernels), GDAL/rasterio (preprocess), matplotlib
+# (plotting), netCDF4 (forcing IO), the CUDA lane, and any compiler
+# toolchain beyond numba's own JIT (there is no C++ AOT artifact — the
+# numba-vs-AOT evidence decision is recorded in the T14 REPORT).
+#
+# Oracle extras are a SEPARATE environment (the repo-root setup.py dev
+# install); this distribution must remain installable without them.
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "solweig-core-cpu"
+version = "2.0.0"
+description = "Torch-free SOLWEIG CPU runtime: numba kernels over frozen site captures (bitwise-exact replay)"
+readme = "README.md"
+license = { text = "GPL-3.0-only" }
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.5,<2.6",
+    "numba>=0.67,<0.68",
+    "scipy>=1.18,<2",
+]
+
+[tool.setuptools]
+package-dir = { "" = "../.." }
+packages = [
+    "solweig_core",
+    "solweig_core.numba_cpu",
+]
+include-package-data = false
